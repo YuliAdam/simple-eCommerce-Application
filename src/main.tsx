@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-const rootElement = document.getElementById('root');
+const rootElement = document.createElement('div');
+rootElement.id = 'root';
+
+document.body.appendChild(rootElement);
 
 if (rootElement instanceof HTMLElement) {
   ReactDOM.createRoot(rootElement).render(
