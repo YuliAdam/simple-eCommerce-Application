@@ -6,8 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "lint": "eslint src --ext .ts,.tsx",
+    "format": "prettier --write src/**/*.ts src/**/*.tsx",
     "preview": "vite preview",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "vitest"
   },
   "dependencies": {
     "react": "^19.0.0",
