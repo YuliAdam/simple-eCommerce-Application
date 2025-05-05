@@ -30,11 +30,10 @@
       "@services/*": ["src/services/*"],
       "@store/*": ["src/store/*"],
       "@utils/*": ["src/utils/*"],
-      "@views/*": ["src/views/*"]
+      "@view/*": ["src/app/view/*"],
+      "@app/*": ["src/app/*"],
+      "@pages/*": ["src/app/view/main/pages/*"]
     }
   },
-  "include": [
-    "src", 
-    "test.ts"
-  ]
+  "include": ["src", "test.ts"]
 }

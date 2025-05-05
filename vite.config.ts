@@ -14,7 +14,9 @@ export default defineConfig({
       '@services': fileURLToPath(new URL('./src/services', import.meta.url)),
       '@store': fileURLToPath(new URL('./src/store', import.meta.url)),
       '@utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
-      '@views': fileURLToPath(new URL('./src/views', import.meta.url))
+      '@view': fileURLToPath(new URL('./src/app/view', import.meta.url)),
+      '@app': fileURLToPath(new URL('./src/app', import.meta.url)),
+      '@pages': fileURLToPath(new URL('./src/app/view/main/pages', import.meta.url)),
     },
   },
 });

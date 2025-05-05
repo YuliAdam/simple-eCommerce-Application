@@ -1,14 +1,15 @@
 import type { ReactElement } from 'react';
-import { About } from './pages/about/about';
-import { AllProducts } from './pages/all-products/all-products';
-import { Basket } from './pages/basket/basket';
-import { Index } from './pages/index/index';
-import { Login } from './pages/login/login';
-import { NotFound } from './pages/not-found/not-found';
-import { Product } from './pages/product/product';
-import { Registration } from './pages/registration/registration';
-import { User } from './pages/user/user';
 import { Route, Routes } from 'react-router-dom';
+
+import { About } from '@pages/about/about';
+import { AllProducts } from '@pages/all-products/all-products';
+import { Basket } from '@pages/basket/basket';
+import { Index } from '@pages/index/index';
+import { Login } from '@pages/login/login';
+import { NotFound } from '@pages/not-found/not-found';
+import { Product } from '@pages/product/product';
+import { Registration } from '@pages/registration/registration';
+import { User } from '@pages/user/user';
 
 export enum Path {
   empty = '/',
