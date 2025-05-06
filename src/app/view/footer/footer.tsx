@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Path } from '@view/main/main';
+import { Path } from '@config/pathConfig';
 
 export function Footer(): ReactElement {
   return (

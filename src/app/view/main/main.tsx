@@ -10,19 +10,7 @@ import { NotFound } from '@pages/not-found/not-found';
 import { Product } from '@pages/product/product';
 import { Registration } from '@pages/registration/registration';
 import { User } from '@pages/user/user';
-
-export enum Path {
-  empty = '/',
-  login = '/login',
-  index = '/index',
-  registration = '/registration',
-  allProducts = '/product',
-  product = '/product/:id',
-  user = '/user',
-  basket = '/basket',
-  about = '/about',
-  notFound = '*',
-}
+import { Path } from '@config/pathConfig';
 
 export function Main(): ReactElement {
   return (

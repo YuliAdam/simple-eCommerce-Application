@@ -32,7 +32,8 @@
       "@utils/*": ["src/utils/*"],
       "@view/*": ["src/app/view/*"],
       "@app/*": ["src/app/*"],
-      "@pages/*": ["src/app/view/main/pages/*"]
+      "@pages/*": ["src/app/view/main/pages/*"],
+      "@config/*": ["src/config/*"]
     }
   },
   "include": ["src", "test.ts"]

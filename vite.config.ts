@@ -17,6 +17,7 @@ export default defineConfig({
       '@view': fileURLToPath(new URL('./src/app/view', import.meta.url)),
       '@app': fileURLToPath(new URL('./src/app', import.meta.url)),
       '@pages': fileURLToPath(new URL('./src/app/view/main/pages', import.meta.url)),
+      '@config': fileURLToPath(new URL('./src/config', import.meta.url)),
     },
   },
 });
