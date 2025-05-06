@@ -1,19 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+
+import { App } from '@app/app';
+import { store } from '@store/store';
 
 const rootElement = document.createElement('div');
-rootElement.id = 'root';
+document.body.prepend(rootElement);
+const root = createRoot(rootElement);
 
-document.body.appendChild(rootElement);
-
-if (rootElement instanceof HTMLElement) {
-  ReactDOM.createRoot(rootElement).render(
-    <React.StrictMode>
-      <div>
-        <h1>Welcome to eCommerce Application!</h1>
-      </div>
-    </React.StrictMode>,
-  );
-} else {
-  console.error('Root element not found');
-}
+root.render(
+  <BrowserRouter>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </BrowserRouter>,
+);
