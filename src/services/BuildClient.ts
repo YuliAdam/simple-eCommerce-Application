@@ -5,7 +5,6 @@ import {
   type AuthMiddlewareOptions, // Required for auth
   type HttpMiddlewareOptions, // Required for sending HTTP requests
 } from '@commercetools/ts-client';
-import axios from 'axios';
 
 const projectKey = import.meta.env.VITE_PROJECT_KEY;
 const scopes = [import.meta.env.VITE_SCOPES];
@@ -19,13 +18,13 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
     clientSecret: import.meta.env.VITE_CLIENT_SECRET,
   },
   scopes,
-  httpClient: axios,
+  httpClient: fetch,
 };
 
 // Configure httpMiddlewareOptions
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
   host: import.meta.env.VITE_API_URL,
-  httpClient: axios,
+  httpClient: fetch,
 };
 
 // Export the ClientBuilder
