@@ -3,13 +3,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { App } from '@app/app';
 import { store } from '@store/store';
-import { getProject } from './services/client';
+import { createCustomers } from './services/customersController';
 
 const rootElement = document.createElement('div');
 document.body.prepend(rootElement);
 const root = createRoot(rootElement);
-
-getProject();
 
 root.render(
   <BrowserRouter>
@@ -18,3 +16,4 @@ root.render(
     </Provider>
   </BrowserRouter>,
 );
+createCustomers();
