@@ -3,7 +3,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { App } from '@app/app';
 import { store } from '@store/store';
-import { createCustomers } from './services/customersController';
 
 const rootElement = document.createElement('div');
 document.body.prepend(rootElement);
@@ -16,4 +15,3 @@ root.render(
     </Provider>
   </BrowserRouter>,
 );
-createCustomers();
