@@ -1,14 +1,9 @@
-import type {
-  CartResourceIdentifier,
-  ClientResponse,
-  CustomerSignInResult,
-} from '@commercetools/platform-sdk';
+import type { ClientResponse, CustomerSignInResult } from '@commercetools/platform-sdk';
 import { apiRoot } from './client';
 
 interface customerLoginRequestBody {
   email: string;
   password: string;
-  anonymousCart?: CartResourceIdentifier;
 }
 
 const customerDraft = {
