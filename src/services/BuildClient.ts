@@ -5,7 +5,7 @@ import {
   type AuthMiddlewareOptions, // Required for auth
   type HttpMiddlewareOptions, // Required for sending HTTP requests
 } from '@commercetools/ts-client';
-import { apiUrl, authUrl, clientId, clientSecret, projectKey, scopes } from './constantData';
+import { apiUrl, authUrl, clientId, clientSecret, projectKey, scopes } from './apiEnv';
 
 // Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {
