@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { App } from '@app/app';
 import { store } from '@store/store';
 import { getProject } from './services/client';
+import './module.styles.scss';
 
 const rootElement = document.createElement('div');
 document.body.prepend(rootElement);
