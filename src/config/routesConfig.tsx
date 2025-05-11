@@ -3,7 +3,7 @@ export enum Path {
   login = '/login',
   registration = '/registration',
   allProducts = '/products',
-  product = '/product',
+  product = '/products/:id',
   user = '/user',
   basket = '/basket',
   about = '/about',

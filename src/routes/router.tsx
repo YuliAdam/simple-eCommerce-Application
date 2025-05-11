@@ -65,7 +65,7 @@ export const router = createBrowserRouter([
         },
       },
       {
-        path: `${Path.product}/:id`,
+        path: Path.product,
         async lazy() {
           try {
             const { Product } = await import('@pages/product/product');
