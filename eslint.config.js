@@ -16,10 +16,10 @@ export default [
       },
     },
     plugins: {
-      'react': react,
+      react: react,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
-      'prettier': prettierPlugin,
+      prettier: prettierPlugin,
       '@typescript-eslint': typescriptEslintPlugin,
     },
     rules: {
@@ -28,7 +28,7 @@ export default [
       '@typescript-eslint/no-unused-vars': 'error',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'react-hooks/exhaustive-deps': 'warn',
-      'react/prop-types': 'off'
+      'react/prop-types': 'off',
     },
   },
   {
@@ -42,5 +42,5 @@ export default [
       ],
       '@typescript-eslint/member-ordering': 'error',
     },
-  }
+  },
 ];
