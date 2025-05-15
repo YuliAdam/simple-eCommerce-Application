@@ -1,5 +1,5 @@
-import type { ReactElement } from 'react';
-
-export function User(): ReactElement {
+function User() {
   return <section>user</section>;
 }
+
+export default User;
