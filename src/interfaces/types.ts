@@ -4,6 +4,7 @@ export enum InputTypes {
   password = 'password',
   number = 'number',
   date = 'date',
+  checkbox = 'checkbox',
 }
 
 export enum InputName {

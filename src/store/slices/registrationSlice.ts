@@ -52,6 +52,8 @@ const initialState = {
       infoIsActive: false,
     },
     billing: {
+      isDefault: false,
+      show: false,
       street: {
         isValid: true,
         value: '',
@@ -74,6 +76,8 @@ const initialState = {
       },
     },
     shipping: {
+      isDefault: false,
+      show: false,
       street: {
         isValid: true,
         value: '',
@@ -201,6 +205,20 @@ export const registrationSlice = createSlice({
         state.values[action.payload.addressType][action.payload.inputName].infoIsActive = false;
       }
     },
+    toggleAdditionalAddress(state, action: PayloadAction<AddressType>) {
+      state.values[action.payload].show = state.values[action.payload].show ? false : true;
+    },
+    setAddressAsAdditional(state, action: PayloadAction<AddressType>) {
+      state.values[action.payload].street = state.values.street;
+      state.values[action.payload].city = state.values.city;
+      state.values[action.payload].country = state.values.country;
+      state.values[action.payload].posteCode = state.values.posteCode;
+    },
+    toggleAdditionalAddressAsDefault(state, action: PayloadAction<AddressType>) {
+      state.values[action.payload].isDefault = state.values[action.payload].isDefault
+        ? false
+        : true;
+    },
   },
 });
 
@@ -224,7 +242,15 @@ function getCodeByCountry(name: string): string {
   return result;
 }
 
-export const { setValid, setInvalid, setValue, setInfoActive, setInfoInactive } =
-  registrationSlice.actions;
+export const {
+  setValid,
+  setInvalid,
+  setValue,
+  setInfoActive,
+  setInfoInactive,
+  toggleAdditionalAddress,
+  setAddressAsAdditional,
+  toggleAdditionalAddressAsDefault,
+} = registrationSlice.actions;
 
 export default registrationSlice.reducer;

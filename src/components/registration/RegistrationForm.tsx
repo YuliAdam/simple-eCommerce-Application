@@ -1,11 +1,21 @@
 import type { JSX } from 'react';
 
 import styles from '@pages/registration/registration.module.scss';
-import { InputTypes, InputName, AddressInputName, AddressType } from '@/interfaces/types';
+import { InputTypes, InputName, AddressType } from '@/interfaces/types';
 import { Datalist } from './Datalist';
 import { RegistrationData } from './RegistrationData';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleAdditionalAddress } from '@/store/slices/registrationSlice';
+import RegistrationAdditionalAddress from './RegistrationAdditionalAddress';
+import type { RootState } from '@/store/store';
 
 export function RegistrationForm(): JSX.Element {
+  const registration = useSelector((state: RootState) => state.registration.values);
+  const dispatch = useDispatch();
+  function onClickToggleAdditionalAddress(addressType: AddressType) {
+    return () => dispatch(toggleAdditionalAddress(addressType));
+  }
+
   return (
     <form className={styles.registration_form}>
       <div>
@@ -29,50 +39,20 @@ export function RegistrationForm(): JSX.Element {
         <Datalist id="countries" dataName="name" />
       </div>
       <div className={styles.registration_form_add_address}>
-        <p>Add different billing address</p>
-        <div>
-          <h5>Billing Address</h5>
-          <RegistrationData
-            name={{ addressType: AddressType.billing, inputName: AddressInputName.street }}
-            type={InputTypes.text}
-          />
-          <RegistrationData
-            name={{ addressType: AddressType.billing, inputName: AddressInputName.city }}
-            type={InputTypes.text}
-          />
-          <RegistrationData
-            name={{ addressType: AddressType.billing, inputName: AddressInputName.posteCode }}
-            type={InputTypes.text}
-          />
-          <Datalist id="code" dataName="code" />
-          <RegistrationData
-            name={{ addressType: AddressType.billing, inputName: AddressInputName.country }}
-            type={InputTypes.text}
-          />
-          <Datalist id="countries" dataName="name" />
-        </div>
-        <p>Add different shipping address</p>
-        <div>
-          <h5>Shipping Address</h5>
-          <RegistrationData
-            name={{ addressType: AddressType.shipping, inputName: AddressInputName.street }}
-            type={InputTypes.text}
-          />
-          <RegistrationData
-            name={{ addressType: AddressType.shipping, inputName: AddressInputName.city }}
-            type={InputTypes.text}
-          />
-          <RegistrationData
-            name={{ addressType: AddressType.shipping, inputName: AddressInputName.posteCode }}
-            type={InputTypes.text}
-          />
-          <Datalist id="code" dataName="code" />
-          <RegistrationData
-            name={{ addressType: AddressType.shipping, inputName: AddressInputName.country }}
-            type={InputTypes.text}
-          />
-          <Datalist id="countries" dataName="name" />
-        </div>
+        <p
+          className={styles.registration_form_add_address_text}
+          onClick={onClickToggleAdditionalAddress(AddressType.billing)}
+        >
+          {registration.billing.show ? 'Hide billing address' : 'Add different billing address'}
+        </p>
+        <RegistrationAdditionalAddress type={AddressType.billing} />
+        <p
+          className={styles.registration_form_add_address_text}
+          onClick={onClickToggleAdditionalAddress(AddressType.shipping)}
+        >
+          {registration.shipping.show ? 'Hide billing address' : 'Add different shipping address'}
+        </p>
+        <RegistrationAdditionalAddress type={AddressType.shipping} />
       </div>
 
       <button>Registrate</button>

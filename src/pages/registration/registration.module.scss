@@ -122,9 +122,17 @@
       }
     }
     &_add_address {
-      p {
+      &_text {
         color: var(--vibrant-color);
         cursor: pointer;
+        margin: 0;
+        padding: 10px;
+      }
+      .hide {
+        visibility: hidden;
+        opacity: 0;
+        height: 0;
+        width: 0;
       }
     }
   }
