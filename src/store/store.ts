@@ -1,7 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
+import registrationReducer from '@store/slices/registrationSlice';
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    registration: registrationReducer,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
