@@ -1,21 +1,17 @@
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { StrictMode } from 'react';
 import { Provider } from 'react-redux';
 import { App } from '@app/app';
 import { store } from '@store/store';
-import { getProject } from './services/client';
-import './module.styles.scss';
 
 const rootElement = document.createElement('div');
 document.body.prepend(rootElement);
 const root = createRoot(rootElement);
 
-getProject();
-
 root.render(
-  <BrowserRouter>
+  <StrictMode>
     <Provider store={store}>
       <App />
     </Provider>
-  </BrowserRouter>,
+  </StrictMode>,
 );

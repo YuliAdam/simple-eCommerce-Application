@@ -1,10 +1,9 @@
 export enum Path {
   empty = '/',
   login = '/login',
-  index = '/index',
   registration = '/registration',
-  allProducts = '/product',
-  product = '/product/:id',
+  allProducts = '/products',
+  product = '/products/:id',
   user = '/user',
   basket = '/basket',
   about = '/about',
