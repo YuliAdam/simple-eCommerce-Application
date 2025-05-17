@@ -1,5 +1,6 @@
-import type { ReactElement } from 'react';
+import type { JSX } from 'react';
 
-export function User(): ReactElement {
-  return <section>user</section>;
+export function User(): JSX.Element {
+  const userClientId = localStorage.getItem('[simple]client_id');
+  return <section>user: {userClientId}</section>;
 }
