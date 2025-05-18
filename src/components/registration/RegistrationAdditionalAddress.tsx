@@ -26,11 +26,15 @@ export default function RegistrationAdditionalAddress({ type }: { type: AddressT
   }
 
   return (
-    <div className={registration[type].show ? '' : styles.hide}>
+    <div className={registration[type].isPresent ? '' : styles.hide}>
       <h5>{addressName} Address</h5>
       <p>
-        <input type={InputTypes.checkbox} onChange={onChangeSetAddressAsAdditional(type)} />
-        Use address as {type} address
+        <input
+          type={InputTypes.checkbox}
+          checked={registration[type].isCopy}
+          onChange={onChangeSetAddressAsAdditional(type)}
+        />
+        Use main address as {type} address
       </p>
       <RegistrationData
         name={{ addressType: type, inputName: AddressInputName.street }}
@@ -41,10 +45,10 @@ export default function RegistrationAdditionalAddress({ type }: { type: AddressT
         type={InputTypes.text}
       />
       <RegistrationData
-        name={{ addressType: type, inputName: AddressInputName.posteCode }}
+        name={{ addressType: type, inputName: AddressInputName.postalCode }}
         type={InputTypes.text}
       />
-      <Datalist id="code" dataName="code" />
+      <Datalist id="postalCode" dataName="postalCode" />
       <RegistrationData
         name={{ addressType: type, inputName: AddressInputName.country }}
         type={InputTypes.text}
@@ -53,6 +57,7 @@ export default function RegistrationAdditionalAddress({ type }: { type: AddressT
       <p>
         <input
           type={InputTypes.checkbox}
+          checked={registration[type].isDefault}
           onChange={onChangeToggleAdditionalAddressAsDelault(type)}
         />
         Set as default

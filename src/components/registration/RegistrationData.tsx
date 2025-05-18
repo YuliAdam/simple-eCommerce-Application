@@ -29,12 +29,12 @@ const PLACEHOLDERS = {
   bithDay: 'Date of birth',
   street: 'Street',
   city: 'City',
-  posteCode: 'Postal code',
+  postalCode: 'Postal code',
   country: 'Country',
 };
 
 const LIST_NAMES = {
-  posteCode: 'code',
+  postalCode: 'postalCode',
   country: 'countries',
 };
 
@@ -109,20 +109,20 @@ export function RegistrationData({ name, type }: RegistrationData): JSX.Element 
           max={name === InputName.bithDay ? MAX_DATE : ''}
           min={name === InputName.bithDay ? MIN_DATE : ''}
           list={
-            name === InputName.posteCode ||
-            (isAddedAddress && name.inputName === AddressInputName.posteCode)
-              ? LIST_NAMES.posteCode
+            name === InputName.postalCode ||
+            (isAddedAddress && name.inputName === AddressInputName.postalCode)
+              ? LIST_NAMES.postalCode
               : (isAddedAddress && name.inputName === AddressInputName.country) ||
                   name === InputName.country
                 ? LIST_NAMES.country
                 : ''
           }
-          required
+          required={typeof name === 'string' || registration[name.addressType].isPresent}
         />
         {name === InputName.bithDay ||
-        name === InputName.posteCode ||
+        name === InputName.postalCode ||
         name === InputName.country ||
-        (isAddedAddress && name.inputName === AddressInputName.posteCode) ||
+        (isAddedAddress && name.inputName === AddressInputName.postalCode) ||
         (isAddedAddress && name.inputName === AddressInputName.country) ? (
           <></>
         ) : (

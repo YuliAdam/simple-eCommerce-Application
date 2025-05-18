@@ -4,14 +4,20 @@ import countries from '@assets/countriesList/countries.json';
 import type { JSX } from 'react';
 import { useDispatch } from 'react-redux';
 
-export function Datalist({ id, dataName }: { id: string; dataName: 'code' | 'name' }): JSX.Element {
+export function Datalist({
+  id,
+  dataName,
+}: {
+  id: string;
+  dataName: 'postalCode' | 'name';
+}): JSX.Element {
   const dispatch = useDispatch();
 
   function onChangeValue(value: string) {
     return () => {
-      const inputName = dataName === 'code' ? InputName.posteCode : InputName.country;
+      const inputName = dataName === 'postalCode' ? InputName.postalCode : InputName.country;
       dispatch(setValue({ name: inputName, value: value }));
-      dispatch(setValid(InputName.posteCode));
+      dispatch(setValid(InputName.postalCode));
       dispatch(setValid(InputName.country));
     };
   }

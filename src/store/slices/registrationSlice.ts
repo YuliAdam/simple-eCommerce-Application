@@ -1,8 +1,8 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import countries from '@assets/countriesList/countries.json';
 import type { AddressType } from '@/interfaces/types';
 import { AddressInputName, InputName } from '@/interfaces/types';
+import { getCountryByPostalCode, getPostalCodeByCountry } from '@/utils/searchInCountryArrayMetods';
 
 const initialState = {
   values: {
@@ -41,7 +41,7 @@ const initialState = {
       value: '',
       infoIsActive: false,
     },
-    posteCode: {
+    postalCode: {
       isValid: true,
       value: '',
       infoIsActive: false,
@@ -52,8 +52,9 @@ const initialState = {
       infoIsActive: false,
     },
     billing: {
+      isCopy: false,
       isDefault: false,
-      show: false,
+      isPresent: false,
       street: {
         isValid: true,
         value: '',
@@ -64,7 +65,7 @@ const initialState = {
         value: '',
         infoIsActive: false,
       },
-      posteCode: {
+      postalCode: {
         isValid: true,
         value: '',
         infoIsActive: false,
@@ -76,8 +77,9 @@ const initialState = {
       },
     },
     shipping: {
+      isCopy: false,
       isDefault: false,
-      show: false,
+      isPresent: false,
       street: {
         isValid: true,
         value: '',
@@ -88,7 +90,7 @@ const initialState = {
         value: '',
         infoIsActive: false,
       },
-      posteCode: {
+      postalCode: {
         isValid: true,
         value: '',
         infoIsActive: false,
@@ -125,9 +127,9 @@ export const registrationSlice = createSlice({
       action: PayloadAction<InputName | { addressType: AddressType; inputName: AddressInputName }>,
     ) => {
       if (typeof action.payload === 'string') {
-        if (state.values.posteCode.value === '') {
-          state.values.posteCode.isValid = false;
-          state.values.posteCode.infoIsActive = true;
+        if (state.values.postalCode.value === '') {
+          state.values.postalCode.isValid = false;
+          state.values.postalCode.infoIsActive = true;
         }
         if (state.values.country.value === '') {
           state.values.country.isValid = false;
@@ -138,9 +140,9 @@ export const registrationSlice = createSlice({
       } else {
         const data = action.payload.inputName;
         const addressType = action.payload.addressType;
-        if (state.values[addressType].posteCode.value === '') {
-          state.values[addressType].posteCode.isValid = false;
-          state.values[addressType].posteCode.infoIsActive = true;
+        if (state.values[addressType].postalCode.value === '') {
+          state.values[addressType].postalCode.isValid = false;
+          state.values[addressType].postalCode.infoIsActive = true;
         }
         if (state.values[addressType].country.value === '') {
           state.values[addressType].country.isValid = false;
@@ -158,27 +160,27 @@ export const registrationSlice = createSlice({
       }>,
     ) => {
       if (typeof action.payload.name === 'string') {
-        if (action.payload.name === InputName.posteCode) {
-          state.values.country.value = getCountryByCode(action.payload.value);
+        if (action.payload.name === InputName.postalCode) {
+          state.values.country.value = getCountryByPostalCode(action.payload.value);
           state.values.country.isValid = true;
           state.values.country.infoIsActive = false;
         } else if (action.payload.name === InputName.country) {
-          state.values.posteCode.value = getCodeByCountry(action.payload.value);
-          state.values.posteCode.isValid = true;
-          state.values.posteCode.infoIsActive = false;
+          state.values.postalCode.value = getPostalCodeByCountry(action.payload.value);
+          state.values.postalCode.isValid = true;
+          state.values.postalCode.infoIsActive = false;
         }
         state.values[action.payload.name].value = action.payload.value;
       } else {
         const data = action.payload.name.inputName;
         const addressType = action.payload.name.addressType;
-        if (data === AddressInputName.posteCode) {
-          state.values[addressType].country.value = getCountryByCode(action.payload.value);
+        if (data === AddressInputName.postalCode) {
+          state.values[addressType].country.value = getCountryByPostalCode(action.payload.value);
           state.values[addressType].country.isValid = true;
           state.values[addressType].country.infoIsActive = false;
         } else if (data === AddressInputName.country) {
-          state.values[addressType].posteCode.value = getCodeByCountry(action.payload.value);
-          state.values[addressType].posteCode.isValid = true;
-          state.values[addressType].posteCode.infoIsActive = false;
+          state.values[addressType].postalCode.value = getPostalCodeByCountry(action.payload.value);
+          state.values[addressType].postalCode.isValid = true;
+          state.values[addressType].postalCode.infoIsActive = false;
         }
         state.values[addressType][data].value = action.payload.value;
       }
@@ -206,41 +208,30 @@ export const registrationSlice = createSlice({
       }
     },
     toggleAdditionalAddress(state, action: PayloadAction<AddressType>) {
-      state.values[action.payload].show = state.values[action.payload].show ? false : true;
+      if (state.values[action.payload].isPresent) {
+        state.values[action.payload] = initialState.values[action.payload];
+      } else {
+        state.values[action.payload].isPresent = true;
+      }
     },
     setAddressAsAdditional(state, action: PayloadAction<AddressType>) {
-      state.values[action.payload].street = state.values.street;
-      state.values[action.payload].city = state.values.city;
-      state.values[action.payload].country = state.values.country;
-      state.values[action.payload].posteCode = state.values.posteCode;
+      if (!state.values[action.payload].isCopy) {
+        state.values[action.payload].street = state.values.street;
+        state.values[action.payload].city = state.values.city;
+        state.values[action.payload].country = state.values.country;
+        state.values[action.payload].postalCode = state.values.postalCode;
+      }
+      state.values[action.payload].isCopy = !state.values[action.payload].isCopy;
     },
     toggleAdditionalAddressAsDefault(state, action: PayloadAction<AddressType>) {
-      state.values[action.payload].isDefault = state.values[action.payload].isDefault
-        ? false
-        : true;
+      state.values[action.payload].isDefault = !state.values[action.payload].isDefault;
+    },
+    resetState(state) {
+      state.values.billing.city.infoIsActive = false;
+      state = initialState;
     },
   },
 });
-
-function getCountryByCode(code: string): string {
-  let result = '';
-  countries.forEach(item => {
-    if (item.code === code) {
-      result = item.name;
-    }
-  });
-  return result;
-}
-
-function getCodeByCountry(name: string): string {
-  let result = '';
-  countries.forEach(item => {
-    if (item.name === name) {
-      result = item.code;
-    }
-  });
-  return result;
-}
 
 export const {
   setValid,
@@ -251,6 +242,7 @@ export const {
   toggleAdditionalAddress,
   setAddressAsAdditional,
   toggleAdditionalAddressAsDefault,
+  resetState,
 } = registrationSlice.actions;
 
 export default registrationSlice.reducer;

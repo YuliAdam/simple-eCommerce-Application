@@ -15,14 +15,14 @@ export enum InputName {
   bithDay = 'bithDay',
   street = 'street',
   city = 'city',
-  posteCode = 'posteCode',
+  postalCode = 'postalCode',
   country = 'country',
 }
 
 export enum AddressInputName {
   street = 'street',
   city = 'city',
-  posteCode = 'posteCode',
+  postalCode = 'postalCode',
   country = 'country',
 }
 
@@ -32,6 +32,28 @@ export enum AddressType {
 }
 
 export enum listName {
-  posteCode = 'code',
+  postalCode = 'postalCode',
   country = 'countries',
+}
+
+export interface Address {
+  streetName: string;
+  city: string;
+  country: string;
+  postalCode: string;
+}
+
+export interface ICustomer {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  addresses: [
+    { key?: string; country: string; city: string; streetName: string; postalCode: string },
+  ];
+  shippingAddresses?: number[];
+  billingAddresses?: number[];
+  defaultShippingAddress?: number;
+  defaultBillingAddress?: number;
 }
