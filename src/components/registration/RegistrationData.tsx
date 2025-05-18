@@ -48,7 +48,7 @@ export function RegistrationData({ name, type }: RegistrationData): JSX.Element 
   ) {
     return (event: ChangeEvent<HTMLInputElement>) => {
       if (event.target && event.target instanceof HTMLInputElement) {
-        dispatch(setValue({ name: name, value: event.target.value.trim() }));
+        dispatch(setValue({ name: name, value: event.target.value }));
         dispatch(setValid(name));
       }
       if (name === InputName.login) {
@@ -109,6 +109,7 @@ export function RegistrationData({ name, type }: RegistrationData): JSX.Element 
               ? getValueInObjectByInputName(name.inputName, PATTERNS)
               : getValueInObjectByInputName(name, PATTERNS)
           }
+          minLength={1}
           max={name === InputName.birthDay ? MAX_DATE : ''}
           min={name === InputName.birthDay ? MIN_DATE : ''}
           list={

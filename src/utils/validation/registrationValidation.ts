@@ -2,15 +2,16 @@ export const MAX_INPUT_LENGTH = 32;
 export const MAX_DATE = getValidEarlierDateInRegexFormat(13);
 export const MIN_DATE = getValidEarlierDateInRegexFormat(130);
 export const PATTERNS = {
-  login: '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}',
+  login: '[a-zA-Z0-9.%!_]+@[a-zA-Z0-9.%!_]+',
   password: '(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}',
-  firstName: '^[A-Z][a-z]{1,32}',
-  lastName: '^[A-Z][a-z]{1,32}',
-  street: '.^[A-Z][a-z][0-9]+(\s[A-Z][a-z][0-9]+)*{1,32}',
-  city: '^[A-Z][a-z]+(\s[A-Z][a-z]+)*{1,32}',
+  firstName: '[a-zA-Z\\s]{1,32}',
+  lastName: '[a-zA-Z\\s]{1,32}',
+  street: '[a-zA-Z0-9\\s]{1,32}',
+  city: '[a-zA-Z\\s]{1,32}',
   postalCode: '[a-zA-Z0-9]{1,32}',
-  country: '^[A-Z][a-z]+(\s[A-Z][a-z]+)*{1,32}',
+  country: '[a-zA-Z\\s]{1,32}',
 };
+
 export const VALIDATION_MESSAGES = {
   login: 'Input valid email address. Max 32 characters.',
   password:

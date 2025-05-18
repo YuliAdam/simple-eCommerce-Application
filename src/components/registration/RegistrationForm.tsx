@@ -1,4 +1,4 @@
-import type { FormEvent, JSX } from 'react';
+import { type FormEvent, type JSX } from 'react';
 import styles from '@pages/registration/registration.module.scss';
 import type { Address, ICustomer, ILoginParams } from '@/interfaces/types';
 import { InputTypes, InputName, AddressType } from '@/interfaces/types';
@@ -23,12 +23,14 @@ import { Path } from '@/config/routesConfig';
 import { getCodeByCountry } from '@/utils/searchInCountryArrayMetods';
 import { resetErrorState, setValue } from '@/store/slices/errorSlice';
 import { shop } from '@/config/localStorageConfig';
+import { PATTERNS } from '@/utils/validation/registrationValidation';
 
 export function RegistrationForm(): JSX.Element {
   const registration = useSelector((state: RootState) => state.registration.values);
   const error = useSelector((state: RootState) => state.error.values);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   function onClickToggleAdditionalAddress(addressType: AddressType) {
     return () => dispatch(toggleAdditionalAddress(addressType));
   }
@@ -59,29 +61,29 @@ export function RegistrationForm(): JSX.Element {
     const billingAddress = {
       key: AddressType.billing,
       country: getCodeByCountry(registration.billing.country.value),
-      city: registration.billing.city.value,
-      streetName: registration.billing.street.value,
+      city: registration.billing.city.value.trim(),
+      streetName: registration.billing.street.value.trim(),
       postalCode: registration.billing.postalCode.value,
     };
     const shippingAddress = {
       key: AddressType.shipping,
       country: getCodeByCountry(registration.shipping.country.value),
-      city: registration.shipping.city.value,
-      streetName: registration.shipping.street.value,
+      city: registration.shipping.city.value.trim(),
+      streetName: registration.shipping.street.value.trim(),
       postalCode: registration.shipping.postalCode.value,
     };
     const customerDraft: ICustomer = {
-      email: registration.login.value.toLowerCase(),
-      password: registration.password.value,
-      firstName: registration.firstName.value,
-      lastName: registration.lastName.value,
+      email: registration.login.value.toLowerCase().trim(),
+      password: registration.password.value.trim(),
+      firstName: registration.firstName.value.trim(),
+      lastName: registration.lastName.value.trim(),
       dateOfBirth: registration.birthDay.value,
       addresses: [
         {
           key: 'main',
           country: getCodeByCountry(registration.country.value),
-          city: registration.city.value,
-          streetName: registration.street.value,
+          city: registration.city.value.trim(),
+          streetName: registration.street.value.trim(),
           postalCode: registration.postalCode.value,
         },
       ],
@@ -112,15 +114,43 @@ export function RegistrationForm(): JSX.Element {
     return customerDraft;
   }
 
+  function isValidForm() {
+    return (
+      new RegExp(PATTERNS.login).test(registration.login.value) &&
+      new RegExp(PATTERNS.password).test(registration.password.value) &&
+      registration.birthDay.value.length > 0 &&
+      new RegExp(PATTERNS.firstName).test(registration.firstName.value) &&
+      new RegExp(PATTERNS.lastName).test(registration.lastName.value) &&
+      new RegExp(PATTERNS.city).test(registration.city.value) &&
+      new RegExp(PATTERNS.country).test(registration.country.value) &&
+      new RegExp(PATTERNS.postalCode).test(registration.postalCode.value) &&
+      new RegExp(PATTERNS.street).test(registration.street.value) &&
+      (registration.billing.isPresent
+        ? new RegExp(PATTERNS.city).test(registration.billing.city.value) &&
+          new RegExp(PATTERNS.country).test(registration.billing.country.value) &&
+          new RegExp(PATTERNS.postalCode).test(registration.billing.postalCode.value) &&
+          new RegExp(PATTERNS.street).test(registration.billing.street.value)
+        : true) &&
+      (registration.shipping.isPresent
+        ? new RegExp(PATTERNS.login).test(registration.shipping.city.value) &&
+          new RegExp(PATTERNS.login).test(registration.shipping.country.value) &&
+          new RegExp(PATTERNS.login).test(registration.shipping.postalCode.value) &&
+          new RegExp(PATTERNS.login).test(registration.shipping.street.value)
+        : true)
+    );
+  }
+
   function onClickSendForm() {
     return async () => {
-      const body = getData();
-      const response: Error | ClientResponse<CustomerSignInResult> = await createCustomer(body);
-      !(response instanceof Error)
-        ? loginRequest(body.email, body.password)
-        : response.message === 'There is already an existing customer with the provided email.'
-          ? showRegistrationErrorMessage(response.message)
-          : console.log(response.message);
+      if (isValidForm()) {
+        const body = getData();
+        const response: Error | ClientResponse<CustomerSignInResult> = await createCustomer(body);
+        !(response instanceof Error)
+          ? loginRequest(body.email, body.password)
+          : response.message === 'There is already an existing customer with the provided email.'
+            ? showRegistrationErrorMessage(response.message)
+            : console.log(response.message);
+      }
     };
   }
 
