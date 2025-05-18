@@ -1,7 +1,7 @@
 import type { AddressType, InputTypes } from '@/interfaces/types';
 import { AddressInputName } from '@/interfaces/types';
 import { InputName } from '@/interfaces/types';
-import { setInvalid, setValid, setValue } from '@store/slices/registrationSlice';
+import { setInvalid, setLoginUnique, setValid, setValue } from '@store/slices/registrationSlice';
 import type { RootState } from '@store/store';
 import styles from '@pages/registration/registration.module.scss';
 import type { ChangeEvent, JSX } from 'react';
@@ -50,6 +50,9 @@ export function RegistrationData({ name, type }: RegistrationData): JSX.Element 
       if (event.target && event.target instanceof HTMLInputElement) {
         dispatch(setValue({ name: name, value: event.target.value.trim() }));
         dispatch(setValid(name));
+      }
+      if (name === InputName.login) {
+        dispatch(setLoginUnique());
       }
     };
   }

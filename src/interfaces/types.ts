@@ -57,3 +57,8 @@ export interface ICustomer {
   defaultShippingAddress?: number;
   defaultBillingAddress?: number;
 }
+
+export interface ILoginParams {
+  email: string;
+  password: string;
+}

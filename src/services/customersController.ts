@@ -4,16 +4,12 @@ import type {
   MyCustomerDraft,
 } from '@commercetools/platform-sdk';
 import { apiRoot } from './client';
-
-interface customerLoginRequestBody {
-  email: string;
-  password: string;
-}
+import type { ILoginParams } from '@/interfaces/types';
 
 export async function createCustomer(
   body: MyCustomerDraft,
 ): Promise<Error | ClientResponse<CustomerSignInResult>> {
-  console.log(body);
+  console.log('Create customer', body);
   return await apiRoot
     .me()
     .signup()
@@ -24,17 +20,15 @@ export async function createCustomer(
     .catch((err: Error) => err);
 }
 
-const loginParams: customerLoginRequestBody = {
-  email: 'yuli3@example.com',
-  password: 'secret123',
-};
-
-export async function loginCustomer(): Promise<Error | ClientResponse<CustomerSignInResult>> {
+export async function loginCustomer(
+  body: ILoginParams,
+): Promise<Error | ClientResponse<CustomerSignInResult>> {
+  console.log('Login customer', body);
   return apiRoot
     .me()
     .login()
     .post({
-      body: loginParams,
+      body: body,
     })
     .execute()
     .catch((err: Error) => err);

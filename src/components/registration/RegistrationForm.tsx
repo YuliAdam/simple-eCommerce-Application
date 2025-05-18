@@ -1,11 +1,15 @@
 import type { FormEvent, JSX } from 'react';
 import styles from '@pages/registration/registration.module.scss';
-import type { Address, ICustomer } from '@/interfaces/types';
+import type { Address, ICustomer, ILoginParams } from '@/interfaces/types';
 import { InputTypes, InputName, AddressType } from '@/interfaces/types';
 import { Datalist } from './Datalist';
 import { RegistrationData } from './RegistrationData';
 import { useDispatch, useSelector } from 'react-redux';
-import { resetState, toggleAdditionalAddress } from '@/store/slices/registrationSlice';
+import {
+  resetState,
+  setLoginNotUnique,
+  toggleAdditionalAddress,
+} from '@/store/slices/registrationSlice';
 import RegistrationAdditionalAddress from './RegistrationAdditionalAddress';
 import type { RootState } from '@/store/store';
 import type {
@@ -13,14 +17,16 @@ import type {
   CustomerDraft,
   CustomerSignInResult,
 } from '@commercetools/platform-sdk';
-import { createCustomer } from '@/services/customersController';
-import React from 'react';
+import { createCustomer, loginCustomer } from '@/services/customersController';
 import { useNavigate } from 'react-router-dom';
 import { Path } from '@/config/routesConfig';
 import { getCodeByCountry } from '@/utils/searchInCountryArrayMetods';
+import { resetErrorState, setValue } from '@/store/slices/errorSlice';
+import { shop } from '@/config/localStorageConfig';
 
 export function RegistrationForm(): JSX.Element {
   const registration = useSelector((state: RootState) => state.registration.values);
+  const error = useSelector((state: RootState) => state.error.values);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   function onClickToggleAdditionalAddress(addressType: AddressType) {
@@ -65,7 +71,7 @@ export function RegistrationForm(): JSX.Element {
       postalCode: registration.shipping.postalCode.value,
     };
     const customerDraft: ICustomer = {
-      email: registration.login.value,
+      email: registration.login.value.toLowerCase(),
       password: registration.password.value,
       firstName: registration.firstName.value,
       lastName: registration.lastName.value,
@@ -107,17 +113,34 @@ export function RegistrationForm(): JSX.Element {
   }
 
   function onClickSendForm() {
-    return async (event: React.MouseEvent) => {
-      event.preventDefault();
+    return async () => {
       const body = getData();
       const response: Error | ClientResponse<CustomerSignInResult> = await createCustomer(body);
-      !(response instanceof Error) ? goToIndexPage : console.log(response.message);
+      !(response instanceof Error)
+        ? loginRequest(body.email, body.password)
+        : response.message === 'There is already an existing customer with the provided email.'
+          ? showRegistrationErrorMessage(response.message)
+          : console.log(response.message);
     };
   }
 
-  function goToIndexPage() {
+  function showRegistrationErrorMessage(message: string) {
+    dispatch(setValue(message));
+    dispatch(setLoginNotUnique());
+    window.scrollTo(0, 0);
+  }
+
+  async function loginRequest(login: string, password: string) {
+    const body: ILoginParams = { email: login, password: password };
+    const response: Error | ClientResponse<CustomerSignInResult> = await loginCustomer(body);
+    !(response instanceof Error) ? goToIndexPage(response) : console.log(response.message);
+  }
+
+  function goToIndexPage(response: ClientResponse<CustomerSignInResult>) {
+    localStorage.setItem(shop.client_id, response.body.customer.id);
     navigate(Path.empty);
     dispatch(resetState());
+    dispatch(resetErrorState());
   }
 
   function handlerSubmit() {
@@ -130,6 +153,13 @@ export function RegistrationForm(): JSX.Element {
     <form className={styles.registration_form} onSubmit={handlerSubmit()}>
       <div>
         <h5>Login Data</h5>
+        <p
+          className={
+            styles.registration_form_info + (registration.login.isUnique ? '' : ' ' + styles.active)
+          }
+        >
+          {error.value}
+        </p>
         <RegistrationData name={InputName.login} type={InputTypes.email} />
         <RegistrationData name={InputName.password} type={InputTypes.password} />
       </div>
@@ -165,7 +195,9 @@ export function RegistrationForm(): JSX.Element {
         <RegistrationAdditionalAddress type={AddressType.shipping} />
       </div>
 
-      <button onClick={onClickSendForm()}>Registrate</button>
+      <button type="submit" onClick={onClickSendForm()}>
+        Registrate
+      </button>
     </form>
   );
 }

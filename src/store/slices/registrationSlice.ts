@@ -7,6 +7,7 @@ import { getCountryByPostalCode, getPostalCodeByCountry } from '@/utils/searchIn
 const initialState = {
   values: {
     login: {
+      isUnique: true,
       isValid: true,
       value: '',
       infoIsActive: false,
@@ -226,6 +227,12 @@ export const registrationSlice = createSlice({
     toggleAdditionalAddressAsDefault(state, action: PayloadAction<AddressType>) {
       state.values[action.payload].isDefault = !state.values[action.payload].isDefault;
     },
+    setLoginUnique(state) {
+      state.values.login.isUnique = true;
+    },
+    setLoginNotUnique(state) {
+      state.values.login.isUnique = false;
+    },
     resetState(state) {
       state.values.billing.city.infoIsActive = false;
       state = initialState;
@@ -242,6 +249,8 @@ export const {
   toggleAdditionalAddress,
   setAddressAsAdditional,
   toggleAdditionalAddressAsDefault,
+  setLoginUnique,
+  setLoginNotUnique,
   resetState,
 } = registrationSlice.actions;
 
