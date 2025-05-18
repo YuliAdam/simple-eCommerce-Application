@@ -1,7 +1,7 @@
 import { Path } from '@/config/routesConfig';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './header.module.scss';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import logo from '@assets/logo.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from '@/store/slices/authSlice';
@@ -11,8 +11,8 @@ import { shop } from '@config/localStorageConfig';
 export function Header() {
   const dispatch = useDispatch();
   const isAuthorized = useSelector((state: RootState) => state.auth.isAuthorized);
-
   const navigate = useNavigate();
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
 
   let logInOrLogOutLink = isAuthorized ? (
     <button onClick={handleLogout} className={styles['nav-btn']}>
@@ -37,13 +37,40 @@ export function Header() {
     }
   }, []);
 
+  function handleMenu() {
+    setIsOpenMenu(state => !state);
+  }
+
+  useEffect(() => {
+    function handleWindowResize() {
+      if (window.innerWidth > 942) {
+        setIsOpenMenu(false);
+      }
+    }
+
+    window.addEventListener('resize', handleWindowResize);
+  }, []);
+
+  function handleLink(event: React.MouseEvent) {
+    const target = event.target;
+
+    if (target instanceof HTMLElement) {
+      if (target.closest('a')) {
+        setIsOpenMenu(false);
+      }
+    }
+  }
+
   const productId = 1;
 
   return (
     <>
       <header className={styles.header}>
         <div className="container">
-          <nav className={styles.nav}>
+          <nav
+            onClick={handleLink}
+            className={`${styles.nav} ${isOpenMenu ? styles['nav-active'] : ''}`}
+          >
             <ul className={styles['nav-list']}>
               <li className={styles['nav-item']}>
                 <Link to={Path.empty} className={styles['nav-link']}>
@@ -91,6 +118,17 @@ export function Header() {
             </ul>
           </nav>
         </div>
+        <button onClick={handleMenu} className={styles['nav-menu-btn']}>
+          <span
+            className={`${styles['nav-top-span']} ${isOpenMenu ? styles['nav-top-span-active'] : ''}`}
+          />
+          <span
+            className={`${styles['nav-mid-span']} ${isOpenMenu ? styles['nav-mid-span-active'] : ''}`}
+          />
+          <span
+            className={`${styles['nav-bottom-span']} ${isOpenMenu ? styles['nav-bottom-span-active'] : ''}`}
+          />
+        </button>
       </header>
     </>
   );
