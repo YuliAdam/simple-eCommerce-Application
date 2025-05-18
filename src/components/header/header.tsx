@@ -1,11 +1,16 @@
 import { Path } from '@/config/routesConfig';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './header.module.scss';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import logo from '@assets/logo.png';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, logout } from '@/store/slices/authslice';
+import type { RootState } from '@/store/store';
 
 export function Header() {
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const dispatch = useDispatch();
+  const isAuthorized = useSelector((state: RootState) => state.auth.isAuthorized);
+
   const navigate = useNavigate();
 
   let logInOrLogOutLink = isAuthorized ? (
@@ -20,13 +25,15 @@ export function Header() {
 
   function handleLogout() {
     localStorage.removeItem('authToken');
-    setIsAuthorized(false);
+    dispatch(logout());
     navigate(Path.empty);
   }
 
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
-    setIsAuthorized(Boolean(authToken));
+    if (authToken) {
+      dispatch(login(authToken));
+    }
   }, []);
 
   const productId = 1;
