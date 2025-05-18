@@ -2,6 +2,7 @@ import { Path } from '@/config/routesConfig';
 import { Layout } from '@/layout/layout';
 import { NotFound } from '@/pages/notFound/notFound';
 import { createBrowserRouter } from 'react-router-dom';
+import { AuthRedirect } from './redirect';
 
 export const router = createBrowserRouter([
   {
@@ -28,7 +29,11 @@ export const router = createBrowserRouter([
           try {
             const { Login } = await import('@pages/login/login');
             return {
-              element: <Login />,
+              element: (
+                <AuthRedirect>
+                  <Login />
+                </AuthRedirect>
+              ),
             };
           } catch (error) {
             const errorMessage = error instanceof Error ? error.message : '404';

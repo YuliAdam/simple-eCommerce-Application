@@ -1,3 +1,4 @@
+import { shop } from '@/config/localStorageConfig';
 import type { TokenCache, TokenStore } from '@commercetools/ts-client';
 
 export class TokenState implements TokenCache {
@@ -10,7 +11,7 @@ export class TokenState implements TokenCache {
       expirationTime: 0,
     };
 
-    const storedToken = localStorage.getItem('[simple]client_token');
+    const storedToken = localStorage.getItem(shop.client_token);
     if (storedToken) {
       try {
         this.cachedToken = JSON.parse(storedToken);
@@ -22,7 +23,7 @@ export class TokenState implements TokenCache {
 
   public set(newCache: TokenStore): void {
     this.cachedToken = newCache;
-    localStorage.setItem('[simple]client_token', JSON.stringify(this.cachedToken));
+    localStorage.setItem(shop.client_token, JSON.stringify(this.cachedToken));
   }
 
   public get(): TokenStore {
@@ -35,6 +36,6 @@ export class TokenState implements TokenCache {
       refreshToken: '',
       expirationTime: 0,
     };
-    localStorage.removeItem('[simple]client_token');
+    localStorage.removeItem(shop.client_token);
   }
 }

@@ -1,18 +1,34 @@
+import { shop } from '@/config/localStorageConfig';
 import { Path } from '@/config/routesConfig';
 import { withPasswordFlow } from '@/services/flow/passwordFlow';
 import type { JSX } from 'react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
+/** TODO: LIST
+
+SINGLE
+ 1. clientside validate {email,password}
+ 2. display errors in clientside UI
+ 3. globalState(redux) - clientData(token,id, etc)
+ 4. private routing for isAuth
+ 5. add styling for LoginForm, (may be <Form/> to @component/)
+ 6. provide specific password_scope for passwordFlow
+ 7. withRefreshToken for client with anonymousCart
+
+TEAM
+ 1. спросить про название магазина и поля в localStorage? предлагаю simple:
+
+*/
 
 export function Login(): JSX.Element {
   const navigate = useNavigate();
-  const isAuth =
-    localStorage.getItem('[simple]client_token') && localStorage.getItem('[simple]client_id'); // TODO: how to check that token is valid?
+  // const isAuth = localStorage.getItem(shop.client_token) && localStorage.getItem(shop.client_id); // TODO: how to check that token is valid?
 
-  useEffect(() => {
-    // FIX: change for protected react-router
-    if (isAuth) navigate(Path.user);
-  });
+  // useEffect(() => {
+  //   // FIX: change for protected react-router
+  //   if (isAuth) navigate(Path.user);
+  // });
 
   const [isLoginResponse, setIsLoginResponse] = useState('');
   async function handleForm(formData: FormData) {
@@ -39,11 +55,11 @@ export function Login(): JSX.Element {
         .execute();
       navigate(Path.user);
 
-      // TODO: add credentials data from response to State
+      // TODO: add credentials data from response to redux global state
       console.log('ok login', response);
       // localStorage.setItem();
 
-      localStorage.setItem('[simple]client_id', response.body.customer.id);
+      localStorage.setItem(shop.client_id, response.body.customer.id);
     } catch (error) {
       console.log('error login', error);
       if (error instanceof Error) setIsLoginResponse(error.message);
@@ -58,7 +74,7 @@ export function Login(): JSX.Element {
 
   return (
     <div>
-      <h2>Login </h2>
+      <h2>Login</h2>
       {isLoginResponse}
       <form action={handleForm}>
         <div>
@@ -90,6 +106,14 @@ export function Login(): JSX.Element {
       <div>
         <p>New user?</p>
         <Link to={Path.registration}>Create an account</Link>
+        <button
+          type="button"
+          onClick={() => {
+            navigate(Path.registration);
+          }}
+        >
+          Create an account
+        </button>
       </div>
     </div>
   );

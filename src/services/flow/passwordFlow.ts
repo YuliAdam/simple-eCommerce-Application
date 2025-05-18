@@ -19,7 +19,7 @@ export function withPasswordFlow(username: string, password: string): ByProjectK
         password,
       },
     },
-    scopes: scopes, // FIX: only passwordFlow scope
+    scopes: scopes, // FIX: only passwordFlow scope with split()
     tokenCache,
     httpClient: fetch,
   };
