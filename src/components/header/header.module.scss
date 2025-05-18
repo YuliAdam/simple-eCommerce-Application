@@ -1,5 +1,16 @@
+// colors
+$primary-color: #111827;
+$body-text-color: #4b5563;
+$vibrant-color: #0ea5e9;
+$border-color: #e5e7eb;
+$default-color: #ffffff;
+$gray-background: #f8f8f8;
+$red-border-color: red;
+
 .header {
-    background-color: rgb(109, 191, 233);
+    padding: 27px 120px;
+    font-size: 2rem;
+    background-color: $default-color;
 }
 
 .nav {
@@ -22,10 +33,10 @@
 
 .nav-link {
     display: block;
-    color: black;
+    color: $body-text-color;
     transition: color 1s ease;
     &:hover {
-        color: rgb(255, 255, 255);
+        color: $vibrant-color;
     }
 }
 
