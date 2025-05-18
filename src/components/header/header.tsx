@@ -6,6 +6,7 @@ import logo from '@assets/logo.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from '@/store/slices/authSlice';
 import type { RootState } from '@/store/store';
+import { shop } from '@config/localStorageConfig';
 
 export function Header() {
   const dispatch = useDispatch();
@@ -24,13 +25,13 @@ export function Header() {
   );
 
   function handleLogout() {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem(shop.client_token);
     dispatch(logout());
     navigate(Path.empty);
   }
 
   useEffect(() => {
-    const authToken = localStorage.getItem('authToken');
+    const authToken = localStorage.getItem(shop.client_token);
     if (authToken) {
       dispatch(login(authToken));
     }
