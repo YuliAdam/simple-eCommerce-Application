@@ -5,7 +5,6 @@ import { App } from '@app/app';
 import { store } from '@store/store';
 
 const rootElement = document.createElement('div');
-rootElement.style.position = 'relative';
 document.body.prepend(rootElement);
 const root = createRoot(rootElement);
 

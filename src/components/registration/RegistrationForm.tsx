@@ -75,7 +75,7 @@ export function RegistrationForm(): JSX.Element {
       password: registration.password.value,
       firstName: registration.firstName.value,
       lastName: registration.lastName.value,
-      dateOfBirth: registration.bithDay.value,
+      dateOfBirth: registration.birthDay.value,
       addresses: [
         {
           key: 'main',
@@ -167,7 +167,7 @@ export function RegistrationForm(): JSX.Element {
         <h5>Personal Data</h5>
         <RegistrationData name={InputName.firstName} type={InputTypes.text} />
         <RegistrationData name={InputName.lastName} type={InputTypes.text} />
-        <RegistrationData name={InputName.bithDay} type={InputTypes.date} />
+        <RegistrationData name={InputName.birthDay} type={InputTypes.date} />
       </div>
       <div>
         <h5>Address</h5>

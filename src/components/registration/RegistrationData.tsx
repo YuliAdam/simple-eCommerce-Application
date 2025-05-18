@@ -26,7 +26,7 @@ const PLACEHOLDERS = {
   password: 'password',
   firstName: 'First name',
   lastName: 'Last name',
-  bithDay: 'Date of birth',
+  birthDay: 'Date of birth',
   street: 'Street',
   city: 'City',
   postalCode: 'Postal code',
@@ -109,8 +109,8 @@ export function RegistrationData({ name, type }: RegistrationData): JSX.Element 
               ? getValueInObjectByInputName(name.inputName, PATTERNS)
               : getValueInObjectByInputName(name, PATTERNS)
           }
-          max={name === InputName.bithDay ? MAX_DATE : ''}
-          min={name === InputName.bithDay ? MIN_DATE : ''}
+          max={name === InputName.birthDay ? MAX_DATE : ''}
+          min={name === InputName.birthDay ? MIN_DATE : ''}
           list={
             name === InputName.postalCode ||
             (isAddedAddress && name.inputName === AddressInputName.postalCode)
@@ -122,7 +122,7 @@ export function RegistrationData({ name, type }: RegistrationData): JSX.Element 
           }
           required={typeof name === 'string' || registration[name.addressType].isPresent}
         />
-        {name === InputName.bithDay ||
+        {name === InputName.birthDay ||
         name === InputName.postalCode ||
         name === InputName.country ||
         (isAddedAddress && name.inputName === AddressInputName.postalCode) ||

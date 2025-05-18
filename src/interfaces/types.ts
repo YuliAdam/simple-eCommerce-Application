@@ -12,7 +12,7 @@ export enum InputName {
   password = 'password',
   firstName = 'firstName',
   lastName = 'lastName',
-  bithDay = 'bithDay',
+  birthDay = 'birthDay',
   street = 'street',
   city = 'city',
   postalCode = 'postalCode',

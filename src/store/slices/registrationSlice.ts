@@ -27,7 +27,7 @@ const initialState = {
       value: '',
       infoIsActive: false,
     },
-    bithDay: {
+    birthDay: {
       isValid: true,
       value: '',
       infoIsActive: false,
