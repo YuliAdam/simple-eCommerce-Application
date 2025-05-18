@@ -1,5 +1,5 @@
-import type { ReactElement } from 'react';
-
-export function Registration(): ReactElement {
+function Registration() {
   return <section>registration</section>;
 }
+
+export default Registration;

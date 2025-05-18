@@ -6,9 +6,7 @@ import { Suspense } from 'react';
 export const Layout = () => {
   return (
     <>
-      <header>
-        <Header />
-      </header>
+      <Header />
       <main style={{ display: 'flex', gap: '15px', fontSize: '3rem', backgroundColor: 'tan' }}>
         <Suspense fallback={<div>Loading...</div>}>
           <Outlet />
