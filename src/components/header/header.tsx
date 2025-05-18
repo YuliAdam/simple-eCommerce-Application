@@ -4,7 +4,7 @@ import styles from './header.module.scss';
 import { useEffect } from 'react';
 import logo from '@assets/logo.png';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, logout } from '@/store/slices/authslice';
+import { login, logout } from '@/store/slices/authSlice';
 import type { RootState } from '@/store/store';
 
 export function Header() {
