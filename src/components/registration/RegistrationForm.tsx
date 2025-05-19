@@ -24,13 +24,13 @@ import { getCodeByCountry } from '@/utils/searchInCountryArrayMetods';
 import { resetErrorState, setValue } from '@/store/slices/errorSlice';
 import { shop } from '@/config/localStorageConfig';
 import { PATTERNS } from '@/utils/validation/registrationValidation';
+import { login } from '@/store/slices/authSlice';
 
 export function RegistrationForm(): JSX.Element {
   const registration = useSelector((state: RootState) => state.registration.values);
   const error = useSelector((state: RootState) => state.error.values);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   function onClickToggleAdditionalAddress(addressType: AddressType) {
     return () => dispatch(toggleAdditionalAddress(addressType));
   }
@@ -170,6 +170,7 @@ export function RegistrationForm(): JSX.Element {
 
   function goToIndexPage(response: ClientResponse<CustomerSignInResult>) {
     localStorage.setItem(shop.client_id, response.body.customer.id);
+    dispatch(login(response.body.customer.id));
     navigate(Path.empty);
     dispatch(resetState());
     dispatch(resetErrorState());

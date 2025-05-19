@@ -9,9 +9,9 @@ export function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const token = localStorage.getItem(shop.client_token);
-    if (token) {
-      dispatch(login(token));
+    const client_id = localStorage.getItem(shop.client_id);
+    if (client_id) {
+      dispatch(login(client_id));
     }
   }, [dispatch]);
 

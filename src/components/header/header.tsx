@@ -13,6 +13,9 @@ export function Header() {
   const isAuthorized = useSelector((state: RootState) => state.auth.isAuthorized);
   const navigate = useNavigate();
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+  isOpenMenu
+    ? document.documentElement.classList.add('noscroll')
+    : document.documentElement.classList.remove('noscroll');
 
   let logInOrLogOutLink = isAuthorized ? (
     <button onClick={handleLogout} className={styles['nav-btn']}>
@@ -26,8 +29,10 @@ export function Header() {
 
   function handleLogout() {
     localStorage.removeItem(shop.client_token);
+    localStorage.removeItem(shop.client_id);
     dispatch(logout());
-    navigate(Path.empty);
+    navigate(Path.login);
+    setIsOpenMenu(false);
   }
 
   useEffect(() => {
@@ -38,9 +43,6 @@ export function Header() {
   }, []);
 
   function handleMenu() {
-    document.documentElement.classList.contains('noscroll')
-      ? document.documentElement.classList.remove('noscroll')
-      : document.documentElement.classList.add('noscroll');
     setIsOpenMenu(state => !state);
   }
 
