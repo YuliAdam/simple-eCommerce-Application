@@ -21,7 +21,7 @@ $mobile-breakpoint: 768px;
 .container {
   max-width: 450px;
   margin: 0 auto;
-  padding: 2rem;
+  // padding: 2rem;
 
   @media (max-width: $mobile-breakpoint) {
     padding: 1.5rem 0.75rem;
