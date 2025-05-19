@@ -20,7 +20,7 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
 };
 
 // Configure httpMiddlewareOptions
-const httpMiddlewareOptions: HttpMiddlewareOptions = {
+export const httpMiddlewareOptions: HttpMiddlewareOptions = {
   host: apiUrl,
   httpClient: fetch,
 };

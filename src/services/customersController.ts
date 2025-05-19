@@ -1,40 +1,34 @@
-import type { ClientResponse, CustomerSignInResult } from '@commercetools/platform-sdk';
+import type {
+  ClientResponse,
+  CustomerSignInResult,
+  MyCustomerDraft,
+} from '@commercetools/platform-sdk';
 import { apiRoot } from './client';
+import type { ILoginParams } from '@/interfaces/types';
 
-interface customerLoginRequestBody {
-  email: string;
-  password: string;
-}
-
-const customerDraft = {
-  email: 'yuli3@example.com',
-  firstName: 'Yuli',
-  lastName: 'Adam',
-  password: 'secret123',
-};
-
-export async function createCustomers(): Promise<Error | ClientResponse<CustomerSignInResult>> {
-  return apiRoot
+export async function createCustomer(
+  body: MyCustomerDraft,
+): Promise<Error | ClientResponse<CustomerSignInResult>> {
+  console.log('Create customer', body);
+  return await apiRoot
     .me()
     .signup()
     .post({
-      body: customerDraft,
+      body: body,
     })
     .execute()
     .catch((err: Error) => err);
 }
 
-const loginParams: customerLoginRequestBody = {
-  email: 'yuli3@example.com',
-  password: 'secret123',
-};
-
-export async function loginCustomer(): Promise<Error | ClientResponse<CustomerSignInResult>> {
+export async function loginCustomer(
+  body: ILoginParams,
+): Promise<Error | ClientResponse<CustomerSignInResult>> {
+  console.log('Login customer', body);
   return apiRoot
     .me()
     .login()
     .post({
-      body: loginParams,
+      body: body,
     })
     .execute()
     .catch((err: Error) => err);
