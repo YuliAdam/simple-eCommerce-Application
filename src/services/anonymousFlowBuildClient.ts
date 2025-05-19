@@ -10,7 +10,7 @@ import {
 import { projectKey, authUrl, apiUrl, clientId, clientSecret } from '@/services/apiEnv';
 
 const anonymousScopes = [
-  `view_products:${projectKey}', 'create_anonymous_token:${projectKey}', 'view_categories:${projectKey}', 'view_project_settings:${projectKey}`,
+  `view_products:${projectKey}, create_anonymous_token:${projectKey}, view_categories:${projectKey}, view_project_settings:${projectKey}`,
 ];
 
 // anonymousId
