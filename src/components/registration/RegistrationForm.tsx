@@ -132,18 +132,20 @@ export function RegistrationForm(): JSX.Element {
           new RegExp(PATTERNS.street).test(registration.billing.street.value)
         : true) &&
       (registration.shipping.isPresent
-        ? new RegExp(PATTERNS.login).test(registration.shipping.city.value) &&
-          new RegExp(PATTERNS.login).test(registration.shipping.country.value) &&
-          new RegExp(PATTERNS.login).test(registration.shipping.postalCode.value) &&
-          new RegExp(PATTERNS.login).test(registration.shipping.street.value)
+        ? new RegExp(PATTERNS.city).test(registration.shipping.city.value) &&
+          new RegExp(PATTERNS.country).test(registration.shipping.country.value) &&
+          new RegExp(PATTERNS.postalCode).test(registration.shipping.postalCode.value) &&
+          new RegExp(PATTERNS.street).test(registration.shipping.street.value)
         : true)
     );
   }
 
   function onClickSendForm() {
     return async () => {
+      console.log('click');
       if (isValidForm()) {
         const body = getData();
+        console.log(body);
         const response: Error | ClientResponse<CustomerSignInResult> = await createCustomer(body);
         !(response instanceof Error)
           ? loginRequest(body.email, body.password)
