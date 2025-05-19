@@ -9,7 +9,6 @@ import type { ILoginParams } from '@/interfaces/types';
 export async function createCustomer(
   body: MyCustomerDraft,
 ): Promise<Error | ClientResponse<CustomerSignInResult>> {
-  console.log('Create customer', body);
   return await apiRoot
     .me()
     .signup()
@@ -23,7 +22,6 @@ export async function createCustomer(
 export async function loginCustomer(
   body: ILoginParams,
 ): Promise<Error | ClientResponse<CustomerSignInResult>> {
-  console.log('Login customer', body);
   return apiRoot
     .me()
     .login()

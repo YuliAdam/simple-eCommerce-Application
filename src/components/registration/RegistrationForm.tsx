@@ -24,13 +24,13 @@ import { getCodeByCountry } from '@/utils/searchInCountryArrayMetods';
 import { resetErrorState, setValue } from '@/store/slices/errorSlice';
 import { shop } from '@/config/localStorageConfig';
 import { PATTERNS } from '@/utils/validation/registrationValidation';
+import { login } from '@/store/slices/authSlice';
 
 export function RegistrationForm(): JSX.Element {
   const registration = useSelector((state: RootState) => state.registration.values);
   const error = useSelector((state: RootState) => state.error.values);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   function onClickToggleAdditionalAddress(addressType: AddressType) {
     return () => dispatch(toggleAdditionalAddress(addressType));
   }
@@ -132,18 +132,20 @@ export function RegistrationForm(): JSX.Element {
           new RegExp(PATTERNS.street).test(registration.billing.street.value)
         : true) &&
       (registration.shipping.isPresent
-        ? new RegExp(PATTERNS.login).test(registration.shipping.city.value) &&
-          new RegExp(PATTERNS.login).test(registration.shipping.country.value) &&
-          new RegExp(PATTERNS.login).test(registration.shipping.postalCode.value) &&
-          new RegExp(PATTERNS.login).test(registration.shipping.street.value)
+        ? new RegExp(PATTERNS.city).test(registration.shipping.city.value) &&
+          new RegExp(PATTERNS.country).test(registration.shipping.country.value) &&
+          new RegExp(PATTERNS.postalCode).test(registration.shipping.postalCode.value) &&
+          new RegExp(PATTERNS.street).test(registration.shipping.street.value)
         : true)
     );
   }
 
   function onClickSendForm() {
     return async () => {
+      console.log('click');
       if (isValidForm()) {
         const body = getData();
+        console.log(body);
         const response: Error | ClientResponse<CustomerSignInResult> = await createCustomer(body);
         !(response instanceof Error)
           ? loginRequest(body.email, body.password)
@@ -168,6 +170,7 @@ export function RegistrationForm(): JSX.Element {
 
   function goToIndexPage(response: ClientResponse<CustomerSignInResult>) {
     localStorage.setItem(shop.client_id, response.body.customer.id);
+    dispatch(login(response.body.customer.id));
     navigate(Path.empty);
     dispatch(resetState());
     dispatch(resetErrorState());

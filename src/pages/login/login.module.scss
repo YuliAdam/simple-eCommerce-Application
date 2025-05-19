@@ -10,8 +10,8 @@ $error-color: #ef4444;
 $divider-color: #e5e7eb;
 $text-muted: #6b7280;
 
-$text-4xl: 2.5rem;
-$text-2xl: 1.5rem;
+$text-4xl: 3.6rem;
+$text-2xl: 1.6rem;
 $text-lg: 1.125rem;
 $text-base: 1rem;
 $text-sm: 0.875rem;
@@ -21,7 +21,7 @@ $mobile-breakpoint: 768px;
 .container {
   max-width: 450px;
   margin: 0 auto;
-  padding: 2rem;
+  // padding: 2rem;
 
   @media (max-width: $mobile-breakpoint) {
     padding: 1.5rem 0.75rem;
@@ -33,6 +33,7 @@ $mobile-breakpoint: 768px;
   font-weight: 600;
   color: $primary-color;
   margin-bottom: 2rem;
+  text-align: center;
 
   @media (max-width: $mobile-breakpoint) {
     font-size: $text-2xl;
@@ -43,7 +44,7 @@ $mobile-breakpoint: 768px;
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2.4rem;
   margin-bottom: 1.5rem;
 
   @media (max-width: $mobile-breakpoint) {
@@ -58,8 +59,8 @@ $mobile-breakpoint: 768px;
 }
 
 .label {
-  // font-size: $text-lg;
-  font-weight: 500;
+  font-size: $text-2xl;
+  font-weight: bold;
   color: $primary-color;
 
   @media (max-width: $mobile-breakpoint) {
@@ -68,10 +69,10 @@ $mobile-breakpoint: 768px;
 }
 
 .input {
-  padding: 0.75rem 1rem;
-  font-size: $text-base;
+  padding: 1.5rem 1rem;
+  font-size: 1.4rem;
   border: 1px solid $border-color;
-  border-radius: 0.5rem;
+  border-radius: 1.2rem;
   outline: none;
   transition: border-color 0.2s;
 
@@ -84,27 +85,27 @@ $mobile-breakpoint: 768px;
     border-color: $vibrant-color;
   }
 }
+
 .inputError {
   border-color: $error-color;
-  font-size: $text-base;
 }
 
 .button {
   margin-top: 0.5rem;
-  padding: 0.875rem;
+  padding: 1.7rem;
   background-color: $primary-color;
   color: $default-bg;
-  font-size: $text-base;
+  font-size: $text-2xl;
   font-weight: 500;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 9999px;
   cursor: pointer;
+  transition: transform 0.2s ease;
 
   @media (max-width: $mobile-breakpoint) {
     padding: 0.75rem;
     font-size: $text-sm;
   }
-  transition: transform 0.2s ease;
 
   &:hover {
     transform: scale(1.02);
@@ -139,7 +140,7 @@ $mobile-breakpoint: 768px;
 .dividerText {
   padding: 0 1rem;
   color: $text-muted;
-  font-size: $text-sm;
+  font-size: $text-lg;
 
   @media (max-width: $mobile-breakpoint) {
     padding: 0 0.5rem;
@@ -155,13 +156,14 @@ $mobile-breakpoint: 768px;
 
 .newUser {
   color: $text-muted;
-  font-size: $text-sm;
+  font-size: $text-lg;
 }
 
 .link {
   color: $vibrant-color;
   text-decoration: none;
   font-weight: 500;
+  font-size: $text-lg;
 
   &:hover {
     text-decoration: underline;

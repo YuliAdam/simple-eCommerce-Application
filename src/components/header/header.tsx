@@ -2,17 +2,20 @@ import { Path } from '@/config/routesConfig';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './header.module.scss';
 import { useEffect, useState } from 'react';
-import logo from '@assets/logo.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from '@/store/slices/authSlice';
 import type { RootState } from '@/store/store';
 import { shop } from '@config/localStorageConfig';
+import { Logo } from '@/assets/img/logo';
 
 export function Header() {
   const dispatch = useDispatch();
   const isAuthorized = useSelector((state: RootState) => state.auth.isAuthorized);
   const navigate = useNavigate();
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+  isOpenMenu
+    ? document.documentElement.classList.add('noscroll')
+    : document.documentElement.classList.remove('noscroll');
 
   let logInOrLogOutLink = isAuthorized ? (
     <button onClick={handleLogout} className={styles['nav-btn']}>
@@ -26,8 +29,10 @@ export function Header() {
 
   function handleLogout() {
     localStorage.removeItem(shop.client_token);
+    localStorage.removeItem(shop.client_id);
     dispatch(logout());
-    navigate(Path.empty);
+    navigate(Path.login);
+    setIsOpenMenu(false);
   }
 
   useEffect(() => {
@@ -65,6 +70,9 @@ export function Header() {
 
   return (
     <>
+      <Link to={Path.empty} className={styles.logo_link}>
+        <Logo />
+      </Link>
       <header className={styles.header}>
         <div className="container">
           <nav
@@ -74,7 +82,7 @@ export function Header() {
             <ul className={styles['nav-list']}>
               <li className={styles['nav-item']}>
                 <Link to={Path.empty} className={styles['nav-link']}>
-                  <img className={styles['logo']} src={logo} alt="Logo" />
+                  <Logo />
                 </Link>
               </li>
               <li className={styles['nav-item']}>

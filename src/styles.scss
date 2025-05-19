@@ -19,8 +19,23 @@ body {
   margin: 0;
   min-width: 320px;
   font-family: Poppins;
+  min-height: 100vh;
 }
 
+.body_wrap {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  position: relative;
+}
+main {
+  flex-grow: 1;
+  @media (max-width: 942px) {
+    margin-top: 50px;
+  }
+}
 a {
   text-decoration: none;
 }
@@ -44,14 +59,10 @@ img {
 
 .visually-hidden {
   position: absolute;
-
   overflow: hidden;
-
   width: 1px;
   height: 1px;
-
   white-space: nowrap;
-
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
 }
