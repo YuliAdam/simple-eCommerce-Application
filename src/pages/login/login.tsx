@@ -5,6 +5,8 @@ import type { JSX } from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './login.module.scss';
+import { useDispatch } from 'react-redux';
+import { login } from '@/store/slices/authSlice';
 
 /** TODO: LIST
 
@@ -25,6 +27,7 @@ interface FormErrors {
   password?: string;
 }
 export function LoginForm(): JSX.Element {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [stateFormData, setStateFormData] = useState<LoginFormData>({
     email: '',
@@ -79,6 +82,8 @@ export function LoginForm(): JSX.Element {
 
       // TODO: add credentials data from response to redux global state
       localStorage.setItem(shop.client_id, response.body.customer.id);
+
+      dispatch(login(response.body.customer.id));
     } catch (error) {
       if (error instanceof Error) {
         setIsLoginResponse(<div className={styles.error}>Login failed: {error.message}</div>);
