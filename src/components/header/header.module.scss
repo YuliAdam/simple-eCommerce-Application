@@ -96,7 +96,8 @@ $red-border-color: red;
   cursor: pointer;
   z-index: 2;
   @media (max-width: 942px) {
-    display: block;
+    display: none;
+    //display: block;
     position: absolute;
     top: 27px;
     left: 28px;
