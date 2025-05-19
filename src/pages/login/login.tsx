@@ -1,3 +1,4 @@
-export function Login() {
+function Login() {
   return <section>login</section>;
 }
+export default Login;

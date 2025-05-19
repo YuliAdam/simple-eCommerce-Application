@@ -20,3 +20,5 @@ export function Registration(): ReactElement {
     </section>
   );
 }
+
+export default Registration;
