@@ -88,7 +88,6 @@ $mobile-breakpoint: 768px;
 
 .inputError {
   border-color: $error-color;
-  font-size: $text-base;
 }
 
 .button {
@@ -142,7 +141,7 @@ $mobile-breakpoint: 768px;
 .dividerText {
   padding: 0 1rem;
   color: $text-muted;
-  font-size: $text-sm;
+  font-size: $text-lg;
 
   @media (max-width: $mobile-breakpoint) {
     padding: 0 0.5rem;
