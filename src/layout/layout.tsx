@@ -7,7 +7,7 @@ export const Layout = () => {
   return (
     <>
       <Header />
-      <main style={{ display: 'flex', gap: '15px', fontSize: '3rem', backgroundColor: 'tan' }}>
+      <main style={{ display: 'flex', gap: '15px', fontSize: '3rem' }}>
         <Suspense fallback={<div>Loading...</div>}>
           <Outlet />
         </Suspense>
