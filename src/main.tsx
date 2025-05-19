@@ -6,6 +6,7 @@ import { store } from '@store/store';
 import './styles.scss';
 
 const rootElement = document.createElement('div');
+rootElement.classList.add('body_wrap');
 document.body.prepend(rootElement);
 const root = createRoot(rootElement);
 

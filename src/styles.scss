@@ -19,6 +19,12 @@ body {
   margin: 0;
   min-width: 320px;
   font-family: Poppins;
+  min-height: 100vh;
+}
+
+.body_wrap {
+  min-height: 100vh;
+  position: relative;
 }
 
 a {
