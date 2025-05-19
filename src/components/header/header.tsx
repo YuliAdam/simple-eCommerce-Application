@@ -2,11 +2,11 @@ import { Path } from '@/config/routesConfig';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './header.module.scss';
 import { useEffect, useState } from 'react';
-import logo from '@assets/logo.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from '@/store/slices/authSlice';
 import type { RootState } from '@/store/store';
 import { shop } from '@config/localStorageConfig';
+import { Logo } from '@/assets/img/logo';
 
 export function Header() {
   const dispatch = useDispatch();
@@ -79,7 +79,7 @@ export function Header() {
             <ul className={styles['nav-list']}>
               <li className={styles['nav-item']}>
                 <Link to={Path.empty} className={styles['nav-link']}>
-                  <img className={styles['logo']} src={logo} alt="Logo" />
+                  <Logo />
                 </Link>
               </li>
               <li className={styles['nav-item']}>

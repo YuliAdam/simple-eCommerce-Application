@@ -55,6 +55,7 @@ $red-border-color: red;
 
 .nav-item {
   display: flex;
+  cursor: pointer;
 }
 
 .nav-link {
@@ -78,15 +79,20 @@ $red-border-color: red;
 
 .logo {
   display: block;
-  width: 100px;
-  height: 70px;
+  width: auto;
+  height: 50px;
+  cursor: pointer;
   @media (max-width: 942px) {
     display: none;
+  }
+  &:hover {
+    fill: $vibrant-color;
   }
 }
 
 .nav-menu-btn {
   display: none;
+  cursor: pointer;
   @media (max-width: 942px) {
     position: absolute;
     top: 50%;
