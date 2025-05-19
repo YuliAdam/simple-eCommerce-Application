@@ -9,7 +9,7 @@ export const Layout = () => {
       <header>
         <Header />
       </header>
-      <main style={{ display: 'flex', gap: '15px', fontSize: '3rem', backgroundColor: 'tan' }}>
+      <main>
         <Suspense fallback={<div>Loading...</div>}>
           <Outlet />
         </Suspense>

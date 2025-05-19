@@ -27,11 +27,11 @@ export const router = createBrowserRouter([
         path: Path.login,
         async lazy() {
           try {
-            const { Login } = await import('@pages/login/login');
+            const { LoginForm } = await import('@pages/login/login');
             return {
               element: (
                 <AuthRedirect>
-                  <Login />
+                  <LoginForm />
                 </AuthRedirect>
               ),
             };

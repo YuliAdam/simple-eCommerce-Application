@@ -4,41 +4,63 @@ import { withPasswordFlow } from '@/services/flow/passwordFlow';
 import type { JSX } from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import styles from './login.module.scss';
 
 /** TODO: LIST
 
 SINGLE
- 1. clientside validate {email,password}
- 2. display errors in clientside UI
  3. globalState(redux) - clientData(token,id, etc)
- 4. private routing for isAuth
- 5. add styling for LoginForm, (may be <Form/> to @component/)
  6. provide specific password_scope for passwordFlow
  7. withRefreshToken for client with anonymousCart
 
-TEAM
- 1. спросить про название магазина и поля в localStorage? предлагаю simple:
-
 */
 
-export function Login(): JSX.Element {
+interface LoginFormData {
+  email: string;
+  password: string;
+}
+
+interface FormErrors {
+  email?: string;
+  password?: string;
+}
+export function LoginForm(): JSX.Element {
   const navigate = useNavigate();
-  // const isAuth = localStorage.getItem(shop.client_token) && localStorage.getItem(shop.client_id); // TODO: how to check that token is valid?
+  const [stateFormData, setStateFormData] = useState<LoginFormData>({
+    email: '',
+    password: '',
+  });
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [isLoginResponse, setIsLoginResponse] = useState<React.ReactNode | null>(null);
+  function validateForm(): boolean {
+    const newErrors: FormErrors = {};
+    let isValid = true;
 
-  // useEffect(() => {
-  //   // FIX: change for protected react-router
-  //   if (isAuth) navigate(Path.user);
-  // });
+    if (!stateFormData.email) {
+      newErrors.email = 'Email is required';
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(stateFormData.email)) {
+      newErrors.email = 'Email must include @ and domain';
+      isValid = false;
+    }
 
-  const [isLoginResponse, setIsLoginResponse] = useState('');
-  async function handleForm(formData: FormData) {
-    const email = formData.get('email');
-    const password = formData.get('password');
+    if (!stateFormData.password) {
+      newErrors.password = 'Password is required';
+      isValid = false;
+    } else if (stateFormData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  }
+  async function handleForm(data: FormData) {
+    const email = data.get('email');
+    const password = data.get('password');
 
     if (typeof email !== 'string' || typeof password !== 'string') {
-      console.log('email or password TypeError');
-
-      // TODO: add client UI notify about error
+      setIsLoginResponse(<div className={styles.error}>Missing fields</div>);
       return;
     }
 
@@ -56,64 +78,76 @@ export function Login(): JSX.Element {
       navigate(Path.user);
 
       // TODO: add credentials data from response to redux global state
-      console.log('ok login', response);
-      // localStorage.setItem();
-
       localStorage.setItem(shop.client_id, response.body.customer.id);
     } catch (error) {
-      console.log('error login', error);
-      if (error instanceof Error) setIsLoginResponse(error.message);
-
-      // TODO: add client UI notify about error
+      if (error instanceof Error) {
+        setIsLoginResponse(<div className={styles.error}>Login failed: {error.message}</div>);
+        return;
+      }
     }
   }
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-    return e.target;
+    const { name, value } = e.target;
+    setStateFormData({
+      ...stateFormData,
+      [name]: value,
+    });
+    validateForm();
   }
 
   return (
-    <div>
-      <h2>Login</h2>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Login</h1>
+
       {isLoginResponse}
-      <form action={handleForm}>
-        <div>
-          <label>Email</label>
+
+      <form action={handleForm} className={styles.form}>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Email</label>
           <input
+            className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
             required
             autoComplete="email"
-            onInput={onChange}
-            // value="yuli3@example.com"
+            value={stateFormData.email}
+            onChange={onChange}
             type="email"
             name="email"
             placeholder="example@example.com"
           />
+          {errors.email && <span className={styles.errorMessage}>{errors.email}</span>}
         </div>
-        <div>
-          <label>Password</label>
+
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Password</label>
           <input
+            className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
             required
-            autoComplete="password"
+            autoComplete="current-password"
             name="password"
-            // value="secret123"
-            onInput={onChange}
+            value={stateFormData.password}
+            onChange={onChange}
             type="password"
           />
+          {errors.password && <span className={styles.errorMessage}>{errors.password}</span>}
         </div>
-        <button type="submit">Continue</button>
-      </form>
-      <span>OR</span>
-      <div>
-        <p>New user?</p>
-        <Link to={Path.registration}>Create an account</Link>
-        <button
-          type="button"
-          onClick={() => {
-            navigate(Path.registration);
-          }}
-        >
-          Create an account
+
+        <button type="submit" className={styles.button}>
+          Continue
         </button>
+      </form>
+
+      <div className={styles.divider}>
+        <span className={styles.dividerText}>OR</span>
+      </div>
+
+      <div className={styles.createAccount}>
+        <span className={styles.newUser}>
+          New user?{' '}
+          <Link to={Path.registration} className={styles.link}>
+            Create an account
+          </Link>
+        </span>
       </div>
     </div>
   );
