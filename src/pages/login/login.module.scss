@@ -100,13 +100,12 @@ $mobile-breakpoint: 768px;
   border: none;
   border-radius: 9999px;
   cursor: pointer;
+  transition: transform 0.2s ease;
 
   @media (max-width: $mobile-breakpoint) {
     padding: 0.75rem;
     font-size: $text-sm;
   }
-
-  transition: transform 0.2s ease;
 
   &:hover {
     transform: scale(1.02);
