@@ -38,6 +38,9 @@ export function Header() {
   }, []);
 
   function handleMenu() {
+    document.documentElement.classList.contains('noscroll')
+      ? document.documentElement.classList.remove('noscroll')
+      : document.documentElement.classList.add('noscroll');
     setIsOpenMenu(state => !state);
   }
 
