@@ -5,6 +5,7 @@ import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { AuthRedirect } from './redirect';
 
+const LoginForm = lazy(() => import('@pages/login/login'));
 export const router = createBrowserRouter([
   {
     element: <Layout />,
@@ -16,7 +17,11 @@ export const router = createBrowserRouter([
       },
       {
         path: Path.login,
-        Component: lazy(() => import('@pages/login/login')),
+        element: (
+          <AuthRedirect>
+            <LoginForm />
+          </AuthRedirect>
+        ),
       },
       {
         path: Path.about,
