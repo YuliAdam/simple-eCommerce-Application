@@ -152,3 +152,4 @@ export function LoginForm(): JSX.Element {
     </div>
   );
 }
+export default LoginForm;
