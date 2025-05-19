@@ -23,8 +23,8 @@ export const VALIDATION_MESSAGES = {
   bithDay: 'Should be 13 years old or older.',
   street: 'Must contain at least one character. Max 32 characters.',
   city: 'Must contain at least one character and no special characters or numbers. Max 32 characters.',
-  postalCode: 'Choise a postal code from list.',
-  country: 'Choise country from list.',
+  postalCode: 'Choose a postal code from list.',
+  country: 'Choose country from list.',
 };
 
 function getValidEarlierDateInRegexFormat(year: number): string {

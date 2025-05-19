@@ -12,7 +12,7 @@ export function Registration(): ReactElement {
       <div className={styles.registration_go_to_login}>
         <p></p>
         <h5>OR</h5>
-        <span>Alredy e member? </span>
+        <span>Already e member? </span>
         <Link className={styles.registration_go_to_login_link} to={Path.login}>
           Login
         </Link>

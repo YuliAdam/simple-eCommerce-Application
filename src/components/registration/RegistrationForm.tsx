@@ -226,7 +226,7 @@ export function RegistrationForm(): JSX.Element {
       </div>
 
       <button type="submit" onClick={onClickSendForm()}>
-        Registrate
+        Register
       </button>
     </form>
   );
