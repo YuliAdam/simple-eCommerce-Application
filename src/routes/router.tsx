@@ -6,6 +6,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { AuthRedirect } from './redirect';
 
 const LoginForm = lazy(() => import('@pages/login/login'));
+const RegisterForm = lazy(() => import('@pages/registration/registration'));
 export const router = createBrowserRouter([
   {
     element: <Layout />,
@@ -43,7 +44,11 @@ export const router = createBrowserRouter([
 
       {
         path: Path.registration,
-        Component: lazy(() => import('@pages/registration/registration')),
+        element: (
+          <AuthRedirect>
+            <RegisterForm />
+          </AuthRedirect>
+        ),
       },
       {
         path: Path.user,
