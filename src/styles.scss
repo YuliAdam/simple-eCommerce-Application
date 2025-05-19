@@ -28,9 +28,13 @@ body {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+  position: relative;
 }
 main {
   flex-grow: 1;
+  @media (max-width: 942px) {
+    margin-top: 50px;
+  }
 }
 a {
   text-decoration: none;

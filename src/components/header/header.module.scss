@@ -37,6 +37,18 @@ $red-border-color: red;
   &-active {
     transform: translateX(-100%);
   }
+  svg {
+    display: block;
+    width: auto;
+    height: 50px;
+    cursor: pointer;
+    @media (max-width: 942px) {
+      display: none;
+    }
+    &:hover {
+      fill: $vibrant-color;
+    }
+  }
 }
 
 .nav-list {
@@ -78,12 +90,16 @@ $red-border-color: red;
 }
 
 .logo {
-  display: block;
+  display: none;
   width: auto;
   height: 50px;
   cursor: pointer;
+  z-index: 2;
   @media (max-width: 942px) {
-    display: none;
+    display: block;
+    position: absolute;
+    top: 27px;
+    left: 120px;
   }
   &:hover {
     fill: $vibrant-color;

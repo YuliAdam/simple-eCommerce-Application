@@ -70,6 +70,9 @@ export function Header() {
 
   return (
     <>
+      <Link to={Path.empty} className={styles.logo_link}>
+        <Logo />
+      </Link>
       <header className={styles.header}>
         <div className="container">
           <nav
