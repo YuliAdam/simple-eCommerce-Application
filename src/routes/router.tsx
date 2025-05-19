@@ -3,6 +3,7 @@ import { Layout } from '@/layout/layout';
 import { NotFound } from '@/pages/notFound/notFound';
 import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
+import { AuthRedirect } from './redirect';
 
 export const router = createBrowserRouter([
   {
