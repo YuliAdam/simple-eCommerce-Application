@@ -83,7 +83,7 @@
       transition: height 0.2s ease-in;
 
       &.active {
-        height: max-content;
+        height: auto;
         opacity: 1;
       }
     }

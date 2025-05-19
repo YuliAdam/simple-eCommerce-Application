@@ -24,7 +24,7 @@ $red-border-color: red;
         position: fixed;
         top: 0;
         left: 100%;
-        height: 100vh;
+        min-height: 100vh;
         align-content: flex-start;
         background-color: $default-color;
         transition: transform 1s ease;
