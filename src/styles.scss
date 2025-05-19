@@ -24,9 +24,14 @@ body {
 
 .body_wrap {
   min-height: 100vh;
-
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 }
-
+main {
+  flex-grow: 1;
+}
 a {
   text-decoration: none;
 }
