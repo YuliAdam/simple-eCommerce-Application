@@ -2,7 +2,10 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import type { AddressType } from '@/interfaces/types';
 import { AddressInputName, InputName } from '@/interfaces/types';
-import { getCountryByPostalCode, getPostalCodeByCountry } from '@/utils/searchInCountryArrayMetods';
+import {
+  getCountryByPostalCode,
+  getPostalCodeByCountry,
+} from '@/utils/searchInCountryArrayMethods';
 
 const initialState = {
   values: {

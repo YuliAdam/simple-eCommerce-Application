@@ -19,7 +19,7 @@ export default function RegistrationAdditionalAddress({ type }: { type: AddressT
       dispatch(setAddressAsAdditional(type));
     };
   }
-  function onChangeToggleAdditionalAddressAsDelault(type: AddressType) {
+  function onChangeToggleAdditionalAddressAsDefault(type: AddressType) {
     return () => {
       dispatch(toggleAdditionalAddressAsDefault(type));
     };
@@ -58,7 +58,7 @@ export default function RegistrationAdditionalAddress({ type }: { type: AddressT
         <input
           type={InputTypes.checkbox}
           checked={registration[type].isDefault}
-          onChange={onChangeToggleAdditionalAddressAsDelault(type)}
+          onChange={onChangeToggleAdditionalAddressAsDefault(type)}
         />
         Set as default
       </p>

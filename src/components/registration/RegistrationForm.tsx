@@ -20,7 +20,7 @@ import type {
 import { createCustomer, loginCustomer } from '@/services/customersController';
 import { useNavigate } from 'react-router-dom';
 import { Path } from '@/config/routesConfig';
-import { getCodeByCountry } from '@/utils/searchInCountryArrayMetods';
+import { getCodeByCountry } from '@/utils/searchInCountryArrayMethods';
 import { resetErrorState, setValue } from '@/store/slices/errorSlice';
 import { shop } from '@/config/localStorageConfig';
 import { PATTERNS } from '@/utils/validation/registrationValidation';
