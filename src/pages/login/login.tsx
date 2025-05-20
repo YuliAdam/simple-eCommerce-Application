@@ -44,7 +44,7 @@ export function LoginForm(): JSX.Element {
     let isValid = true;
 
     if (!stateFormData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = VALIDATION_MESSAGES.login;
       isValid = false;
     } else if (!loginRegex.test(stateFormData.email)) {
       newErrors.email = VALIDATION_MESSAGES.login;
@@ -52,7 +52,7 @@ export function LoginForm(): JSX.Element {
     }
 
     if (!stateFormData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = VALIDATION_MESSAGES.password;
       isValid = false;
     } else if (!passwordRegex.test(stateFormData.password)) {
       newErrors.password = VALIDATION_MESSAGES.password;
@@ -98,12 +98,12 @@ export function LoginForm(): JSX.Element {
   }
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
+    validateForm();
     const { name, value } = e.target;
-    setStateFormData({
+    return setStateFormData({
       ...stateFormData,
       [name]: value,
     });
-    return validateForm();
   }
 
   return (
