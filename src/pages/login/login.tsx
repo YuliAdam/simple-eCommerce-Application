@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from './login.module.scss';
 import { useDispatch } from 'react-redux';
 import { login } from '@/store/slices/authSlice';
+import { PATTERNS, VALIDATION_MESSAGES } from '@/utils/validation/registrationValidation';
 
 /** TODO: LIST
 
@@ -27,6 +28,8 @@ interface FormErrors {
   password?: string;
 }
 export function LoginForm(): JSX.Element {
+  const passwordRegex: RegExp = new RegExp(PATTERNS.password);
+  const loginRegex: RegExp = new RegExp(PATTERNS.login);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [stateFormData, setStateFormData] = useState<LoginFormData>({
@@ -35,6 +38,7 @@ export function LoginForm(): JSX.Element {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoginResponse, setIsLoginResponse] = useState<React.ReactNode | null>(null);
+  const [disabledButton, setDisabledButton] = useState(true);
   function validateForm(): boolean {
     const newErrors: FormErrors = {};
     let isValid = true;
@@ -42,20 +46,21 @@ export function LoginForm(): JSX.Element {
     if (!stateFormData.email) {
       newErrors.email = 'Email is required';
       isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(stateFormData.email)) {
-      newErrors.email = 'Email must include @ and domain';
+    } else if (!loginRegex.test(stateFormData.email)) {
+      newErrors.email = VALIDATION_MESSAGES.login;
       isValid = false;
     }
 
     if (!stateFormData.password) {
       newErrors.password = 'Password is required';
       isValid = false;
-    } else if (stateFormData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+    } else if (!passwordRegex.test(stateFormData.password)) {
+      newErrors.password = VALIDATION_MESSAGES.password;
       isValid = false;
     }
 
     setErrors(newErrors);
+    setDisabledButton(!isValid);
     return isValid;
   }
   async function handleForm(data: FormData) {
@@ -98,7 +103,7 @@ export function LoginForm(): JSX.Element {
       ...stateFormData,
       [name]: value,
     });
-    validateForm();
+    return validateForm();
   }
 
   return (
@@ -113,7 +118,6 @@ export function LoginForm(): JSX.Element {
           <input
             className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
             required
-            autoComplete="email"
             value={stateFormData.email}
             onChange={onChange}
             type="email"
@@ -128,7 +132,6 @@ export function LoginForm(): JSX.Element {
           <input
             className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
             required
-            autoComplete="current-password"
             name="password"
             value={stateFormData.password}
             onChange={onChange}
@@ -137,7 +140,11 @@ export function LoginForm(): JSX.Element {
           {errors.password && <span className={styles.errorMessage}>{errors.password}</span>}
         </div>
 
-        <button type="submit" className={styles.button}>
+        <button
+          type="submit"
+          className={`${styles.button} ${disabledButton ? styles.disabled : ''}`}
+          disabled={disabledButton}
+        >
           Continue
         </button>
       </form>
