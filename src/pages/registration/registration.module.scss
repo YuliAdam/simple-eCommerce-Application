@@ -138,6 +138,10 @@
         cursor: pointer;
         margin: 0;
         padding: 10px;
+        transition: all 0.2s ease-in;
+        &:hover {
+          text-decoration: underline;
+        }
       }
 
       .hide {
@@ -198,6 +202,10 @@
       line-height: 24px;
       color: var(--vibrant-color);
       text-decoration: none;
+      transition: all 0.2s ease-in;
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }
