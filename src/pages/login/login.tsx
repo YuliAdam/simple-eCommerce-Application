@@ -32,7 +32,7 @@ export function LoginForm(): JSX.Element {
   const loginRegex: RegExp = new RegExp(PATTERNS.login);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [stateFormData, setStateFormData] = useState<LoginFormData>({
+  let [stateFormData, setStateFormData] = useState<LoginFormData>({
     email: '',
     password: '',
   });
@@ -42,11 +42,13 @@ export function LoginForm(): JSX.Element {
   function validateForm(): boolean {
     const newErrors: FormErrors = {};
     let isValid = true;
-
+    console.log('validation');
     if (!stateFormData.email) {
       newErrors.email = VALIDATION_MESSAGES.login;
       isValid = false;
+      console.log('email empty', stateFormData.email);
     } else if (!loginRegex.test(stateFormData.email)) {
+      console.log('email not valid', stateFormData.email);
       newErrors.email = VALIDATION_MESSAGES.login;
       isValid = false;
     }
@@ -54,11 +56,12 @@ export function LoginForm(): JSX.Element {
     if (!stateFormData.password) {
       newErrors.password = VALIDATION_MESSAGES.password;
       isValid = false;
+      console.log('email empty', stateFormData.password);
     } else if (!passwordRegex.test(stateFormData.password)) {
+      console.log('email not valid', stateFormData.password);
       newErrors.password = VALIDATION_MESSAGES.password;
       isValid = false;
     }
-
     setErrors(newErrors);
     setDisabledButton(!isValid);
     return isValid;
@@ -98,12 +101,13 @@ export function LoginForm(): JSX.Element {
   }
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-    validateForm();
     const { name, value } = e.target;
-    return setStateFormData({
-      ...stateFormData,
-      [name]: value,
-    });
+    console.log(name);
+    name === 'email'
+      ? setStateFormData((stateFormData = { email: value, password: stateFormData.password }))
+      : setStateFormData((stateFormData = { email: stateFormData.email, password: value }));
+    console.log(stateFormData.email, stateFormData.password);
+    validateForm();
   }
 
   return (
