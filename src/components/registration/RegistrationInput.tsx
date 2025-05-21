@@ -48,8 +48,17 @@ export function RegistrationInput({ name, type }: RegistrationInput): JSX.Elemen
   ) {
     return (event: ChangeEvent<HTMLInputElement>) => {
       if (event.target && event.target instanceof HTMLInputElement) {
-        dispatch(setValue({ name: name, value: event.target.value }));
-        dispatch(setValid(name));
+        const value = event.target.value;
+        dispatch(setValue({ name: name, value: value }));
+        if (typeof name === 'string') {
+          new RegExp(PATTERNS[name]).test(value)
+            ? dispatch(setValid(name))
+            : dispatch(setInvalid(name));
+        } else {
+          new RegExp(PATTERNS[name.inputName]).test(value)
+            ? dispatch(setValid(name))
+            : dispatch(setInvalid(name));
+        }
       }
       if (name === InputName.login) {
         dispatch(setLoginUnique());

@@ -73,7 +73,7 @@ $red-border-color: red;
 .nav-link {
   display: block;
   color: $body-text-color;
-  transition: color 1s ease;
+  transition: color 0.2s ease;
   &:hover {
     color: $vibrant-color;
   }
@@ -87,6 +87,12 @@ $red-border-color: red;
   font-size: inherit;
   background: none;
   border: none;
+  color: $body-text-color;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  &:hover {
+    color: $vibrant-color;
+  }
 }
 
 .logo {
@@ -124,6 +130,13 @@ $red-border-color: red;
     border: none;
     transform: translateY(-50%);
     z-index: 1;
+    &:hover {
+      .nav-top-span,
+      .nav-mid-span,
+      .nav-bottom-span {
+        background-color: $vibrant-color;
+      }
+    }
   }
 }
 

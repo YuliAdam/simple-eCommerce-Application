@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './login.module.scss';
-import { Eye } from './passwordFormEye';
+import { Eye } from '@/assets/img/eye';
 
 /** TODO: LIST
 
@@ -146,7 +146,7 @@ export function LoginForm(): JSX.Element {
               type={typePasswordForm}
             />
             <span className={styles.spanEye} onClick={handleTogglePassword}>
-              <Eye />
+              <Eye className={styles['eye']} />
             </span>
           </div>
           {errors.password && <span className={styles.errorMessage}>{errors.password}</span>}
