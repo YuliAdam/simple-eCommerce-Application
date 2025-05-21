@@ -208,6 +208,7 @@ $mobile-breakpoint: 768px;
   width: 1.4rem;
   height: 1.4rem;
   color: $text-muted;
+  stroke: $text-muted;
 
   @media (max-width: $mobile-breakpoint) {
     width: 1.2rem;
