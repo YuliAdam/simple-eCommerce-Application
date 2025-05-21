@@ -40,7 +40,7 @@ export function Header() {
     if (authToken) {
       dispatch(login(authToken));
     }
-  }, []);
+  }, [dispatch]);
 
   function handleMenu() {
     setIsOpenMenu(state => !state);
