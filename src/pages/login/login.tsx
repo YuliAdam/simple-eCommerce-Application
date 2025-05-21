@@ -37,7 +37,7 @@ export function LoginForm(): JSX.Element {
     password: '',
   });
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isLoginResponse, setIsLoginResponse] = useState<React.ReactNode | null>(null);
+  const [loginResponse, setLoginResponse] = useState<React.ReactNode | null>(null);
   const [disabledButton, setDisabledButton] = useState(true);
   function validateForm(): boolean {
     const newErrors: FormErrors = {};
@@ -68,7 +68,7 @@ export function LoginForm(): JSX.Element {
     const password = data.get('password');
 
     if (typeof email !== 'string' || typeof password !== 'string') {
-      setIsLoginResponse(<div className={styles.error}>Missing fields</div>);
+      setLoginResponse(<div className={styles.error}>Missing fields</div>);
       return;
     }
 
@@ -91,7 +91,7 @@ export function LoginForm(): JSX.Element {
       dispatch(login(response.body.customer.id));
     } catch (error) {
       if (error instanceof Error) {
-        setIsLoginResponse(<div className={styles.error}>Login failed: {error.message}</div>);
+        setLoginResponse(<div className={styles.error}>Login failed: {error.message}</div>);
         return;
       }
     }
@@ -110,7 +110,7 @@ export function LoginForm(): JSX.Element {
     <div className={styles.container}>
       <h1 className={styles.title}>Login</h1>
 
-      {isLoginResponse}
+      {loginResponse}
 
       <form action={handleForm} className={styles.form}>
         <div className={styles.formGroup}>
