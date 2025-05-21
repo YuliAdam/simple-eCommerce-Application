@@ -3,7 +3,7 @@ import { AddressInputName, InputTypes } from '@/interfaces/types';
 import type { RootState } from '@/store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from '@pages/registration/registration.module.scss';
-import { RegistrationData } from './RegistrationData';
+import { RegistrationInput } from './RegistrationInput';
 import { Datalist } from './Datalist';
 import {
   setAddressAsAdditional,
@@ -37,20 +37,20 @@ export default function RegistrationAdditionalAddress({ type }: { type: AddressT
         />
         <label>Use main address as {type} address</label>
       </p>
-      <RegistrationData
+      <RegistrationInput
         name={{ addressType: type, inputName: AddressInputName.street }}
         type={InputTypes.text}
       />
-      <RegistrationData
+      <RegistrationInput
         name={{ addressType: type, inputName: AddressInputName.city }}
         type={InputTypes.text}
       />
-      <RegistrationData
+      <RegistrationInput
         name={{ addressType: type, inputName: AddressInputName.postalCode }}
         type={InputTypes.text}
       />
       <Datalist id={`${type}_postalCode`} dataName="postalCode" />
-      <RegistrationData
+      <RegistrationInput
         name={{ addressType: type, inputName: AddressInputName.country }}
         type={InputTypes.text}
       />

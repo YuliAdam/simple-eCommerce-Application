@@ -89,6 +89,7 @@ export interface IAdditionalAddres {
 
 export interface IRegistrationFieldState {
   isUnique?: boolean;
+  isVisible?: boolean;
   isValid: boolean;
   value: string;
   infoIsActive: boolean;

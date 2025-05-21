@@ -1,4 +1,5 @@
-import type { AddressType, InputTypes } from '@/interfaces/types';
+import type { AddressType } from '@/interfaces/types';
+import { InputTypes } from '@/interfaces/types';
 import { AddressInputName } from '@/interfaces/types';
 import { InputName } from '@/interfaces/types';
 import { setInvalid, setLoginUnique, setValid, setValue } from '@store/slices/registrationSlice';
@@ -6,7 +7,7 @@ import type { RootState } from '@store/store';
 import styles from '@pages/registration/registration.module.scss';
 import type { ChangeEvent, JSX } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import InfoIcon from './InfoIcon';
+import Icons from './InputIcons';
 import RegistrationInfo from './RegistrationInfo';
 import {
   MAX_DATE,
@@ -15,7 +16,7 @@ import {
   PATTERNS,
 } from '@/utils/validation/registrationValidation';
 
-interface RegistrationData {
+interface RegistrationInput {
   name: InputName | { addressType: AddressType; inputName: AddressInputName };
   type: InputTypes;
 }
@@ -37,7 +38,7 @@ const LIST_NAMES = {
   country: 'countries',
 };
 
-export function RegistrationData({ name, type }: RegistrationData): JSX.Element {
+export function RegistrationInput({ name, type }: RegistrationInput): JSX.Element {
   const registration = useSelector((state: RootState) => state.registration.values);
   const dispatch = useDispatch();
   const isAddedAddress = typeof name !== 'string';
@@ -85,14 +86,12 @@ export function RegistrationData({ name, type }: RegistrationData): JSX.Element 
     }
   }
 
-  function addInfoButton(
-    name: InputName | { addressType: AddressType; inputName: AddressInputName },
-  ) {
+  function addIcons() {
     const hideInfoButton =
       typeof name === 'string'
         ? [InputName.birthDay, InputName.postalCode, InputName.country].includes(name)
         : [AddressInputName.postalCode, AddressInputName.country].includes(name.inputName);
-    return hideInfoButton ? <></> : <InfoIcon name={name} />;
+    return hideInfoButton ? <></> : <Icons name={name} />;
   }
   const inputProps = {
     value: isAddedAddress
@@ -117,11 +116,15 @@ export function RegistrationData({ name, type }: RegistrationData): JSX.Element 
     required: typeof name === 'string' || registration[name.addressType].isPresent,
   };
 
+  function getType() {
+    return name === InputName.password && registration.password.isVisible ? InputTypes.text : type;
+  }
+
   return (
     <>
       <div className={styles.registration_form_wrap + getClassIfInvalid(name)}>
-        <input {...inputProps} type={type} />
-        {addInfoButton(name)}
+        <input {...inputProps} type={getType()} />
+        {addIcons()}
       </div>
       <RegistrationInfo className={getClassIfInfoIsActive(name)} name={name} />
     </>

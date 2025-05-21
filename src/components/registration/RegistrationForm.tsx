@@ -24,7 +24,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Datalist } from './Datalist';
 import RegistrationAdditionalAddress from './RegistrationAdditionalAddress';
-import { RegistrationData } from './RegistrationData';
+import { RegistrationInput } from './RegistrationInput';
 
 export function RegistrationForm(): JSX.Element {
   const registration = useSelector((state: RootState) => state.registration.values);
@@ -192,22 +192,22 @@ export function RegistrationForm(): JSX.Element {
         >
           {error.value}
         </p>
-        <RegistrationData name={InputName.login} type={InputTypes.email} />
-        <RegistrationData name={InputName.password} type={InputTypes.password} />
+        <RegistrationInput name={InputName.login} type={InputTypes.email} />
+        <RegistrationInput name={InputName.password} type={InputTypes.password} />
       </div>
       <div>
         <h5>Personal Data</h5>
-        <RegistrationData name={InputName.firstName} type={InputTypes.text} />
-        <RegistrationData name={InputName.lastName} type={InputTypes.text} />
-        <RegistrationData name={InputName.birthDay} type={InputTypes.date} />
+        <RegistrationInput name={InputName.firstName} type={InputTypes.text} />
+        <RegistrationInput name={InputName.lastName} type={InputTypes.text} />
+        <RegistrationInput name={InputName.birthDay} type={InputTypes.date} />
       </div>
       <div>
         <h5>Address</h5>
-        <RegistrationData name={InputName.street} type={InputTypes.text} />
-        <RegistrationData name={InputName.city} type={InputTypes.text} />
-        <RegistrationData name={InputName.postalCode} type={InputTypes.text} />
+        <RegistrationInput name={InputName.street} type={InputTypes.text} />
+        <RegistrationInput name={InputName.city} type={InputTypes.text} />
+        <RegistrationInput name={InputName.postalCode} type={InputTypes.text} />
         <Datalist id="postalCode" dataName="postalCode" />
-        <RegistrationData name={InputName.country} type={InputTypes.text} />
+        <RegistrationInput name={InputName.country} type={InputTypes.text} />
         <Datalist id="countries" dataName="name" />
       </div>
       <div className={styles.registration_form_add_address}>

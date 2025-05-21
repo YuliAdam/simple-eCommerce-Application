@@ -54,6 +54,7 @@ const initialState: { values: IRegistrationState } = {
       infoIsActive: false,
     },
     password: {
+      isVisible: false,
       isValid: true,
       value: '',
       infoIsActive: false,
@@ -238,6 +239,9 @@ export const registrationSlice = createSlice({
     setLoginNotUnique(state) {
       state.values.login.isUnique = false;
     },
+    togglePasswordVisible(state) {
+      state.values.password.isVisible = !state.values.password.isVisible;
+    },
     resetState(state) {
       state.values.billing.city.infoIsActive = false;
       Object.assign(state, initialState);
@@ -256,6 +260,7 @@ export const {
   toggleAdditionalAddressAsDefault,
   setLoginUnique,
   setLoginNotUnique,
+  togglePasswordVisible,
   resetState,
 } = registrationSlice.actions;
 

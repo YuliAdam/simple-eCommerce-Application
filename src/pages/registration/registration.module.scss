@@ -54,22 +54,33 @@
       padding: 12px 16px;
       border: 1px solid var(--border-color);
       border-radius: 12px;
+      &.invalid {
+        border-color: var(--red-border-color);
+      }
+    }
 
+    &_input_icon {
+      display: flex;
+      align-items: center;
       svg {
         width: 20px;
         height: auto;
         cursor: pointer;
+        margin-left: 5px;
         transition: all 0.2s ease-in;
+        &:hover {
+          stroke: var(--vibrant-color);
+          path {
+            stroke: var(--vibrant-color);
+          }
+        }
         path.active,
         &.active {
-          stroke: var(--red-border-color);
+          stroke: var(--vibrant-color);
         }
         circle.active {
-          fill: var(--red-border-color);
+          fill: var(--vibrant-color);
         }
-      }
-      &.invalid {
-        border-color: var(--red-border-color);
       }
     }
 
