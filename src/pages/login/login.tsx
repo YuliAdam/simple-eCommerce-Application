@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './login.module.scss';
+import { Eye } from './passwordFormEye';
 
 /** TODO: LIST
 
@@ -28,6 +29,7 @@ interface FormErrors {
   password?: string;
 }
 export function LoginForm(): JSX.Element {
+  const [typePasswordForm, setTypePasswordForm] = useState('password');
   const passwordRegex: RegExp = new RegExp(PATTERNS.password);
   const loginRegex: RegExp = new RegExp(PATTERNS.login);
   const dispatch = useDispatch();
@@ -103,6 +105,14 @@ export function LoginForm(): JSX.Element {
     validateForm();
   }
 
+  function handleTogglePassword() {
+    if (typePasswordForm === 'password') {
+      setTypePasswordForm('text');
+    } else {
+      setTypePasswordForm('password');
+    }
+  }
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Login</h1>
@@ -126,14 +136,19 @@ export function LoginForm(): JSX.Element {
 
         <div className={styles.formGroup}>
           <label className={styles.label}>Password</label>
-          <input
-            className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
-            required
-            name="password"
-            value={stateFormData.password}
-            onChange={onChange}
-            type="password"
-          />
+          <div className={styles.inputWrapper}>
+            <input
+              className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
+              required
+              name="password"
+              value={stateFormData.password}
+              onChange={onChange}
+              type={typePasswordForm}
+            />
+            <span className={styles.spanEye} onClick={handleTogglePassword}>
+              <Eye />
+            </span>
+          </div>
           {errors.password && <span className={styles.errorMessage}>{errors.password}</span>}
         </div>
 
