@@ -5,7 +5,7 @@ import InfoSvg from '@assets/img/info';
 import type { JSX } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-export default function InfoButton({
+export default function InfoIcon({
   name,
 }: {
   name: InputName | { addressType: AddressType; inputName: AddressInputName };
@@ -13,24 +13,19 @@ export default function InfoButton({
   const registration = useSelector((state: RootState) => state.registration.values);
   const dispatch = useDispatch();
   const isAddedAddress = typeof name !== 'string';
+
+  const onClickHandler = () => {
+    (
+      isAddedAddress
+        ? registration[name.addressType][name.inputName].infoIsActive
+        : registration[name].infoIsActive
+    )
+      ? dispatch(setInfoInactive(name))
+      : dispatch(setInfoActive(name));
+  };
+
   return (
-    <div
-      onClick={
-        (
-          isAddedAddress
-            ? registration[name.addressType][name.inputName].infoIsActive
-            : registration[name].infoIsActive
-        )
-          ? (): {
-              payload: InputName | { addressType: AddressType; inputName: AddressInputName };
-              type: 'registration/setInfoInactive';
-            } => dispatch(setInfoInactive(name))
-          : (): {
-              payload: InputName | { addressType: AddressType; inputName: AddressInputName };
-              type: 'registration/setInfoActive';
-            } => dispatch(setInfoActive(name))
-      }
-    >
+    <div onClick={onClickHandler}>
       <InfoSvg name={name} />
     </div>
   );

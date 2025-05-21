@@ -9,21 +9,22 @@ import {
   setAddressAsAdditional,
   toggleAdditionalAddressAsDefault,
 } from '@/store/slices/registrationSlice';
+import { useCallback } from 'react';
 
 export default function RegistrationAdditionalAddress({ type }: { type: AddressType }) {
   const registration = useSelector((state: RootState) => state.registration.values);
   const addressName = type[0].toUpperCase() + type.slice(1);
   const dispatch = useDispatch();
-  function onChangeSetAddressAsAdditional(type: AddressType) {
-    return () => {
-      dispatch(setAddressAsAdditional(type));
-    };
-  }
-  function onChangeToggleAdditionalAddressAsDefault(type: AddressType) {
-    return () => {
-      dispatch(toggleAdditionalAddressAsDefault(type));
-    };
-  }
+
+  const callbackSetAddressAsAdditional = useCallback(
+    () => dispatch(setAddressAsAdditional(type)),
+    [type],
+  );
+
+  const callbackToggleAdditionalAddressAsDefault = useCallback(
+    () => dispatch(toggleAdditionalAddressAsDefault(type)),
+    [type],
+  );
 
   return (
     <div className={registration[type].isPresent ? '' : styles.hide}>
@@ -32,9 +33,9 @@ export default function RegistrationAdditionalAddress({ type }: { type: AddressT
         <input
           type={InputTypes.checkbox}
           checked={registration[type].isCopy}
-          onChange={onChangeSetAddressAsAdditional(type)}
+          onChange={callbackSetAddressAsAdditional}
         />
-        Use main address as {type} address
+        <label>Use main address as {type} address</label>
       </p>
       <RegistrationData
         name={{ addressType: type, inputName: AddressInputName.street }}
@@ -48,19 +49,19 @@ export default function RegistrationAdditionalAddress({ type }: { type: AddressT
         name={{ addressType: type, inputName: AddressInputName.postalCode }}
         type={InputTypes.text}
       />
-      <Datalist id="postalCode" dataName="postalCode" />
+      <Datalist id={`${type}_postalCode`} dataName="postalCode" />
       <RegistrationData
         name={{ addressType: type, inputName: AddressInputName.country }}
         type={InputTypes.text}
       />
-      <Datalist id="countries" dataName="name" />
+      <Datalist id={`${type}_countries`} dataName="name" />
       <p>
         <input
           type={InputTypes.checkbox}
           checked={registration[type].isDefault}
-          onChange={onChangeToggleAdditionalAddressAsDefault(type)}
+          onChange={callbackToggleAdditionalAddressAsDefault}
         />
-        Set as default
+        <label>Set as default</label>
       </p>
     </div>
   );

@@ -1,5 +1,5 @@
 import { InputName } from '@/interfaces/types';
-import { setValid, setValue } from '@store/slices/registrationSlice';
+import { setValid } from '@store/slices/registrationSlice';
 import countries from '@assets/countriesList/countries.json';
 import type { JSX } from 'react';
 import { useDispatch } from 'react-redux';
@@ -13,20 +13,14 @@ export function Datalist({
 }): JSX.Element {
   const dispatch = useDispatch();
 
-  function onChangeValue(value: string) {
-    return () => {
-      const inputName = dataName === 'postalCode' ? InputName.postalCode : InputName.country;
-      dispatch(setValue({ name: inputName, value: value }));
-      dispatch(setValid(InputName.postalCode));
-      dispatch(setValid(InputName.country));
-    };
+  function onChangeValue() {
+    dispatch(setValid(InputName.postalCode));
+    dispatch(setValid(InputName.country));
   }
   return (
     <datalist id={id}>
       {countries.map(item => {
-        return (
-          <option value={item[dataName]} key={item.name} onClick={onChangeValue(item[dataName])} />
-        );
+        return <option value={item[dataName]} key={item.name} onClick={onChangeValue} />;
       })}
     </datalist>
   );

@@ -1,6 +1,6 @@
 import { SHOP } from '@/config/localStorageConfig';
 import { Path } from '@/config/routesConfig';
-import type { Address, ICustomer, ILoginParams } from '@/interfaces/types';
+import type { IAddress, ICustomer, ILoginParams } from '@/interfaces/types';
 import { AddressType, InputName, InputTypes } from '@/interfaces/types';
 import { createCustomer, loginCustomer } from '@/services/customersController';
 import { login } from '@/store/slices/authSlice';
@@ -36,7 +36,7 @@ export function RegistrationForm(): JSX.Element {
   }
 
   function addAdditionalAddressByTypeIfPresent(
-    address: Address,
+    address: IAddress,
     type: AddressType,
     customerDraft: CustomerDraft,
     isPresent: boolean,
@@ -140,20 +140,17 @@ export function RegistrationForm(): JSX.Element {
     );
   }
 
-  function onClickSendForm() {
-    return async () => {
-      console.log('click');
-      if (isValidForm()) {
-        const body = getData();
-        console.log(body);
-        const response = await createCustomer(body);
-        !(response instanceof Error)
-          ? loginRequest(body.email, body.password)
-          : response.message === 'There is already an existing customer with the provided email.'
-            ? showRegistrationErrorMessage(response.message)
-            : console.log(response.message);
-      }
-    };
+  async function submitForm() {
+    if (isValidForm()) {
+      const body = getData();
+      console.log(body);
+      const response = await createCustomer(body);
+      !(response instanceof Error)
+        ? loginRequest(body.email, body.password)
+        : response.message === 'There is already an existing customer with the provided email.'
+          ? showRegistrationErrorMessage(response.message)
+          : console.log(response.message);
+    }
   }
 
   function showRegistrationErrorMessage(message: string) {
@@ -175,19 +172,17 @@ export function RegistrationForm(): JSX.Element {
   function goToIndexPage(response: ClientResponse<CustomerSignInResult>) {
     localStorage.setItem(SHOP.client_id, response.body.customer.id);
     dispatch(login(response.body.customer.id));
-    navigate(Path.empty);
     dispatch(resetState());
     dispatch(resetErrorState());
+    navigate(Path.empty);
   }
 
-  function handlerSubmit() {
-    return (event: FormEvent) => {
-      event.preventDefault();
-    };
+  function handlerSubmit(event: FormEvent) {
+    event.preventDefault();
   }
 
   return (
-    <form className={styles.registration_form} onSubmit={handlerSubmit()}>
+    <form className={styles.registration_form} onSubmit={handlerSubmit}>
       <div>
         <h5>Login Data</h5>
         <p
@@ -232,7 +227,7 @@ export function RegistrationForm(): JSX.Element {
         <RegistrationAdditionalAddress type={AddressType.shipping} />
       </div>
 
-      <button type="submit" onClick={onClickSendForm()}>
+      <button type="submit" onClick={submitForm}>
         Register
       </button>
     </form>

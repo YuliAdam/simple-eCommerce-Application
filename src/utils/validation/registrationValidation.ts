@@ -10,6 +10,7 @@ export const PATTERNS = {
   city: '[a-zA-Z\\s]{1,32}',
   postalCode: '[a-zA-Z0-9]{1,32}',
   country: '[a-zA-Z\\s]{1,32}',
+  birthDay: '',
 };
 
 export const VALIDATION_MESSAGES = {

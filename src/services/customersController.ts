@@ -1,6 +1,7 @@
 import type { MyCustomerDraft } from '@commercetools/platform-sdk';
 import { apiRoot } from './client';
 import type { ILoginParams } from '@/interfaces/types';
+import { withPasswordFlow } from './flow/passwordFlow';
 
 export async function createCustomer(body: MyCustomerDraft) {
   try {
@@ -18,7 +19,7 @@ export async function createCustomer(body: MyCustomerDraft) {
 
 export async function loginCustomer(body: ILoginParams) {
   try {
-    return await apiRoot
+    return await withPasswordFlow(body.email, body.password)
       .me()
       .login()
       .post({
