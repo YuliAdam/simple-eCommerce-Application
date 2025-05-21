@@ -1,13 +1,13 @@
-import { shop } from '@/config/localStorageConfig';
+import { SHOP } from '@/config/localStorageConfig';
 import { Path } from '@/config/routesConfig';
 import { withPasswordFlow } from '@/services/flow/passwordFlow';
-import type { JSX } from 'react';
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import styles from './login.module.scss';
-import { useDispatch } from 'react-redux';
 import { login } from '@/store/slices/authSlice';
 import { PATTERNS, VALIDATION_MESSAGES } from '@/utils/validation/registrationValidation';
+import type { JSX } from 'react';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import styles from './login.module.scss';
 
 /** TODO: LIST
 
@@ -86,7 +86,7 @@ export function LoginForm(): JSX.Element {
       navigate(Path.empty);
 
       // TODO: add credentials data from response to redux global state
-      localStorage.setItem(shop.client_id, response.body.customer.id);
+      localStorage.setItem(SHOP.client_id, response.body.customer.id);
 
       dispatch(login(response.body.customer.id));
     } catch (error) {
