@@ -1,30 +1,30 @@
-import { type FormEvent, type JSX } from 'react';
-import styles from '@pages/registration/registration.module.scss';
+import { SHOP } from '@/config/localStorageConfig';
+import { Path } from '@/config/routesConfig';
 import type { Address, ICustomer, ILoginParams } from '@/interfaces/types';
-import { InputTypes, InputName, AddressType } from '@/interfaces/types';
-import { Datalist } from './Datalist';
-import { RegistrationData } from './RegistrationData';
-import { useDispatch, useSelector } from 'react-redux';
+import { AddressType, InputName, InputTypes } from '@/interfaces/types';
+import { createCustomer, loginCustomer } from '@/services/customersController';
+import { login } from '@/store/slices/authSlice';
+import { resetErrorState, setValue } from '@/store/slices/errorSlice';
 import {
   resetState,
   setLoginNotUnique,
   toggleAdditionalAddress,
 } from '@/store/slices/registrationSlice';
-import RegistrationAdditionalAddress from './RegistrationAdditionalAddress';
 import type { RootState } from '@/store/store';
+import { getCodeByCountry } from '@utils/searchInCountryArrayMethods';
+import { PATTERNS } from '@/utils/validation/registrationValidation';
 import type {
   ClientResponse,
   CustomerDraft,
   CustomerSignInResult,
 } from '@commercetools/platform-sdk';
-import { createCustomer, loginCustomer } from '@/services/customersController';
+import styles from '@pages/registration/registration.module.scss';
+import { type FormEvent, type JSX } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Path } from '@/config/routesConfig';
-import { getCodeByCountry } from '@/utils/searchInCountryArrayMethods';
-import { resetErrorState, setValue } from '@/store/slices/errorSlice';
-import { shop } from '@/config/localStorageConfig';
-import { PATTERNS } from '@/utils/validation/registrationValidation';
-import { login } from '@/store/slices/authSlice';
+import { Datalist } from './Datalist';
+import RegistrationAdditionalAddress from './RegistrationAdditionalAddress';
+import { RegistrationData } from './RegistrationData';
 
 export function RegistrationForm(): JSX.Element {
   const registration = useSelector((state: RootState) => state.registration.values);
@@ -169,7 +169,7 @@ export function RegistrationForm(): JSX.Element {
   }
 
   function goToIndexPage(response: ClientResponse<CustomerSignInResult>) {
-    localStorage.setItem(shop.client_id, response.body.customer.id);
+    localStorage.setItem(SHOP.client_id, response.body.customer.id);
     dispatch(login(response.body.customer.id));
     navigate(Path.empty);
     dispatch(resetState());

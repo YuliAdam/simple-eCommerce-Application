@@ -1,12 +1,12 @@
+import { Logo } from '@/assets/img/logo';
 import { Path } from '@/config/routesConfig';
-import { Link, useNavigate } from 'react-router-dom';
-import styles from './header.module.scss';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from '@/store/slices/authSlice';
 import type { RootState } from '@/store/store';
-import { shop } from '@config/localStorageConfig';
-import { Logo } from '@/assets/img/logo';
+import { SHOP } from '@config/localStorageConfig';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import styles from './header.module.scss';
 
 export function Header() {
   const dispatch = useDispatch();
@@ -28,15 +28,15 @@ export function Header() {
   );
 
   function handleLogout() {
-    localStorage.removeItem(shop.client_token);
-    localStorage.removeItem(shop.client_id);
+    localStorage.removeItem(SHOP.client_token);
+    localStorage.removeItem(SHOP.client_id);
     dispatch(logout());
     navigate(Path.login);
     setIsOpenMenu(false);
   }
 
   useEffect(() => {
-    const authToken = localStorage.getItem(shop.client_token);
+    const authToken = localStorage.getItem(SHOP.client_token);
     if (authToken) {
       dispatch(login(authToken));
     }

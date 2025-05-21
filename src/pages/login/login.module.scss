@@ -116,6 +116,11 @@ $mobile-breakpoint: 768px;
   }
 }
 
+.disabled {
+  pointer-events: none;
+  background-color: $body-text-color;
+}
+
 .divider {
   display: flex;
   align-items: center;
@@ -176,5 +181,5 @@ $mobile-breakpoint: 768px;
   padding: 0.75rem;
   border-radius: 0.375rem;
   margin-bottom: 1rem;
-  font-size: $text-sm;
+  font-size: $text-lg;
 }
