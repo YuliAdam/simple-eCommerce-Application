@@ -146,7 +146,7 @@ export function RegistrationForm(): JSX.Element {
       if (isValidForm()) {
         const body = getData();
         console.log(body);
-        const response: Error | ClientResponse<CustomerSignInResult> = await createCustomer(body);
+        const response = await createCustomer(body);
         !(response instanceof Error)
           ? loginRequest(body.email, body.password)
           : response.message === 'There is already an existing customer with the provided email.'
@@ -164,8 +164,12 @@ export function RegistrationForm(): JSX.Element {
 
   async function loginRequest(login: string, password: string) {
     const body: ILoginParams = { email: login, password: password };
-    const response: Error | ClientResponse<CustomerSignInResult> = await loginCustomer(body);
-    !(response instanceof Error) ? goToIndexPage(response) : console.log(response.message);
+    const response = await loginCustomer(body);
+    !(response instanceof Error) && response
+      ? goToIndexPage(response)
+      : response instanceof Error
+        ? console.log(response.message)
+        : console.log(response);
   }
 
   function goToIndexPage(response: ClientResponse<CustomerSignInResult>) {
