@@ -1,0 +1,71 @@
+$font-family: 'Poppins', sans-serif;
+
+$primary-color: #111827;
+$body-text-color: #4b5563;
+$vibrant-color: #0ea5e9;
+$border-color: #e5e7eb;
+$default-bg: #ffffff;
+$error-color: #ef4444;
+
+$divider-color: #e5e7eb;
+$text-muted: #6b7280;
+
+$text-4xl: 2.5rem;
+$text-2xl: 1.5rem;
+$text-lg: 1.125rem;
+$text-base: 1rem;
+$text-sm: 0.875rem;
+
+$mobile-breakpoint: 768px;
+
+.container {
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  @media (max-width: $mobile-breakpoint) {
+    padding: 1.5rem 3.75rem;
+  }
+}
+
+.title {
+  font-size: $text-4xl;
+  font-weight: 600;
+  color: $primary-color;
+  margin-bottom: 2rem;
+
+  @media (max-width: $mobile-breakpoint) {
+    font-size: $text-2xl;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.link {
+  color: $vibrant-color;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: $text-lg;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.label {
+  font-size: $text-lg;
+  font-weight: 500;
+  color: $primary-color;
+
+  @media (max-width: $mobile-breakpoint) {
+    font-size: $text-base;
+  }
+}
+
+.error {
+  background-color: $border-color;
+  color: $primary-color;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+  font-size: $text-sm;
+}

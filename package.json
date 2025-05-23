@@ -17,8 +17,13 @@
     "ui": "vitest --ui"
   },
   "dependencies": {
+    "@commercetools/platform-sdk": "^8.9.0",
+    "@commercetools/ts-client": "^3.3.0",
+    "@reduxjs/toolkit": "^2.7.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^6.30.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
@@ -40,6 +45,7 @@
     "jsdom": "^26.1.0",
     "lint-staged": "^15.5.1",
     "prettier": "^3.5.3",
+    "sass-embedded": "^1.88.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.26.1",
     "vite": "^6.3.1",

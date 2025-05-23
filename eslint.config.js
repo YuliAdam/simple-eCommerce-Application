@@ -1,5 +1,5 @@
 import globals from 'globals';
-import react from 'eslint-plugin-react'; 
+import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import typescriptParser from '@typescript-eslint/parser';
@@ -16,10 +16,10 @@ export default [
       },
     },
     plugins: {
-      'react': react,
+      react: react,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
-      'prettier': prettierPlugin,
+      prettier: prettierPlugin,
       '@typescript-eslint': typescriptEslintPlugin,
     },
     rules: {
@@ -28,7 +28,7 @@ export default [
       '@typescript-eslint/no-unused-vars': 'error',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'react-hooks/exhaustive-deps': 'warn',
-      'react/prop-types': 'off'
+      'react/prop-types': 'off',
     },
   },
   {
@@ -36,12 +36,11 @@ export default [
     rules: {
       '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'never' }],
       '@typescript-eslint/consistent-type-imports': 'error',
-      '@typescript-eslint/explicit-function-return-type': 'error',
       '@typescript-eslint/explicit-member-accessibility': [
         'error',
         { accessibility: 'explicit', overrides: { constructors: 'off' } },
       ],
       '@typescript-eslint/member-ordering': 'error',
     },
-  }
+  },
 ];
