@@ -1,10 +1,51 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import type { AddressType } from '@/interfaces/types';
-import { AddressInputName, InputName } from '@/interfaces/types';
-import { getCountryByPostalCode, getPostalCodeByCountry } from '@/utils/searchInCountryArrayMetods';
+import type {
+  AddressType,
+  IAdditionalAddres,
+  IRegistrationFieldState,
+  IRegistrationState,
+  AddressInputName,
+} from '@/interfaces/types';
+import { InputName } from '@/interfaces/types';
+import {
+  getCountryByPostalCode,
+  getPostalCodeByCountry,
+} from '@/utils/searchInCountryArrayMethods';
 
-const initialState = {
+function setFieldInvalid(field: IRegistrationFieldState) {
+  field.isValid = false;
+  field.infoIsActive = true;
+}
+function setFieldValid(field: IRegistrationFieldState) {
+  field.isValid = true;
+  field.infoIsActive = false;
+}
+
+function invalidateAddressFieldIfEmpty(field: IRegistrationState | IAdditionalAddres) {
+  if (field.postalCode.value === '') {
+    setFieldInvalid(field.postalCode);
+  }
+  if (field.country.value === '') {
+    setFieldInvalid(field.country);
+  }
+}
+
+function setValueIfIsCountryOrPostalCode(
+  field: IRegistrationState | IAdditionalAddres,
+  name: InputName | AddressInputName,
+  value: string,
+) {
+  if (name === InputName.postalCode) {
+    field.country.value = getCountryByPostalCode(value);
+    setFieldValid(field.country);
+  } else if (name === InputName.country) {
+    field.postalCode.value = getPostalCodeByCountry(value);
+    setFieldValid(field.postalCode);
+  }
+}
+
+const initialState: { values: IRegistrationState } = {
   values: {
     login: {
       isUnique: true,
@@ -13,6 +54,7 @@ const initialState = {
       infoIsActive: false,
     },
     password: {
+      isVisible: false,
       isValid: true,
       value: '',
       infoIsActive: false,
@@ -114,13 +156,11 @@ export const registrationSlice = createSlice({
       action: PayloadAction<InputName | { addressType: AddressType; inputName: AddressInputName }>,
     ) => {
       if (typeof action.payload === 'string') {
-        state.values[action.payload].isValid = true;
-        state.values[action.payload].infoIsActive = false;
+        setFieldValid(state.values[action.payload]);
       } else {
         const data = action.payload.inputName;
         const addressType = action.payload.addressType;
-        state.values[addressType][data].isValid = true;
-        state.values[addressType][data].infoIsActive = false;
+        setFieldValid(state.values[addressType][data]);
       }
     },
     setInvalid: (
@@ -128,29 +168,13 @@ export const registrationSlice = createSlice({
       action: PayloadAction<InputName | { addressType: AddressType; inputName: AddressInputName }>,
     ) => {
       if (typeof action.payload === 'string') {
-        if (state.values.postalCode.value === '') {
-          state.values.postalCode.isValid = false;
-          state.values.postalCode.infoIsActive = true;
-        }
-        if (state.values.country.value === '') {
-          state.values.country.isValid = false;
-          state.values.country.infoIsActive = true;
-        }
-        state.values[action.payload].isValid = false;
-        state.values[action.payload].infoIsActive = true;
+        invalidateAddressFieldIfEmpty(state.values);
+        setFieldInvalid(state.values[action.payload]);
       } else {
         const data = action.payload.inputName;
         const addressType = action.payload.addressType;
-        if (state.values[addressType].postalCode.value === '') {
-          state.values[addressType].postalCode.isValid = false;
-          state.values[addressType].postalCode.infoIsActive = true;
-        }
-        if (state.values[addressType].country.value === '') {
-          state.values[addressType].country.isValid = false;
-          state.values[addressType].country.infoIsActive = true;
-        }
-        state.values[addressType][data].isValid = false;
-        state.values[addressType][data].infoIsActive = true;
+        invalidateAddressFieldIfEmpty(state.values[addressType]);
+        setFieldInvalid(state.values[addressType][data]);
       }
     },
     setValue: (
@@ -161,28 +185,12 @@ export const registrationSlice = createSlice({
       }>,
     ) => {
       if (typeof action.payload.name === 'string') {
-        if (action.payload.name === InputName.postalCode) {
-          state.values.country.value = getCountryByPostalCode(action.payload.value);
-          state.values.country.isValid = true;
-          state.values.country.infoIsActive = false;
-        } else if (action.payload.name === InputName.country) {
-          state.values.postalCode.value = getPostalCodeByCountry(action.payload.value);
-          state.values.postalCode.isValid = true;
-          state.values.postalCode.infoIsActive = false;
-        }
+        setValueIfIsCountryOrPostalCode(state.values, action.payload.name, action.payload.value);
         state.values[action.payload.name].value = action.payload.value;
       } else {
         const data = action.payload.name.inputName;
         const addressType = action.payload.name.addressType;
-        if (data === AddressInputName.postalCode) {
-          state.values[addressType].country.value = getCountryByPostalCode(action.payload.value);
-          state.values[addressType].country.isValid = true;
-          state.values[addressType].country.infoIsActive = false;
-        } else if (data === AddressInputName.country) {
-          state.values[addressType].postalCode.value = getPostalCodeByCountry(action.payload.value);
-          state.values[addressType].postalCode.isValid = true;
-          state.values[addressType].postalCode.infoIsActive = false;
-        }
+        setValueIfIsCountryOrPostalCode(state.values[addressType], data, action.payload.value);
         state.values[addressType][data].value = action.payload.value;
       }
     },
@@ -201,16 +209,14 @@ export const registrationSlice = createSlice({
       action: PayloadAction<InputName | { addressType: AddressType; inputName: AddressInputName }>,
     ) {
       if (typeof action.payload === 'string') {
-        state.values[action.payload].isValid = true;
-        state.values[action.payload].infoIsActive = false;
+        setFieldValid(state.values[action.payload]);
       } else {
-        state.values[action.payload.addressType][action.payload.inputName].isValid = true;
-        state.values[action.payload.addressType][action.payload.inputName].infoIsActive = false;
+        setFieldValid(state.values[action.payload.addressType][action.payload.inputName]);
       }
     },
     toggleAdditionalAddress(state, action: PayloadAction<AddressType>) {
       if (state.values[action.payload].isPresent) {
-        state.values[action.payload] = initialState.values[action.payload];
+        Object.assign(state.values[action.payload], initialState.values[action.payload]);
       } else {
         state.values[action.payload].isPresent = true;
       }
@@ -233,9 +239,12 @@ export const registrationSlice = createSlice({
     setLoginNotUnique(state) {
       state.values.login.isUnique = false;
     },
+    togglePasswordVisible(state) {
+      state.values.password.isVisible = !state.values.password.isVisible;
+    },
     resetState(state) {
       state.values.billing.city.infoIsActive = false;
-      state = initialState;
+      Object.assign(state, initialState);
     },
   },
 });
@@ -251,6 +260,7 @@ export const {
   toggleAdditionalAddressAsDefault,
   setLoginUnique,
   setLoginNotUnique,
+  togglePasswordVisible,
   resetState,
 } = registrationSlice.actions;
 

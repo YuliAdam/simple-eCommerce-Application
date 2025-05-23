@@ -1,30 +1,30 @@
-import { type FormEvent, type JSX } from 'react';
-import styles from '@pages/registration/registration.module.scss';
-import type { Address, ICustomer, ILoginParams } from '@/interfaces/types';
-import { InputTypes, InputName, AddressType } from '@/interfaces/types';
-import { Datalist } from './Datalist';
-import { RegistrationData } from './RegistrationData';
-import { useDispatch, useSelector } from 'react-redux';
+import { SHOP } from '@/config/localStorageConfig';
+import { Path } from '@/config/routesConfig';
+import type { IAddress, ICustomer, ILoginParams } from '@/interfaces/types';
+import { AddressType, InputName, InputTypes } from '@/interfaces/types';
+import { createCustomer, loginCustomer } from '@/services/customersController';
+import { login } from '@/store/slices/authSlice';
+import { resetErrorState, setValue } from '@/store/slices/errorSlice';
 import {
   resetState,
   setLoginNotUnique,
   toggleAdditionalAddress,
 } from '@/store/slices/registrationSlice';
-import RegistrationAdditionalAddress from './RegistrationAdditionalAddress';
 import type { RootState } from '@/store/store';
+import { getCodeByCountry } from '@utils/searchInCountryArrayMethods';
+import { PATTERNS } from '@/utils/validation/registrationValidation';
 import type {
   ClientResponse,
   CustomerDraft,
   CustomerSignInResult,
 } from '@commercetools/platform-sdk';
-import { createCustomer, loginCustomer } from '@/services/customersController';
+import styles from '@pages/registration/registration.module.scss';
+import { type FormEvent, type JSX } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Path } from '@/config/routesConfig';
-import { getCodeByCountry } from '@/utils/searchInCountryArrayMetods';
-import { resetErrorState, setValue } from '@/store/slices/errorSlice';
-import { shop } from '@/config/localStorageConfig';
-import { PATTERNS } from '@/utils/validation/registrationValidation';
-import { login } from '@/store/slices/authSlice';
+import { Datalist } from './Datalist';
+import RegistrationAdditionalAddress from './RegistrationAdditionalAddress';
+import { RegistrationInput } from './RegistrationInput';
 
 export function RegistrationForm(): JSX.Element {
   const registration = useSelector((state: RootState) => state.registration.values);
@@ -36,7 +36,7 @@ export function RegistrationForm(): JSX.Element {
   }
 
   function addAdditionalAddressByTypeIfPresent(
-    address: Address,
+    address: IAddress,
     type: AddressType,
     customerDraft: CustomerDraft,
     isPresent: boolean,
@@ -140,20 +140,17 @@ export function RegistrationForm(): JSX.Element {
     );
   }
 
-  function onClickSendForm() {
-    return async () => {
-      console.log('click');
-      if (isValidForm()) {
-        const body = getData();
-        console.log(body);
-        const response: Error | ClientResponse<CustomerSignInResult> = await createCustomer(body);
-        !(response instanceof Error)
-          ? loginRequest(body.email, body.password)
-          : response.message === 'There is already an existing customer with the provided email.'
-            ? showRegistrationErrorMessage(response.message)
-            : console.log(response.message);
-      }
-    };
+  async function submitForm() {
+    if (isValidForm()) {
+      const body = getData();
+      console.log(body);
+      const response = await createCustomer(body);
+      !(response instanceof Error)
+        ? loginRequest(body.email, body.password)
+        : response.message === 'There is already an existing customer with the provided email.'
+          ? showRegistrationErrorMessage(response.message)
+          : console.log(response.message);
+    }
   }
 
   function showRegistrationErrorMessage(message: string) {
@@ -164,26 +161,28 @@ export function RegistrationForm(): JSX.Element {
 
   async function loginRequest(login: string, password: string) {
     const body: ILoginParams = { email: login, password: password };
-    const response: Error | ClientResponse<CustomerSignInResult> = await loginCustomer(body);
-    !(response instanceof Error) ? goToIndexPage(response) : console.log(response.message);
+    const response = await loginCustomer(body);
+    !(response instanceof Error) && response
+      ? goToIndexPage(response)
+      : response instanceof Error
+        ? console.log(response.message)
+        : console.log(response);
   }
 
   function goToIndexPage(response: ClientResponse<CustomerSignInResult>) {
-    localStorage.setItem(shop.client_id, response.body.customer.id);
+    localStorage.setItem(SHOP.client_id, response.body.customer.id);
     dispatch(login(response.body.customer.id));
-    navigate(Path.empty);
     dispatch(resetState());
     dispatch(resetErrorState());
+    navigate(Path.empty);
   }
 
-  function handlerSubmit() {
-    return (event: FormEvent) => {
-      event.preventDefault();
-    };
+  function handlerSubmit(event: FormEvent) {
+    event.preventDefault();
   }
 
   return (
-    <form className={styles.registration_form} onSubmit={handlerSubmit()}>
+    <form className={styles.registration_form} onSubmit={handlerSubmit}>
       <div>
         <h5>Login Data</h5>
         <p
@@ -193,22 +192,22 @@ export function RegistrationForm(): JSX.Element {
         >
           {error.value}
         </p>
-        <RegistrationData name={InputName.login} type={InputTypes.email} />
-        <RegistrationData name={InputName.password} type={InputTypes.password} />
+        <RegistrationInput name={InputName.login} type={InputTypes.email} />
+        <RegistrationInput name={InputName.password} type={InputTypes.password} />
       </div>
       <div>
         <h5>Personal Data</h5>
-        <RegistrationData name={InputName.firstName} type={InputTypes.text} />
-        <RegistrationData name={InputName.lastName} type={InputTypes.text} />
-        <RegistrationData name={InputName.birthDay} type={InputTypes.date} />
+        <RegistrationInput name={InputName.firstName} type={InputTypes.text} />
+        <RegistrationInput name={InputName.lastName} type={InputTypes.text} />
+        <RegistrationInput name={InputName.birthDay} type={InputTypes.date} />
       </div>
       <div>
         <h5>Address</h5>
-        <RegistrationData name={InputName.street} type={InputTypes.text} />
-        <RegistrationData name={InputName.city} type={InputTypes.text} />
-        <RegistrationData name={InputName.postalCode} type={InputTypes.text} />
+        <RegistrationInput name={InputName.street} type={InputTypes.text} />
+        <RegistrationInput name={InputName.city} type={InputTypes.text} />
+        <RegistrationInput name={InputName.postalCode} type={InputTypes.text} />
         <Datalist id="postalCode" dataName="postalCode" />
-        <RegistrationData name={InputName.country} type={InputTypes.text} />
+        <RegistrationInput name={InputName.country} type={InputTypes.text} />
         <Datalist id="countries" dataName="name" />
       </div>
       <div className={styles.registration_form_add_address}>
@@ -228,7 +227,7 @@ export function RegistrationForm(): JSX.Element {
         <RegistrationAdditionalAddress type={AddressType.shipping} />
       </div>
 
-      <button type="submit" onClick={onClickSendForm()}>
+      <button type="submit" onClick={submitForm}>
         Register
       </button>
     </form>

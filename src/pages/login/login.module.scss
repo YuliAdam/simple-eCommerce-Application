@@ -68,8 +68,14 @@ $mobile-breakpoint: 768px;
   }
 }
 
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
 .input {
-  padding: 1.5rem 1rem;
+  width: 100%;
+  padding: 1.5rem 3.5rem 1.5rem 1rem;
   font-size: 1.4rem;
   border: 1px solid $border-color;
   border-radius: 1.2rem;
@@ -77,7 +83,7 @@ $mobile-breakpoint: 768px;
   transition: border-color 0.2s;
 
   @media (max-width: $mobile-breakpoint) {
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 2.5rem 0.5rem 0.75rem;
     font-size: $text-sm;
   }
 
@@ -114,6 +120,11 @@ $mobile-breakpoint: 768px;
   &:focus {
     outline: none;
   }
+}
+
+.disabled {
+  pointer-events: none;
+  background-color: $body-text-color;
 }
 
 .divider {
@@ -176,5 +187,31 @@ $mobile-breakpoint: 768px;
   padding: 0.75rem;
   border-radius: 0.375rem;
   margin-bottom: 1rem;
-  font-size: $text-sm;
+  font-size: $text-lg;
+}
+
+.spanEye {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+}
+
+.eye {
+  width: 1.4rem;
+  height: 1.4rem;
+  color: $text-muted;
+  stroke: $text-muted;
+
+  @media (max-width: $mobile-breakpoint) {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
 }

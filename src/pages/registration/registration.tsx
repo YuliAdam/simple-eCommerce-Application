@@ -1,4 +1,4 @@
-import { RegistrationForm } from '@/components/registration/RegistrationForm';
+import { RegistrationForm } from '@components/registration/RegistrationForm';
 import type { ReactElement } from 'react';
 import styles from './registration.module.scss';
 import { Link } from 'react-router-dom';
@@ -10,9 +10,10 @@ export function Registration(): ReactElement {
       <h2 className={styles.registration_title}>Register</h2>
       <RegistrationForm />
       <div className={styles.registration_go_to_login}>
-        <p></p>
-        <h5>OR</h5>
-        <span>Already e member? </span>
+        <div>
+          <span>OR</span>
+        </div>
+        <span>Already a member? </span>
         <Link className={styles.registration_go_to_login_link} to={Path.login}>
           Login
         </Link>

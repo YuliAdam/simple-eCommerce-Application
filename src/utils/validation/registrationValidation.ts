@@ -10,6 +10,7 @@ export const PATTERNS = {
   city: '[a-zA-Z\\s]{1,32}',
   postalCode: '[a-zA-Z0-9]{1,32}',
   country: '[a-zA-Z\\s]{1,32}',
+  birthDay: '',
 };
 
 export const VALIDATION_MESSAGES = {
@@ -20,7 +21,7 @@ export const VALIDATION_MESSAGES = {
     'Must contain at least one character and no special characters or numbers. Max 32 characters.',
   lastName:
     'Must contain at least one character and no special characters or numbers. Max 32 characters.',
-  bithDay: 'Should be 13 years old or older.',
+  birthDay: 'Should be 13 years old or older.',
   street: 'Must contain at least one character. Max 32 characters.',
   city: 'Must contain at least one character and no special characters or numbers. Max 32 characters.',
   postalCode: 'Choose a postal code from list.',
