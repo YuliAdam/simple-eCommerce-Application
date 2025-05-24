@@ -188,3 +188,13 @@ $text-2xl: 1.6rem;
 .nav-links.active li {
   display: block !important;
 }
+
+.buttonLogout {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #4b5563;
+  text-decoration: none;
+  font-size: 1.6rem;
+  transition: color 0.3s ease;
+}

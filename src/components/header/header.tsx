@@ -74,7 +74,9 @@ export function Header() {
             )}
             {isAuthorized && (
               <li className={styles.linkLogout}>
-                <button onClick={handleLogout}>Logout</button>
+                <button className={styles.buttonLogout} onClick={handleLogout}>
+                  Logout
+                </button>
               </li>
             )}
           </ul>
