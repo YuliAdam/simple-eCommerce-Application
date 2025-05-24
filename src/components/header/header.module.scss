@@ -176,11 +176,10 @@ $text-2xl: 1.6rem;
 }
 
 @media (max-width: 760px) {
-  .linkLogin {
-    display: none;
-  }
 
-  .linkCatalog {
+  .linkCatalog,
+  .linkProduct,
+  .linkLogin {
     display: none;
   }
 }
