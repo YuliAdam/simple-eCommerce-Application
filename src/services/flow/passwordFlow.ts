@@ -25,7 +25,6 @@ export function withPasswordFlow(username: string, password: string): ByProjectK
   };
 
   const ctpClient = new ClientBuilder()
-    .withProjectKey(projectKey) // .withProjectKey() is not required if the projectKey is included in authMiddlewareOptions
     .withPasswordFlow(options)
     .withHttpMiddleware(httpMiddlewareOptions)
     .withLoggerMiddleware() // Include middleware for logging

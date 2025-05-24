@@ -2,7 +2,7 @@ export const MAX_INPUT_LENGTH = 32;
 export const MAX_DATE = getValidEarlierDateInRegexFormat(13);
 export const MIN_DATE = getValidEarlierDateInRegexFormat(130);
 export const PATTERNS = {
-  login: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}',
+  login: '[a-zA-Z0-9.%!_]+@[a-zA-Z0-9.%!_]+',
   password: '(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}',
   firstName: '[a-zA-Z\\s]{1,32}',
   lastName: '[a-zA-Z\\s]{1,32}',
@@ -10,6 +10,7 @@ export const PATTERNS = {
   city: '[a-zA-Z\\s]{1,32}',
   postalCode: '[a-zA-Z0-9]{1,32}',
   country: '[a-zA-Z\\s]{1,32}',
+  birthDay: '',
 };
 
 export const VALIDATION_MESSAGES = {
@@ -20,7 +21,7 @@ export const VALIDATION_MESSAGES = {
     'Must contain at least one character and no special characters or numbers. Max 32 characters.',
   lastName:
     'Must contain at least one character and no special characters or numbers. Max 32 characters.',
-  bithDay: 'Should be 13 years old or older.',
+  birthDay: 'Should be 13 years old or older.',
   street: 'Must contain at least one character. Max 32 characters.',
   city: 'Must contain at least one character and no special characters or numbers. Max 32 characters.',
   postalCode: 'Choose a postal code from list.',

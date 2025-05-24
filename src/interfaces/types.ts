@@ -31,12 +31,12 @@ export enum AddressType {
   shipping = 'shipping',
 }
 
-export enum listName {
+export enum ListName {
   postalCode = 'postalCode',
   country = 'countries',
 }
 
-export interface Address {
+export interface IAddress {
   streetName: string;
   city: string;
   country: string;
@@ -61,4 +61,36 @@ export interface ICustomer {
 export interface ILoginParams {
   email: string;
   password: string;
+}
+
+export interface IRegistrationState {
+  login: IRegistrationFieldState;
+  password: IRegistrationFieldState;
+  firstName: IRegistrationFieldState;
+  lastName: IRegistrationFieldState;
+  birthDay: IRegistrationFieldState;
+  street: IRegistrationFieldState;
+  city: IRegistrationFieldState;
+  postalCode: IRegistrationFieldState;
+  country: IRegistrationFieldState;
+  billing: IAdditionalAddres;
+  shipping: IAdditionalAddres;
+}
+
+export interface IAdditionalAddres {
+  isCopy: boolean;
+  isDefault: boolean;
+  isPresent: boolean;
+  street: IRegistrationFieldState;
+  city: IRegistrationFieldState;
+  postalCode: IRegistrationFieldState;
+  country: IRegistrationFieldState;
+}
+
+export interface IRegistrationFieldState {
+  isUnique?: boolean;
+  isVisible?: boolean;
+  isValid: boolean;
+  value: string;
+  infoIsActive: boolean;
 }

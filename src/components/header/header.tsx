@@ -1,3 +1,4 @@
+import { Logo } from '@/assets/img/logo';
 import { Path } from '@/config/routesConfig';
 import { login, logout } from '@/store/slices/authSlice';
 import type { RootState } from '@/store/store';

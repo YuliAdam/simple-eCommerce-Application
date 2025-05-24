@@ -8,6 +8,8 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './login.module.scss';
+import { Eye } from '@/assets/img/eye';
+import { EyeOff } from '@/assets/img/eyeoff';
 
 /** TODO: LIST
 
@@ -28,21 +30,21 @@ interface FormErrors {
   password?: string;
 }
 export function LoginForm(): JSX.Element {
+  const [typePasswordForm, setTypePasswordForm] = useState('password');
   const passwordRegex: RegExp = new RegExp(PATTERNS.password);
   const loginRegex: RegExp = new RegExp(PATTERNS.login);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [stateFormData, setStateFormData] = useState<LoginFormData>({
+  let [stateFormData, setStateFormData] = useState<LoginFormData>({
     email: '',
     password: '',
   });
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isLoginResponse, setIsLoginResponse] = useState<React.ReactNode | null>(null);
+  const [loginResponse, setLoginResponse] = useState<React.ReactNode | null>(null);
   const [disabledButton, setDisabledButton] = useState(true);
   function validateForm(): boolean {
     const newErrors: FormErrors = {};
     let isValid = true;
-
     if (!stateFormData.email) {
       newErrors.email = VALIDATION_MESSAGES.login;
       isValid = false;
@@ -58,7 +60,6 @@ export function LoginForm(): JSX.Element {
       newErrors.password = VALIDATION_MESSAGES.password;
       isValid = false;
     }
-
     setErrors(newErrors);
     setDisabledButton(!isValid);
     return isValid;
@@ -68,7 +69,7 @@ export function LoginForm(): JSX.Element {
     const password = data.get('password');
 
     if (typeof email !== 'string' || typeof password !== 'string') {
-      setIsLoginResponse(<div className={styles.error}>Missing fields</div>);
+      setLoginResponse(<div className={styles.error}>Missing fields</div>);
       return;
     }
 
@@ -91,26 +92,33 @@ export function LoginForm(): JSX.Element {
       dispatch(login(response.body.customer.id));
     } catch (error) {
       if (error instanceof Error) {
-        setIsLoginResponse(<div className={styles.error}>Login failed: {error.message}</div>);
+        setLoginResponse(<div className={styles.error}>Login failed: {error.message}</div>);
         return;
       }
     }
   }
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-    validateForm();
     const { name, value } = e.target;
-    return setStateFormData({
-      ...stateFormData,
-      [name]: value,
-    });
+    name === 'email'
+      ? setStateFormData((stateFormData = { email: value, password: stateFormData.password }))
+      : setStateFormData((stateFormData = { email: stateFormData.email, password: value }));
+    validateForm();
+  }
+
+  function handleTogglePassword() {
+    if (typePasswordForm === 'password') {
+      setTypePasswordForm('text');
+    } else {
+      setTypePasswordForm('password');
+    }
   }
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Login</h1>
 
-      {isLoginResponse}
+      {loginResponse}
 
       <form action={handleForm} className={styles.form}>
         <div className={styles.formGroup}>
@@ -129,14 +137,23 @@ export function LoginForm(): JSX.Element {
 
         <div className={styles.formGroup}>
           <label className={styles.label}>Password</label>
-          <input
-            className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
-            required
-            name="password"
-            value={stateFormData.password}
-            onChange={onChange}
-            type="password"
-          />
+          <div className={styles.inputWrapper}>
+            <input
+              className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
+              required
+              name="password"
+              value={stateFormData.password}
+              onChange={onChange}
+              type={typePasswordForm}
+            />
+            <span className={styles.spanEye} onClick={handleTogglePassword}>
+              {typePasswordForm === 'password' ? (
+                <Eye className={styles.eye} />
+              ) : (
+                <EyeOff className={styles.eye} />
+              )}
+            </span>
+          </div>
           {errors.password && <span className={styles.errorMessage}>{errors.password}</span>}
         </div>
 

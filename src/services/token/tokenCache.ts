@@ -15,8 +15,8 @@ export class TokenState implements TokenCache {
     if (storedToken) {
       try {
         this.cachedToken = JSON.parse(storedToken);
-      } catch (error) {
-        console.log('failed parse storedToken:', error);
+      } catch {
+        this.clear();
       }
     }
   }

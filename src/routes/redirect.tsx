@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 export function AuthRedirect({ children }: ProtectedRouteProps) {
-  const isAuth = localStorage.getItem(SHOP.client_id) && localStorage.getItem(SHOP.client_id); // TODO: how to check that token is valid?
+  const isAuth = localStorage.getItem(SHOP.client_id) && localStorage.getItem(SHOP.client_token); // TODO: how to check that token is valid?
 
   if (isAuth) {
     return <Navigate to={Path.empty} replace />;
