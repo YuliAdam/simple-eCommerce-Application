@@ -96,7 +96,6 @@ export function LoginForm(): JSX.Element {
     const newState = { ...stateFormData, [name]: value };
     setStateFormData(newState);
     validateForm(newState);
-    console.log(newState); // FIXME: remove this before commit
   }
 
   function handleTogglePassword() {
