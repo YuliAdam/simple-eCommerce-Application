@@ -2,7 +2,7 @@ export const MAX_INPUT_LENGTH = 32;
 export const MAX_DATE = getValidEarlierDateInRegexFormat(13);
 export const MIN_DATE = getValidEarlierDateInRegexFormat(130);
 export const PATTERNS = {
-  login: '[a-zA-Z0-9.%!_]+(?:\\.[a-zA-Z0-9.%!_]+)*@[a-zA-Z0-9.%!_]+(?:\\.[a-zA-Z0-9.%!_]+)+',
+  login: '^[a-zA-Z0-9.%!_]+(?:\\.[a-zA-Z0-9.%!_]+)*@[a-zA-Z0-9.%!_]+(?:\\.[a-zA-Z0-9.%!_]+)+$',
   password: '(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}',
   firstName: '[a-zA-Z\\s]{1,32}',
   lastName: '[a-zA-Z\\s]{1,32}',
