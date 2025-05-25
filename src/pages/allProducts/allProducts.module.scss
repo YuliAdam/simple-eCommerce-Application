@@ -4,7 +4,7 @@ $body-text-color: #4b5563;
 .products {
     display: grid;
     gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
 }
 
 .search-content {

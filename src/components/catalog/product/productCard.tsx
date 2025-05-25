@@ -4,7 +4,10 @@ import styles from './productCard.module.scss';
 function ProductCard({ product }: { product: I_Product }) {
   const imagesArray = product.masterData.current.masterVariant.images,
     productName = product.masterData.current.name,
-    productDescription = product.masterData.current.description;
+    productDescription = product.masterData.current.description,
+    productPricesArray = product.masterData.current.masterVariant?.prices,
+    priceValue = productPricesArray?.[0]?.value,
+    discountedValue = productPricesArray?.[0]?.discounted?.value;
 
   return (
     <li className={styles.product}>
@@ -16,10 +19,33 @@ function ProductCard({ product }: { product: I_Product }) {
         />
       </div>
       <div className={styles['product-info']}>
-        <p className={styles['product-name']}>{productName ? productName['en-GB'] : ''}</p>
-        <p className={styles['product-description']}>
-          {productDescription ? productDescription['en-GB'] : ''}
-        </p>
+        <div className={styles['product-text-wrapper']}>
+          <p className={styles['product-name']}>{productName ? productName['en-GB'] : ''}</p>
+          <p className={styles['product-description']}>
+            {productDescription ? productDescription['en-GB'] : ''}
+          </p>
+        </div>
+        <div className={styles['product-prices']}>
+          {discountedValue ? (
+            <>
+              <p className={`${styles['product-discountPrice']} ${styles['product-main-price']}`}>
+                <span>€</span>{' '}
+                {discountedValue
+                  ? (discountedValue.centAmount / 100).toFixed(discountedValue.fractionDigits)
+                  : ''}
+              </p>
+              <p className={`${styles['product-price']} ${styles['product-price-old']}`}>
+                <span>€</span>{' '}
+                {priceValue ? (priceValue.centAmount / 100).toFixed(priceValue.fractionDigits) : ''}
+              </p>
+            </>
+          ) : (
+            <p className={`${styles['product-price']} ${styles['product-main-price']}`}>
+              <span>€</span>{' '}
+              {priceValue ? (priceValue.centAmount / 100).toFixed(priceValue.fractionDigits) : ''}
+            </p>
+          )}
+        </div>
       </div>
     </li>
   );

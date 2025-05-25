@@ -6,12 +6,15 @@
     margin: 0 auto;
     margin-bottom: 20px;
     display: block;
-    width: 245px;
-    height: 245px;
+    max-width: 310px;
+    width: 100%;
+    height: 310px;
+    object-fit: cover;
 }
 
 .product-info {
-    padding: 16px;
+    display: flex;
+    gap: 20px;
 }
 
 .product-name {
@@ -26,4 +29,29 @@
     font-size: 1.4rem;
     font-weight: 400;
     line-height: 20px;
+}
+
+.product-prices {
+    width: 80px;
+}
+
+.product-discountPrice {
+    margin: 0;
+}
+
+.product-price {
+    margin: 0;
+}
+
+.product-price-old {
+    font-size: 1.4rem;
+    font-weight: 400;
+    line-height: 20px;
+    text-decoration: line-through;
+}
+
+.product-main-price {
+    font-size: 1.6rem;
+    font-weight: 600; 
+    line-height: 24px;
 }
