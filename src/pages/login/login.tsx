@@ -31,32 +31,25 @@ interface FormErrors {
 }
 export function LoginForm(): JSX.Element {
   const [typePasswordForm, setTypePasswordForm] = useState('password');
-  const passwordRegex: RegExp = new RegExp(PATTERNS.password);
   const loginRegex: RegExp = new RegExp(PATTERNS.login);
+  const passwordRegex: RegExp = new RegExp(PATTERNS.password);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  let [stateFormData, setStateFormData] = useState<LoginFormData>({
+  const [stateFormData, setStateFormData] = useState<LoginFormData>({
     email: '',
     password: '',
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loginResponse, setLoginResponse] = useState<React.ReactNode | null>(null);
   const [disabledButton, setDisabledButton] = useState(true);
-  function validateForm(): boolean {
+  function validateForm(formData: LoginFormData): boolean {
     const newErrors: FormErrors = {};
     let isValid = true;
-    if (!stateFormData.email) {
-      newErrors.email = VALIDATION_MESSAGES.login;
-      isValid = false;
-    } else if (!loginRegex.test(stateFormData.email)) {
+    if (!formData.email || !loginRegex.test(formData.email)) {
       newErrors.email = VALIDATION_MESSAGES.login;
       isValid = false;
     }
-
-    if (!stateFormData.password) {
-      newErrors.password = VALIDATION_MESSAGES.password;
-      isValid = false;
-    } else if (!passwordRegex.test(stateFormData.password)) {
+    if (!formData.password || !passwordRegex.test(formData.password)) {
       newErrors.password = VALIDATION_MESSAGES.password;
       isValid = false;
     }
@@ -64,9 +57,9 @@ export function LoginForm(): JSX.Element {
     setDisabledButton(!isValid);
     return isValid;
   }
-  async function handleForm(data: FormData) {
-    const email = data.get('email');
-    const password = data.get('password');
+  async function handleForm(e: React.FormEvent) {
+    e.preventDefault();
+    const { email, password } = stateFormData;
 
     if (typeof email !== 'string' || typeof password !== 'string') {
       setLoginResponse(<div className={styles.error}>Missing fields</div>);
@@ -98,12 +91,12 @@ export function LoginForm(): JSX.Element {
     }
   }
 
-  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function onInput(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    name === 'email'
-      ? setStateFormData((stateFormData = { email: value, password: stateFormData.password }))
-      : setStateFormData((stateFormData = { email: stateFormData.email, password: value }));
-    validateForm();
+    const newState = { ...stateFormData, [name]: value };
+    setStateFormData(newState);
+    validateForm(newState);
+    console.log(newState); // FIXME: remove this before commit
   }
 
   function handleTogglePassword() {
@@ -120,14 +113,14 @@ export function LoginForm(): JSX.Element {
 
       {loginResponse}
 
-      <form action={handleForm} className={styles.form}>
+      <form onSubmit={handleForm} className={styles.form}>
         <div className={styles.formGroup}>
           <label className={styles.label}>Email</label>
           <input
             className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
             required
             value={stateFormData.email}
-            onChange={onChange}
+            onInput={onInput}
             type="email"
             name="email"
             placeholder="example@example.com"
@@ -143,7 +136,7 @@ export function LoginForm(): JSX.Element {
               required
               name="password"
               value={stateFormData.password}
-              onChange={onChange}
+              onInput={onInput}
               type={typePasswordForm}
             />
             <span className={styles.spanEye} onClick={handleTogglePassword}>
