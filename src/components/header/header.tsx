@@ -4,7 +4,6 @@ import { login, logout } from '@/store/slices/authSlice';
 import type { RootState } from '@/store/store';
 import { BurgerMenu } from '@assets/img/burger-menu';
 import { ShoppingCart } from '@assets/img/cart';
-import { Logo } from '@assets/img/logo';
 import { User } from '@assets/img/user';
 import { SHOP } from '@config/localStorageConfig';
 import { useEffect, useRef, useState } from 'react';

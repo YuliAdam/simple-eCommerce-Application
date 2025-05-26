@@ -71,6 +71,27 @@ $mobile-breakpoint: 768px;
 .inputWrapper {
   position: relative;
   width: 100%;
+  padding: 1.5rem 1rem;
+  border: 1px solid $border-color;
+  border-radius: 1.2rem;
+  outline: none;
+  transition: border-color 0.2s;
+  max-height: 44.4px;
+
+  @media (max-width: $mobile-breakpoint) {
+    padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+    font-size: $text-sm;
+  }
+  input {
+    width: calc(100% - 2rem);
+    font-size: $text-lg;
+    border: none;
+    outline: none;
+    padding: 0;
+    @media (max-width: $mobile-breakpoint) {
+      font-size: $text-sm;
+    }
+  }
 }
 
 .input {
@@ -199,18 +220,11 @@ $mobile-breakpoint: 768px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
 }
 
 .eye {
-  width: 1.4rem;
-  height: 1.4rem;
+  height: 12.8px;
+  width: auto;
   color: $text-muted;
   stroke: $text-muted;
-
-  @media (max-width: $mobile-breakpoint) {
-    width: 1.2rem;
-    height: 1.2rem;
-  }
 }

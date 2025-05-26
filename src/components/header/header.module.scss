@@ -17,10 +17,11 @@ $text-2xl: 1.6rem;
   top: 0;
   z-index: 100;
   padding: 2rem;
-  height: 100%;
+  height: 91.6px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.6);
 
   .logo {
     position: absolute;
@@ -37,150 +38,131 @@ $text-2xl: 1.6rem;
       letter-spacing: -0.5px;
     }
   }
+}
 
-  .nav-links {
-    nav {
-      ul {
-        display: flex;
-        list-style: none;
-        margin: 0;
-        padding: 0;
+.nav-links {
+  nav {
+    ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      flex-wrap: wrap;
 
-        li {
-          margin-right: 1rem;
+      li {
+        margin-right: 1rem;
 
-          a {
-            color: $secondary-color;
-            text-decoration: none;
-            font-size: $text-2xl;
-            transition: color $transition-speed ease;
+        a {
+          color: $secondary-color;
+          text-decoration: none;
+          font-size: $text-2xl;
+          transition: color $transition-speed ease;
 
-            &:hover {
-              color: $hover-color;
-            }
+          &:hover {
+            color: $hover-color;
           }
+        }
+      }
+      @media screen and (max-width: 1000px) and (min-width: $breakpoint-mobile) {
+        & {
+          width: 220px;
+          flex-wrap: wrap;
         }
       }
     }
   }
+}
 
-  .header-actions {
+.header-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-grow: 1;
+
+  .icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 1rem;
+    color: $secondary-color;
+    transition: color $transition-speed ease;
+
+    &:hover {
+      color: $hover-color;
+    }
+  }
+
+  .auth-links {
+    margin-left: 1.5rem;
     display: flex;
-    align-items: center;
+    gap: 1rem;
 
-    .icon-button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      margin-left: 1rem;
+    a {
       color: $secondary-color;
+      text-decoration: none;
+      font-size: 0.9rem;
       transition: color $transition-speed ease;
 
       &:hover {
         color: $hover-color;
       }
     }
+  }
+}
 
-    .auth-links {
-      margin-left: 1.5rem;
+.mobile-menu-button {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $primary-color;
+  transition: transform $transition-speed ease;
+
+  &.active {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .nav-links {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: $background-color;
+    overflow: hidden;
+    transition: all $transition-speed ease;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+
+    &.active {
+      height: 100vh;
+      width: 100vw;
       display: flex;
-      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 91.6px;
+      transition: all $transition-speed ease;
+    }
 
-      a {
-        color: $secondary-color;
-        text-decoration: none;
-        font-size: 0.9rem;
-        transition: color $transition-speed ease;
+    nav ul {
+      flex-direction: column;
+      align-items: center;
 
-        &:hover {
-          color: $hover-color;
-        }
+      li {
+        margin: 0.8rem 0;
       }
+    }
+  }
+
+  .header-actions {
+    .auth-links {
+      display: none;
     }
   }
 
   .mobile-menu-button {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: $primary-color;
-    transition: transform $transition-speed ease;
-
-    &.active {
-      transform: rotate(90deg);
-    }
-  }
-
-  @media (max-width: $breakpoint-mobile) {
-    .nav-links {
-      position: fixed;
-      top: 70px;
-      left: 0;
-      width: 100%;
-      height: 0;
-      background-color: $background-color;
-      overflow: hidden;
-      transition: height $transition-speed ease;
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-
-      &.active {
-        height: 100%;
-        padding: 1rem 0;
-      }
-
-      nav ul {
-        flex-direction: column;
-        align-items: center;
-
-        li {
-          margin: 0.8rem 0;
-        }
-      }
-    }
-
-    .header-actions {
-      .auth-links {
-        display: none;
-      }
-    }
-
-    .mobile-menu-button {
-      display: block;
-    }
-  }
-}
-
-@media (max-width: 1030px) {
-  .linkRegister {
-    display: none;
-  }
-}
-
-@media (max-width: 950px) {
-  .linkLogin {
-    display: none;
-  }
-}
-
-@media (max-width: 870px) {
-  .linkAbout {
-    display: none;
-  }
-}
-
-@media (max-width: 800px) {
-  .linkRegister {
-    display: none;
-  }
-}
-
-@media (max-width: 760px) {
-
-  .linkCatalog,
-  .linkProduct,
-  .linkLogin {
-    display: none;
+    display: block;
   }
 }
 
@@ -196,4 +178,7 @@ $text-2xl: 1.6rem;
   text-decoration: none;
   font-size: 1.6rem;
   transition: color 0.3s ease;
+  &:hover {
+    color: $hover-color;
+  }
 }
