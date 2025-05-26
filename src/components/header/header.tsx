@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './header.module.scss';
+import { Login } from '@/assets/img/login';
 
 export function Header() {
   const dispatch = useDispatch();
@@ -56,22 +57,9 @@ export function Header() {
             <li className={styles.linkCatalog}>
               <Link to={Path.allProducts}>Catalog</Link>
             </li>
-            <li className={styles.linkProduct}>
-              <Link to={`${Path.product}`}>Product</Link>
-            </li>
             <li className={styles.linkAbout}>
               <Link to={Path.about}>About</Link>
             </li>
-            {!isAuthorized && (
-              <>
-                <li className={styles.linkLogin}>
-                  <Link to={Path.login}>Login</Link>
-                </li>
-                <li className={styles.linkRegister}>
-                  <Link to={Path.registration}>Register</Link>
-                </li>
-              </>
-            )}
             {isAuthorized && (
               <li className={styles.linkLogout}>
                 <button className={styles.buttonLogout} onClick={handleLogout}>
@@ -88,9 +76,15 @@ export function Header() {
       </Link>
 
       <div className={styles['header-actions']}>
-        <Link to={Path.user} className={styles['icon-button']}>
-          <User />
-        </Link>
+        {!isAuthorized ? (
+          <Link to={Path.login} className={styles['icon-button']}>
+            <Login />
+          </Link>
+        ) : (
+          <Link to={Path.user} className={styles['icon-button']}>
+            <User />
+          </Link>
+        )}
         <Link to={Path.basket} className={styles['icon-button']}>
           <ShoppingCart />
         </Link>
