@@ -137,9 +137,8 @@ export function LoginForm(): JSX.Element {
 
         <div className={styles.formGroup}>
           <label className={styles.label}>Password</label>
-          <div className={styles.inputWrapper}>
+          <div className={`${styles.inputWrapper} ${errors.password ? styles.inputError : ''}`}>
             <input
-              className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
               required
               name="password"
               value={stateFormData.password}
