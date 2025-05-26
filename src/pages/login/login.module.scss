@@ -24,7 +24,7 @@ $mobile-breakpoint: 768px;
   // padding: 2rem;
 
   @media (max-width: $mobile-breakpoint) {
-    padding: 1.5rem 0.75rem;
+    padding: 1.5rem 6.75rem;
   }
 }
 
@@ -82,12 +82,14 @@ $mobile-breakpoint: 768px;
     padding: 0.5rem 2.5rem 0.5rem 0.75rem;
     font-size: $text-sm;
   }
+
   input {
     width: calc(100% - 2rem);
     font-size: $text-lg;
     border: none;
     outline: none;
     padding: 0;
+
     @media (max-width: $mobile-breakpoint) {
       font-size: $text-sm;
     }
