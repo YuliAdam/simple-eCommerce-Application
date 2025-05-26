@@ -127,10 +127,9 @@ $text-2xl: 1.6rem;
     overflow: hidden;
     transition: height $transition-speed ease;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-    
+
     &.active {
       height: 100vh;
-      width: 100vw;
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -139,10 +138,12 @@ $text-2xl: 1.6rem;
     nav ul {
       flex-direction: column;
       align-items: center;
+
       li {
         margin: 0.8rem 0;
       }
-      &:first-child{
+
+      &:first-child {
         margin-top: 5rem;
       }
     }
@@ -171,6 +172,7 @@ $text-2xl: 1.6rem;
   text-decoration: none;
   font-size: 1.6rem;
   transition: color 0.3s ease;
+
   &:hover {
     color: $hover-color;
   }
