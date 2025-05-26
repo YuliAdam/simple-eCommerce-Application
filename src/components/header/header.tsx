@@ -19,6 +19,9 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navLinksRef = useRef<HTMLDivElement>(null);
   const burgerBtnRef = useRef<HTMLButtonElement>(null);
+  isMenuOpen
+    ? document.documentElement.classList.add('noscroll')
+    : document.documentElement.classList.remove('noscroll');
 
   useEffect(() => {
     const authToken = localStorage.getItem(SHOP?.client_token);

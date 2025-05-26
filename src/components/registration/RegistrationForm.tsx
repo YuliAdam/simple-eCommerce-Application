@@ -4,7 +4,7 @@ import type { IAddress, ICustomer, ILoginParams } from '@/interfaces/types';
 import { AddressType, InputName, InputTypes } from '@/interfaces/types';
 import { createCustomer, loginCustomer } from '@/services/customersController';
 import { login } from '@/store/slices/authSlice';
-import { resetErrorState, setValue } from '@/store/slices/errorSlice';
+import { setValue, toggleDialog } from '@/store/slices/dialogSlice';
 import {
   resetState,
   setLoginNotUnique,
@@ -28,9 +28,10 @@ import { RegistrationInput } from './RegistrationInput';
 
 export function RegistrationForm(): JSX.Element {
   const registration = useSelector((state: RootState) => state.registration.values);
-  const error = useSelector((state: RootState) => state.error.values);
+  const dialog = useSelector((state: RootState) => state.dialog.values);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const REGISTRATED_MESSAGE = 'Congratulations, your account has been successfully created!';
   function onClickToggleAdditionalAddress(addressType: AddressType) {
     return () => dispatch(toggleAdditionalAddress(addressType));
   }
@@ -145,18 +146,28 @@ export function RegistrationForm(): JSX.Element {
       const body = getData();
       console.log(body);
       const response = await createCustomer(body);
-      !(response instanceof Error)
-        ? loginRequest(body.email, body.password)
-        : response.message === 'There is already an existing customer with the provided email.'
-          ? showRegistrationErrorMessage(response.message)
-          : console.log(response.message);
+      window.scrollTo(0, 0);
+      dispatch(setValue(REGISTRATED_MESSAGE));
+      dispatch(toggleDialog(true));
+      if (!(response instanceof Error)) {
+        while (dialog.isOpen) {
+          setTimeout(() => {}, 3000);
+        }
+        loginRequest(body.email, body.password);
+      } else {
+        if (response.message === 'There is already an existing customer with the provided email.') {
+          showRegistrationErrorMessage(response.message);
+        } else {
+          dispatch(setValue(response.message));
+          dispatch(toggleDialog(true));
+        }
+      }
     }
   }
 
   function showRegistrationErrorMessage(message: string) {
     dispatch(setValue(message));
     dispatch(setLoginNotUnique());
-    window.scrollTo(0, 0);
   }
 
   async function loginRequest(login: string, password: string) {
@@ -173,7 +184,6 @@ export function RegistrationForm(): JSX.Element {
     localStorage.setItem(SHOP.client_id, response.body.customer.id);
     dispatch(login(response.body.customer.id));
     dispatch(resetState());
-    dispatch(resetErrorState());
     navigate(Path.empty);
   }
 
@@ -190,7 +200,7 @@ export function RegistrationForm(): JSX.Element {
             styles.registration_form_info + (registration.login.isUnique ? '' : ' ' + styles.active)
           }
         >
-          {error.value}
+          {dialog.value}
         </p>
         <RegistrationInput name={InputName.login} type={InputTypes.email} />
         <RegistrationInput name={InputName.password} type={InputTypes.password} />
