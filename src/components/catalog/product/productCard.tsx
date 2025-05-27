@@ -2,10 +2,11 @@ import type I_Product from '@/interfaces/catalog/product';
 import styles from './productCard.module.scss';
 
 function ProductCard({ product }: { product: I_Product }) {
-  const imagesArray = product.masterData.current.masterVariant.images,
-    productName = product.masterData.current.name,
-    productDescription = product.masterData.current.description,
-    productPricesArray = product.masterData.current.masterVariant?.prices,
+  const data = product.masterData.current,
+    imagesArray = data.masterVariant.images,
+    productName = data.name,
+    productDescription = data.description,
+    productPricesArray = data.masterVariant?.prices,
     priceValue = productPricesArray?.[0]?.value,
     discountedValue = productPricesArray?.[0]?.discounted?.value;
 
@@ -13,8 +14,8 @@ function ProductCard({ product }: { product: I_Product }) {
     <li className={styles.product}>
       <div className={styles['img-wrapper']}>
         <img
-          src={imagesArray ? imagesArray[0].url : ''}
-          alt={imagesArray ? imagesArray[0].label : ''}
+          src={imagesArray ? imagesArray?.[0].url : ''}
+          alt={imagesArray ? imagesArray?.[0].label : ''}
           className={styles['product-img']}
         />
       </div>
