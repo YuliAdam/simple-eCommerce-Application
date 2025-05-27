@@ -14,7 +14,7 @@ function ProductCard({ product }: { product: I_Product }) {
     discountedValue = productPricesArray?.[0]?.discounted?.value;
 
   return (
-    <Link to={`${Path.product}/${id}`} className={styles.link}>
+    <Link to={`${Path.product.replace(':id', id)}`} className={styles.link}>
       <li className={styles.product}>
         <div className={styles['img-wrapper']}>
           <img
