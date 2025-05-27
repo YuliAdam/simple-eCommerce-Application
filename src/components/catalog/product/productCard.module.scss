@@ -1,3 +1,6 @@
+$primary-color: #111827;
+$body-text-color: #4b5563;
+
 .product {
     margin: 0 auto;
 }
@@ -23,6 +26,7 @@
     font-size: 1.6rem;
     font-weight: 600; 
     line-height: 24px;
+    color: $primary-color;
 }
 
 .product-description {
@@ -30,6 +34,7 @@
     font-size: 1.4rem;
     font-weight: 400;
     line-height: 20px;
+    color: $primary-color;
 }
 
 .product-prices {
@@ -50,6 +55,7 @@
     line-height: 20px;
     text-decoration: line-through;
     text-align: right;
+    color: $body-text-color;
 }
 
 .product-main-price {
@@ -57,4 +63,5 @@
     font-weight: 600; 
     line-height: 24px;
     text-align: right;
+    color: $primary-color;
 }
