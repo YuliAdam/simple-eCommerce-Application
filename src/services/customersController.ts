@@ -30,3 +30,11 @@ export async function loginCustomer(body: ILoginParams) {
     if (err instanceof Error) return err;
   }
 }
+
+export async function getCustomer(id: string) {
+  try {
+    return await apiRoot.customers().withId({ ID: id }).get().execute();
+  } catch (err) {
+    if (err instanceof Error) return err;
+  }
+}
