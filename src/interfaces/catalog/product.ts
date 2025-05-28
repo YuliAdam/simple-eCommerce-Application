@@ -3,10 +3,10 @@ export default interface I_Product {
   masterData: {
     current: {
       description?: {
-        [key: string]: string;
+        ['en-GB']?: string;
       };
       name?: {
-        [key: string]: string;
+        ['en-GB']?: string;
       };
       masterVariant: {
         images?: {
