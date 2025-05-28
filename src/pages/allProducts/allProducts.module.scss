@@ -1,10 +1,12 @@
 $gray-background: #f8f8f8;
 $body-text-color: #4b5563;
+$primary-color: #111827;
 
 .products {
+    width: 100%;
     display: grid;
     gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(310px, auto));
 }
 
 .search-content {
@@ -44,4 +46,47 @@ $body-text-color: #4b5563;
     background-color: $gray-background;
     border-radius: 25px;
     border: none;
+}
+
+.catalog-wrapper {
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    gap: 20px;
+}
+
+.header {
+    margin: 0;
+    margin-bottom: 20px; 
+    font-size: 1.8rem; 
+    font-weight: 600; 
+    line-height: 28px;
+    color: $primary-color;
+}
+
+.categories-list {
+    font-size: 1.4rem;
+    font-weight: 400;
+    line-height: 20px;
+    color: $body-text-color;
+}
+
+.categories-button, .sub-categories-button {
+    padding: 0;
+    white-space: nowrap;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: opacity 1s ease;
+    &:hover {
+        opacity: 0.3;
+    }
+}
+
+.categories-item {
+    margin-bottom: 10px;
+}
+
+.sub-categories-item {
+    padding-left: 10px;
 }

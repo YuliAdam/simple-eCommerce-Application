@@ -1,11 +1,15 @@
-import { getProducts } from '@/services/productsController';
+import { getProducts, getCatregories, getProductsByCategory } from '@/services/productsController';
 import { useEffect, useState } from 'react';
 import ProductCard from '@/components/catalog/product/productCard';
 import type I_Product from '@/interfaces/catalog/product';
+import type I_Category from '@/interfaces/catalog/category';
+import type I_SubCategory from '@/interfaces/catalog/subCategory';
 import styles from './allProducts.module.scss';
 
 function AllProducts() {
   const [products, setProducts] = useState<I_Product[]>([]);
+  const [categories, setCategories] = useState<I_Category[]>([]);
+  const [subCategories, setSubCategories] = useState<I_SubCategory[]>([]);
 
   useEffect(() => {
     async function getProductsData() {
@@ -15,14 +19,73 @@ function AllProducts() {
         if (response && response.statusCode === 200) {
           const productsData = response.body.results;
           setProducts(productsData);
+          console.log('Products: ', productsData);
         }
       } catch (err) {
         console.log(err);
       }
     }
 
-    getProductsData().then(console.log);
+    getProductsData();
   }, []);
+
+  useEffect(() => {
+    async function getCategoriesData() {
+      try {
+        const response = await getCatregories();
+
+        if (response && response.statusCode === 200) {
+          const productsData = response.body.results;
+
+          const categoriesData = productsData.filter(el => {
+            if (el && el.parent === undefined) {
+              return el;
+            }
+          });
+
+          setCategories(categoriesData);
+          console.log('Categories: ', categoriesData);
+
+          const subCategoriesData = productsData.filter(el => {
+            if (el && el.parent) {
+              return el;
+            }
+          });
+          setSubCategories(subCategoriesData);
+          console.log('Subcategories: ', subCategoriesData);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    getCategoriesData();
+  }, []);
+
+  function handleCategoryButton(event: React.MouseEvent) {
+    const target = event.target;
+
+    if (target && target instanceof HTMLButtonElement) {
+      const id = target.getAttribute('data-id');
+
+      if (id) {
+        async function getProductsData(id: string) {
+          try {
+            const response = await getProductsByCategory(id);
+
+            if (response && response.statusCode === 200) {
+              const productsData = response.body.results;
+              setProducts(productsData);
+              console.log('Products by category: ', productsData);
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        }
+        getProductsData(id);
+      }
+    }
+  }
 
   return (
     <section className={styles.catalog}>
@@ -38,16 +101,51 @@ function AllProducts() {
             />
           </div>
         </div>
-        <div className={styles.filters}>
-          <div className={styles.categories}>
-            <ul className={styles['categories-list']}></ul>
+        <div className={styles['catalog-wrapper']}>
+          <div className={styles.filters}>
+            <div className={styles.categories}>
+              <h2 className={styles.header}>Categories</h2>
+              <ul className={styles['categories-list']}>
+                {categories.map(category => (
+                  <li key={category.id} className={styles['categories-item']}>
+                    <button
+                      data-id={category.id}
+                      className={styles['categories-button']}
+                      onClick={handleCategoryButton}
+                    >
+                      {category.name?.['en-GB'] ? category.name['en-GB'] : ''}
+                    </button>
+                    <ul className={styles['sub-categories-list']}>
+                      {subCategories.map(subCategory =>
+                        subCategory.parent?.id === category.id ? (
+                          <li key={subCategory.id} className={styles['sub-categories-item']}>
+                            <button
+                              data-id={subCategory.id}
+                              className={styles['sub-categories-button']}
+                              onClick={handleCategoryButton}
+                            >
+                              {subCategory.name?.['en-GB'] ? subCategory.name['en-GB'] : ''}
+                            </button>
+                          </li>
+                        ) : (
+                          ''
+                        ),
+                      )}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className={styles.sort}>
+              <ul className={styles['sort-list']}></ul>
+            </div>
           </div>
+          <ul className={styles.products}>
+            {products.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </ul>
         </div>
-        <ul className={styles.products}>
-          {products.map(product => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </ul>
       </div>
     </section>
   );
