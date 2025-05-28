@@ -1,4 +1,4 @@
-import type { MyCustomerDraft } from '@commercetools/platform-sdk';
+import type { CustomerUpdateAction, MyCustomerDraft } from '@commercetools/platform-sdk';
 import { apiRoot } from './client';
 import type { ILoginParams } from '@/interfaces/types';
 import { withPasswordFlow } from './flow/passwordFlow';
@@ -37,4 +37,19 @@ export async function getCustomer(id: string) {
   } catch (err) {
     if (err instanceof Error) return err;
   }
+}
+
+export async function updateCustomer(version: number, actions: CustomerUpdateAction[], id: string) {
+  return await apiRoot
+    .customers()
+    .withId({
+      ID: id,
+    })
+    .post({
+      body: {
+        version,
+        actions,
+      },
+    })
+    .execute();
 }

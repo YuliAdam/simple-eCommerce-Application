@@ -20,12 +20,17 @@ export function Dialog() {
 
   function closeDialog(e: React.MouseEvent<HTMLDialogElement, MouseEvent>) {
     if (e.target !== innerElemontRef.current) {
-      dispatch(toggleDialog(false));
-      if (dialogRef.current) {
-        dialogRef.current.close();
-      }
+      clickCloseDialog();
     }
   }
+
+  function clickCloseDialog() {
+    dispatch(toggleDialog(false));
+    if (dialogRef.current) {
+      dialogRef.current.close();
+    }
+  }
+
   return (
     <dialog
       onClick={e => closeDialog(e)}
@@ -37,7 +42,7 @@ export function Dialog() {
         <div ref={innerElemontRef} className={styles.dialog_text}>
           <p>{dialog.value}</p>
           <div className={styles.dialog_close}>
-            <Close />
+            <Close onClick={clickCloseDialog} className={styles.dialog_close_icon} />
           </div>
         </div>
       </div>

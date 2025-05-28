@@ -19,6 +19,14 @@ export enum InputName {
   country = 'country',
 }
 
+export enum IUserDataName {
+  login = 'login',
+  password = 'password',
+  firstName = 'firstName',
+  lastName = 'lastName',
+  birthDay = 'birthDay',
+}
+
 export enum AddressInputName {
   street = 'street',
   city = 'city',
@@ -41,6 +49,13 @@ export interface IAddress {
   city: string;
   country: string;
   postalCode: string;
+}
+
+export interface IUserPageAddress {
+  streetName: { value: string; newValue: string };
+  city: { value: string; newValue: string };
+  country: { value: string; newValue: string };
+  postalCode: { value: string; newValue: string };
 }
 
 export interface ICustomer {
@@ -93,4 +108,11 @@ export interface IRegistrationFieldState {
   isValid: boolean;
   value: string;
   infoIsActive: boolean;
+}
+
+export enum IUpdateActions {
+  changeEmail = 'changeEmail',
+  setFirstName = 'setFirstName',
+  setLastName = 'setLastName',
+  setDateOfBirth = 'setDateOfBirth',
 }

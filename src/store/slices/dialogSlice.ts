@@ -22,12 +22,12 @@ export const errorSlice = createSlice({
     toggleDialog(state, action: PayloadAction<boolean>) {
       state.values.isOpen = action.payload;
     },
-    setValue(state, action: PayloadAction<string>) {
+    setDialogText(state, action: PayloadAction<string>) {
       state.values.value = action.payload;
     },
   },
 });
 
-export const { toggleDialog, setValue } = errorSlice.actions;
+export const { toggleDialog, setDialogText } = errorSlice.actions;
 
 export default errorSlice.reducer;

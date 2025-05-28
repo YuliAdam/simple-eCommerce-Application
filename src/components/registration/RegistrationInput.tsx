@@ -2,7 +2,7 @@ import type { AddressType } from '@/interfaces/types';
 import { InputTypes } from '@/interfaces/types';
 import { AddressInputName } from '@/interfaces/types';
 import { InputName } from '@/interfaces/types';
-import { setInvalid, setLoginUnique, setValid, setValue } from '@store/slices/registrationSlice';
+import { setInvalid } from '@store/slices/registrationSlice';
 import type { RootState } from '@store/store';
 import styles from '@pages/registration/registration.module.scss';
 import type { ChangeEvent, JSX } from 'react';
@@ -19,6 +19,9 @@ import {
 interface RegistrationInput {
   name: InputName | { addressType: AddressType; inputName: AddressInputName };
   type: InputTypes;
+  value: string;
+  className: string;
+  onChangeInput: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const PLACEHOLDERS = {
@@ -38,33 +41,16 @@ const LIST_NAMES = {
   country: 'countries',
 };
 
-export function RegistrationInput({ name, type }: RegistrationInput): JSX.Element {
+export function RegistrationInput({
+  name,
+  type,
+  value,
+  className,
+  onChangeInput,
+}: RegistrationInput): JSX.Element {
   const registration = useSelector((state: RootState) => state.registration.values);
   const dispatch = useDispatch();
   const isAddedAddress = typeof name !== 'string';
-
-  function onChangeValue(
-    name: InputName | { addressType: AddressType; inputName: AddressInputName },
-  ) {
-    return (event: ChangeEvent<HTMLInputElement>) => {
-      if (event.target && event.target instanceof HTMLInputElement) {
-        const value = event.target.value;
-        dispatch(setValue({ name: name, value: value }));
-        if (typeof name === 'string') {
-          new RegExp(PATTERNS[name]).test(value)
-            ? dispatch(setValid(name))
-            : dispatch(setInvalid(name));
-        } else {
-          new RegExp(PATTERNS[name.inputName]).test(value)
-            ? dispatch(setValid(name))
-            : dispatch(setInvalid(name));
-        }
-      }
-      if (name === InputName.login) {
-        dispatch(setLoginUnique());
-      }
-    };
-  }
 
   function onInvalidValue(
     name: InputName | { addressType: AddressType; inputName: AddressInputName },
@@ -103,11 +89,7 @@ export function RegistrationInput({ name, type }: RegistrationInput): JSX.Elemen
     return hideInfoButton ? <></> : <Icons name={name} />;
   }
   const inputProps = {
-    value: isAddedAddress
-      ? registration[name.addressType][name.inputName].value
-      : registration[name].value,
     maxLength: MAX_INPUT_LENGTH,
-    onChange: onChangeValue(name),
     onInvalid: onInvalidValue(name),
     placeholder: isAddedAddress ? PLACEHOLDERS[name.inputName] : PLACEHOLDERS[name],
     pattern: isAddedAddress ? PATTERNS[name.inputName] : PATTERNS[name],
@@ -132,7 +114,13 @@ export function RegistrationInput({ name, type }: RegistrationInput): JSX.Elemen
   return (
     <>
       <div className={styles.registration_form_wrap + getClassIfInvalid(name)}>
-        <input {...inputProps} type={getType()} />
+        <input
+          {...inputProps}
+          value={value}
+          type={getType()}
+          className={className}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => onChangeInput(event)}
+        />
         {addIcons()}
       </div>
       <RegistrationInfo className={getClassIfInfoIsActive(name)} name={name} />

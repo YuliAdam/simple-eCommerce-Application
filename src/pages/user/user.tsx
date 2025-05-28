@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import styles from './user.module.scss';
 import { useDispatch } from 'react-redux';
 import { UserForm } from '@/components/user/UserForm';
-import { setAddresses, setUserState } from '@/store/slices/userSlice';
+import { setAddresses, setUserState, setVersion } from '@/store/slices/userSlice';
 
 function User() {
   const dispatch = useDispatch();
@@ -17,6 +17,7 @@ function User() {
           console.log(body);
           dispatch(setUserState(body));
           dispatch(setAddresses(body));
+          dispatch(setVersion(body.version));
         }
       });
     }

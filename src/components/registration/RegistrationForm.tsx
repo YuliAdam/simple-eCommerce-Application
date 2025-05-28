@@ -4,10 +4,14 @@ import type { IAddress, ICustomer, ILoginParams } from '@/interfaces/types';
 import { AddressType, InputName, InputTypes } from '@/interfaces/types';
 import { createCustomer, loginCustomer } from '@/services/customersController';
 import { login } from '@/store/slices/authSlice';
-import { setValue, toggleDialog } from '@/store/slices/dialogSlice';
+import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 import {
   resetState,
+  setInvalid,
   setLoginNotUnique,
+  setLoginUnique,
+  setValid,
+  setValue,
   toggleAdditionalAddress,
 } from '@/store/slices/registrationSlice';
 import type { RootState } from '@/store/store';
@@ -19,6 +23,7 @@ import type {
   CustomerSignInResult,
 } from '@commercetools/platform-sdk';
 import styles from '@pages/registration/registration.module.scss';
+import type { ChangeEvent } from 'react';
 import { type FormEvent, type JSX } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -34,6 +39,21 @@ export function RegistrationForm(): JSX.Element {
   const REGISTRATED_MESSAGE = 'Congratulations, your account has been successfully created!';
   function onClickToggleAdditionalAddress(addressType: AddressType) {
     return () => dispatch(toggleAdditionalAddress(addressType));
+  }
+
+  function onChangeInputValue(name: InputName) {
+    return (event: ChangeEvent<HTMLInputElement>) => {
+      if (event.target && event.target instanceof HTMLInputElement) {
+        const value = event.target.value;
+        dispatch(setValue({ name: name, value: value }));
+        new RegExp(PATTERNS[name]).test(value)
+          ? dispatch(setValid(name))
+          : dispatch(setInvalid(name));
+      }
+      if (name === InputName.login) {
+        dispatch(setLoginUnique());
+      }
+    };
   }
 
   function addAdditionalAddressByTypeIfPresent(
@@ -147,7 +167,7 @@ export function RegistrationForm(): JSX.Element {
       console.log(body);
       const response = await createCustomer(body);
       window.scrollTo(0, 0);
-      dispatch(setValue(REGISTRATED_MESSAGE));
+      dispatch(setDialogText(REGISTRATED_MESSAGE));
       dispatch(toggleDialog(true));
       if (!(response instanceof Error)) {
         while (dialog.isOpen) {
@@ -158,7 +178,7 @@ export function RegistrationForm(): JSX.Element {
         if (response.message === 'There is already an existing customer with the provided email.') {
           showRegistrationErrorMessage(response.message);
         } else {
-          dispatch(setValue(response.message));
+          dispatch(setDialogText(response.message));
           dispatch(toggleDialog(true));
         }
       }
@@ -166,7 +186,7 @@ export function RegistrationForm(): JSX.Element {
   }
 
   function showRegistrationErrorMessage(message: string) {
-    dispatch(setValue(message));
+    dispatch(setDialogText(message));
     dispatch(setLoginNotUnique());
   }
 
@@ -202,22 +222,76 @@ export function RegistrationForm(): JSX.Element {
         >
           {dialog.value}
         </p>
-        <RegistrationInput name={InputName.login} type={InputTypes.email} />
-        <RegistrationInput name={InputName.password} type={InputTypes.password} />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.login)}
+          name={InputName.login}
+          type={InputTypes.email}
+          value={registration.login.value}
+        />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.password)}
+          name={InputName.password}
+          type={InputTypes.password}
+          value={registration.password.value}
+        />
       </div>
       <div>
         <h5>Personal Data</h5>
-        <RegistrationInput name={InputName.firstName} type={InputTypes.text} />
-        <RegistrationInput name={InputName.lastName} type={InputTypes.text} />
-        <RegistrationInput name={InputName.birthDay} type={InputTypes.date} />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.firstName)}
+          name={InputName.firstName}
+          type={InputTypes.text}
+          value={registration.firstName.value}
+        />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.lastName)}
+          name={InputName.lastName}
+          type={InputTypes.text}
+          value={registration.lastName.value}
+        />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.birthDay)}
+          name={InputName.birthDay}
+          type={InputTypes.date}
+          value={registration.birthDay.value}
+        />
       </div>
       <div>
         <h5>Address</h5>
-        <RegistrationInput name={InputName.street} type={InputTypes.text} />
-        <RegistrationInput name={InputName.city} type={InputTypes.text} />
-        <RegistrationInput name={InputName.postalCode} type={InputTypes.text} />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.street)}
+          name={InputName.street}
+          type={InputTypes.text}
+          value={registration.street.value}
+        />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.city)}
+          name={InputName.city}
+          type={InputTypes.text}
+          value={registration.city.value}
+        />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.postalCode)}
+          name={InputName.postalCode}
+          type={InputTypes.text}
+          value={registration.postalCode.value}
+        />
         <Datalist id="postalCode" dataName="postalCode" />
-        <RegistrationInput name={InputName.country} type={InputTypes.text} />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.country)}
+          name={InputName.country}
+          type={InputTypes.text}
+          value={registration.country.value}
+        />
         <Datalist id="countries" dataName="name" />
       </div>
       <div className={styles.registration_form_add_address}>
