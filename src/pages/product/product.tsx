@@ -1,14 +1,14 @@
 import ProductDetailed from '@/components/catalog/product/productDetailed';
 import Spinner from '@/components/catalog/spinner/spinner';
-import type I_Product from '@/interfaces/catalog/product';
 import { getProducts } from '@/services/productsController';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './product.module.scss';
+import type I_ProductDetailed from '@/interfaces/catalog/productDetailed';
 
 function Product(/*product?*/) {
   // TODO: make change title to product name
-  const [product, setProduct] = useState<I_Product[]>([]);
+  const [product, setProduct] = useState<I_ProductDetailed[]>([]);
   const params = useParams();
   useEffect(() => {
     async function fetchProduct() {

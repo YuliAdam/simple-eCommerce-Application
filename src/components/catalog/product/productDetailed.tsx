@@ -1,4 +1,4 @@
-import type I_ProductDetailed from '@/interfaces/catalog/productDetailed';
+import type I_ProductDetailed from '@/interfaces/catalog/productDetailed.types';
 import styles from './productCard.module.scss';
 import { useState } from 'react';
 
@@ -7,6 +7,7 @@ function ProductDetailed({ product }: { product: I_ProductDetailed }) {
   //           alt={imagesArray ? imagesArray[0].label : ''}
   // TODO:image array, slider switch Image, under MainImage other Images
   const [currentImage, setCurrentImage] = useState(null);
+
   const imagesArray = product.masterData.current.masterVariant.images,
     productName = product.masterData.current.name,
     productDescription = product.masterData.current.description,
@@ -15,10 +16,11 @@ function ProductDetailed({ product }: { product: I_ProductDetailed }) {
     productColor = product.masterData.current.masterVariant.attributes[2].value.key,
     productPrice = product.masterData.current.masterVariant.prices[0].value.centAmount;
 
-  console.log('productBrand: ', productBrand);
-  console.log('productSize: ', productSize);
-  console.log('productColor: ', productColor);
-  console.log(product.masterData.current.masterVariant.prices[0].value.centAmount);
+  console.log('product_body', product.masterData.current);
+  // console.log('productBrand: ', productBrand);
+  // console.log('productSize: ', productSize);
+  // console.log('productColor: ', productColor);
+  // console.log(product.masterData.current.masterVariant.prices[0].value.centAmount);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row', gap: '50px' }}>
@@ -51,16 +53,17 @@ function ProductDetailed({ product }: { product: I_ProductDetailed }) {
           </button>
         </div>
         <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
-          <img
-            src={imagesArray ? imagesArray[0].url : ''}
-            alt={imagesArray ? imagesArray[0].label : ''}
-            className={styles['product-img']}
-          />
-          <img
-            src={imagesArray ? imagesArray[0].url : ''}
-            alt={imagesArray ? imagesArray[0].label : ''}
-            className={styles['product-img']}
-          />
+          {imagesArray.length > 1
+            ? imagesArray.map((image, index) => (
+                <img
+                  // TODO: how to convert it to <Image/> component?
+                  className={styles['product-img']}
+                  key={index}
+                  src={image.url}
+                  alt={image.label || `product image ${index + 1}`}
+                />
+              ))
+            : null}
         </div>
       </div>
       <div
