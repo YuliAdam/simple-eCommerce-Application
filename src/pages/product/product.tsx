@@ -1,8 +1,47 @@
+import ProductDetailed from '@/components/catalog/product/productDetailed';
+import Spinner from '@/components/catalog/spinner/spinner';
+import type I_Product from '@/interfaces/catalog/product';
+import { getProducts } from '@/services/productsController';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import styles from './product.module.scss';
 
-function Product() {
+function Product(/*product?*/) {
+  // TODO: make change title to product name
+  const [product, setProduct] = useState<I_Product[]>([]);
   const params = useParams();
-  return <section>product - {params.id}</section>;
-}
+  useEffect(() => {
+    async function fetchProduct() {
+      try {
+        const response = await getProducts();
 
+        if (response && response.statusCode === 200) {
+          const productsData = response.body.results;
+          setProduct(productsData);
+          console.log(productsData[1]);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    fetchProduct();
+  }, []);
+  return (
+    <div className={styles.container}>
+      <title>{`Product - ${params.id}`}</title>
+      {product.length > 0 ? (
+        <ProductDetailed key={product[9].id} product={product[9]} />
+      ) : (
+        <Spinner />
+      )}
+    </div>
+  );
+}
+/* TODO: list of components
+   - Image
+   - Slider
+   - ProductDetails?
+   - Button
+   - ImageModal?
+*/
 export default Product;
