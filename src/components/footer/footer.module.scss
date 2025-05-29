@@ -1,5 +1,37 @@
+@font-face {
+  font-family: 'Poppins';
+  src: url('@assets/fonts/Poppins/Poppins-Regular.woff');
+}
+
+$hover-color: #333;
+$font: 'Poppins';
+$primary-color: #111827;
+$body-text-color: #4b5563;
+$transition-speed: 0.3s;
+$breakpoint-mobile: 768px;
+
 .footer {
-  text-align: center;
+  font-family: $font;
+  color: $primary-color;
+  font-size: 10px;
+  line-height: 1;
   width: 100%;
-  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  &_title {
+    margin: 0;
+    text-decoration: none;
+    color: var(--black);
+  }
+}
+.link_basic {
+  text-decoration: none;
+}
+.link_git_hub,
+.link_rs_school {
+  width: 20px;
+  height: 20px;
+  margin: 0 5px;
 }

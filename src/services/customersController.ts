@@ -53,3 +53,37 @@ export async function updateCustomer(version: number, actions: CustomerUpdateAct
     })
     .execute();
 }
+export async function updatePassword(
+  id: string,
+  version: number,
+  currentPassword: string,
+  newPassword: string,
+) {
+  return await apiRoot
+    ?.customers()
+    .password()
+    .post({
+      body: {
+        id,
+        version,
+        currentPassword,
+        newPassword,
+      },
+    })
+    .execute();
+}
+export async function verifyCustomerPassword(id: string, version: number, currentPassword: string) {
+  const newPassword = currentPassword;
+  return await apiRoot
+    ?.customers()
+    .password()
+    .post({
+      body: {
+        id,
+        version,
+        currentPassword,
+        newPassword,
+      },
+    })
+    .execute();
+}

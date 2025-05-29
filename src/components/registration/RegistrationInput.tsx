@@ -14,6 +14,7 @@ import {
   MAX_INPUT_LENGTH,
   MIN_DATE,
   PATTERNS,
+  VALIDATION_MESSAGES,
 } from '@/utils/validation/registrationValidation';
 
 interface RegistrationInput {
@@ -111,6 +112,12 @@ export function RegistrationInput({
     return name === InputName.password && registration.password.isVisible ? InputTypes.text : type;
   }
 
+  function getInfoText() {
+    return typeof name === 'string'
+      ? VALIDATION_MESSAGES[name]
+      : VALIDATION_MESSAGES[name.inputName];
+  }
+
   return (
     <>
       <div className={styles.registration_form_wrap + getClassIfInvalid(name)}>
@@ -123,7 +130,7 @@ export function RegistrationInput({
         />
         {addIcons()}
       </div>
-      <RegistrationInfo className={getClassIfInfoIsActive(name)} name={name} />
+      <RegistrationInfo className={getClassIfInfoIsActive(name)} text={getInfoText()} />
     </>
   );
 }

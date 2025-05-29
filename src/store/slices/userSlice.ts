@@ -6,11 +6,14 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface IUserState {
-  isRedactMood: boolean;
+  isRedactUserParamsMood: boolean;
+  isRedactPasswordMood: boolean;
   version: number;
+  passwordIsVerify: boolean;
+  repeatPasswordIsCorrect: boolean;
   userParams: {
     login: { value: string; newValue: string };
-    password: { value: string; newValue: string };
+    password: { value: string; currentValue: string; newValue: string; repeatNewValue: string };
     firstName: { value: string; newValue: string };
     lastName: { value: string; newValue: string };
     birthDay: { value: string; newValue: string };
@@ -22,6 +25,11 @@ interface IUserState {
   shippingDefault: IUserPageAddress;
 }
 
+export enum IRedactMoods {
+  userParams = 'isRedactUserParamsMood',
+  password = 'isRedactPasswordMood',
+}
+
 export enum IUserFildNames {
   userParams = 'userParams',
   userAddresses = 'userAddresses',
@@ -31,12 +39,21 @@ export enum IUserFildNames {
   shippingDefault = 'shippingDefault',
 }
 
+export enum IPasswordCamp {
+  currentValue = 'currentValue',
+  newValue = 'newValue',
+  repeatNewValue = 'repeatNewValue',
+}
+
 const initialState: IUserState = {
-  isRedactMood: false,
+  isRedactUserParamsMood: false,
+  isRedactPasswordMood: false,
   version: 0,
+  passwordIsVerify: false,
+  repeatPasswordIsCorrect: false,
   userParams: {
     login: { value: '', newValue: '' },
-    password: { value: '', newValue: '' },
+    password: { value: '', currentValue: '', newValue: '', repeatNewValue: '' },
     firstName: { value: '', newValue: '' },
     lastName: { value: '', newValue: '' },
     birthDay: { value: '', newValue: '' },
@@ -95,11 +112,15 @@ const userSlice = createSlice({
     setVersion(state, action: PayloadAction<number>) {
       state.version = action.payload;
     },
-    offRedactMood(state) {
-      state.isRedactMood = false;
+    offRedactMood(state, action: PayloadAction<IRedactMoods>) {
+      state[action.payload] = false;
     },
-    onRedactMood(state) {
-      state.isRedactMood = true;
+    onRedactMood(state, action: PayloadAction<IRedactMoods>) {
+      state[action.payload] = true;
+    },
+
+    verifyPassword(state, action: PayloadAction<boolean>) {
+      state.passwordIsVerify = action.payload;
     },
 
     setNewUserValue(
@@ -132,11 +153,19 @@ const userSlice = createSlice({
       } else {
       }
     },
+    setPassword(state, action: PayloadAction<{ passwordCamp: IPasswordCamp; value: string }>) {
+      state.userParams.password[action.payload.passwordCamp] = action.payload.value;
+    },
 
     setUserState(state, action: PayloadAction<Customer>) {
       const userState = {
         login: { value: action.payload.email, newValue: action.payload.email },
-        password: { value: action.payload.password ?? '', newValue: action.payload.password ?? '' },
+        password: {
+          value: action.payload.password ?? '',
+          currentValue: '',
+          newValue: '',
+          repeatNewValue: '',
+        },
         firstName: {
           value: action.payload.firstName ?? '',
           newValue: action.payload.firstName ?? '',
@@ -155,6 +184,12 @@ const userSlice = createSlice({
       state.userParams.firstName.newValue = state.userParams.firstName.value;
       state.userParams.lastName.newValue = state.userParams.lastName.value;
       state.userParams.login.newValue = state.userParams.login.value;
+    },
+
+    clearPasswordCamps(state) {
+      state.userParams.password.currentValue = '';
+      state.userParams.password.newValue = '';
+      state.userParams.password.repeatNewValue = '';
     },
 
     setAddresses(state, action: PayloadAction<Customer>) {
@@ -209,5 +244,8 @@ export const {
   setNewUserValue,
   backOldStateValue,
   setVersion,
+  setPassword,
+  verifyPassword,
+  clearPasswordCamps,
 } = userSlice.actions;
 export default userSlice.reducer;

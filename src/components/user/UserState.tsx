@@ -5,6 +5,7 @@ import styles from '@pages/user/user.module.scss';
 import { Pencil } from '@/assets/img/pencil';
 import {
   backOldStateValue,
+  IRedactMoods,
   IUserFildNames,
   offRedactMood,
   onRedactMood,
@@ -23,6 +24,8 @@ import { getCustomer, updateCustomer } from '@/services/customersController';
 import { SHOP } from '@/config/localStorageConfig';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 import type { CustomerUpdateAction } from '@commercetools/platform-sdk';
+
+const UPDATE_MESSAGE = 'Your personal data was updated successfully!';
 
 export function UserState() {
   const user = useSelector((state: RootState) => state.user);
@@ -51,10 +54,10 @@ export function UserState() {
   ];
 
   function onRedactMoodHandle() {
-    dispatch(onRedactMood());
+    dispatch(onRedactMood(IRedactMoods.userParams));
   }
   function offRedactMoodHandle() {
-    dispatch(offRedactMood());
+    dispatch(offRedactMood(IRedactMoods.userParams));
     dispatch(backOldStateValue());
     dispatch(resetState());
   }
@@ -69,11 +72,10 @@ export function UserState() {
           ? dispatch(setValid(name))
           : dispatch(setInvalid(name));
       }
-      event.target.focus();
     };
   }
 
-  function showIfError(value: string) {
+  function showMessage(value: string) {
     dispatch(setDialogText(value));
     dispatch(toggleDialog(true));
   }
@@ -119,16 +121,19 @@ export function UserState() {
         try {
           const response = await updateCustomer(user.version, actions, id);
           dispatch(setVersion(response.body.version));
+          showMessage(UPDATE_MESSAGE);
           const newUser = await getCustomer(id);
           if (newUser && !(newUser instanceof Error)) {
             const body = newUser.body;
             console.log(body);
             dispatch(setUserState(body));
-            dispatch(offRedactMood());
+            dispatch(offRedactMood(IRedactMoods.userParams));
           }
         } catch (err) {
-          if (err instanceof Error) showIfError(err.message);
+          if (err instanceof Error) showMessage(err.message);
         }
+      } else if (actions.length === 0) {
+        offRedactMoodHandle();
       }
     }
   }
@@ -137,7 +142,7 @@ export function UserState() {
     <section className={styles.user_section}>
       <div className={styles.user_section_title}>
         <h5>Personal Data</h5>
-        {user.isRedactMood ? (
+        {user.isRedactUserParamsMood ? (
           <div className={styles.user_save_wrap}>
             <div className={styles.user_close_area}>
               <Close className={styles.user_close} onClick={offRedactMoodHandle} />
@@ -150,7 +155,7 @@ export function UserState() {
           <Pencil className={styles.user_pencil} onClick={onRedactMoodHandle} />
         )}
       </div>
-      {user.isRedactMood
+      {user.isRedactUserParamsMood
         ? dataArr.map(item => {
             dispatch(setValue({ name: item.input, value: item.value.newValue }));
             return (
@@ -167,13 +172,16 @@ export function UserState() {
         : dataArr.map(item => {
             return (
               <div
-                className={`${styles.user_wrap} ${user.isRedactMood ? styles.redact : ''}`}
+                className={`${styles.user_wrap} ${user.isRedactUserParamsMood ? styles.redact : ''}`}
                 key={item.input}
               >
                 <Input
                   value={`${item.name}  ${item.value.value}`}
-                  readonly={!user.isRedactMood}
+                  readonly={!user.isRedactUserParamsMood}
                   className={styles.user_input}
+                  type={InputTypes.text}
+                  placeholder=""
+                  onChange={() => {}}
                 />
               </div>
             );

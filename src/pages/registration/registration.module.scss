@@ -68,7 +68,6 @@ $hover-color: #333;
         width: 20px;
         height: auto;
         cursor: pointer;
-        margin-left: 5px;
         transition: all 0.2s ease-in;
         &:hover {
           stroke: $hover-color;
@@ -76,12 +75,11 @@ $hover-color: #333;
             stroke: $hover-color;
           }
         }
-        path.active,
-        &.active {
+        &.active path {
           stroke: $hover-color;
         }
-        circle.active {
-          fill: $hover-color;
+        &.active  circle{
+          stroke: $hover-color;
         }
       }
     }

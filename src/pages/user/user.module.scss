@@ -139,3 +139,25 @@ $breakpoint-mobile: 768px;
     margin: 5px 0;
   }
 }
+.eye {
+  width: 20px;
+  height: auto;
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+  &:hover {
+    stroke: $hover-color;
+    path {
+      stroke: $hover-color;
+    }
+  }
+  &.active path {
+    stroke: $hover-color;
+  }
+  &.active circle {
+    stroke: $hover-color;
+  }
+}
+.active {
+  height: auto;
+  opacity: 1;
+}
