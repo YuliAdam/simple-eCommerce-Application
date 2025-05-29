@@ -17,11 +17,12 @@ import { Save } from '@/assets/img/save';
 import { RegistrationInput } from '../registration/RegistrationInput';
 import { InputName, InputTypes, IUpdateActions } from '@/interfaces/types';
 import type { ChangeEvent } from 'react';
-import { setInvalid, setValid, setValue } from '@/store/slices/registrationSlice';
-import { PATTERNS } from '@/utils/validation/registrationValidation';
+import { resetState, setInvalid, setValid, setValue } from '@/store/slices/registrationSlice';
+import { PATTERNS, userDataIsValid } from '@/utils/validation/registrationValidation';
 import { getCustomer, updateCustomer } from '@/services/customersController';
 import { SHOP } from '@/config/localStorageConfig';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import type { CustomerUpdateAction } from '@commercetools/platform-sdk';
 
 export function UserState() {
   const user = useSelector((state: RootState) => state.user);
@@ -55,6 +56,7 @@ export function UserState() {
   function offRedactMoodHandle() {
     dispatch(offRedactMood());
     dispatch(backOldStateValue());
+    dispatch(resetState());
   }
 
   function onChangeInput(name: InputName) {
@@ -76,76 +78,58 @@ export function UserState() {
     dispatch(toggleDialog(true));
   }
 
+  function isValid() {
+    return userDataIsValid(
+      user.userParams.login.newValue.trim(),
+      user.userParams.firstName.newValue.trim(),
+      user.userParams.lastName.newValue.trim(),
+      user.userParams.birthDay.newValue.trim(),
+    );
+  }
+
   async function sendForm() {
     const id = localStorage.getItem(SHOP.client_id);
+    const actions: CustomerUpdateAction[] = [];
     if (id) {
-      if (user.userParams.login.newValue !== user.userParams.login.value) {
+      if (user.userParams.login.newValue.trim() !== user.userParams.login.value) {
+        actions.push({
+          action: IUpdateActions.changeEmail,
+          email: user.userParams.login.newValue.trim(),
+        });
+      }
+      if (user.userParams.firstName.newValue.trim() !== user.userParams.firstName.value) {
+        actions.push({
+          action: IUpdateActions.setFirstName,
+          firstName: user.userParams.firstName.newValue.trim(),
+        });
+      }
+      if (user.userParams.lastName.newValue.trim() !== user.userParams.lastName.value) {
+        actions.push({
+          action: IUpdateActions.setLastName,
+          lastName: user.userParams.lastName.newValue.trim(),
+        });
+      }
+      if (user.userParams.birthDay.newValue.trim() !== user.userParams.birthDay.value) {
+        actions.push({
+          action: IUpdateActions.setDateOfBirth,
+          dateOfBirth: user.userParams.birthDay.newValue.trim(),
+        });
+      }
+      if (actions.length > 0 && isValid()) {
         try {
-          await updateCustomer(
-            user.version,
-            [{ action: IUpdateActions.changeEmail, email: user.userParams.login.newValue }],
-            id,
-          );
-        } catch (e) {
-          if (e instanceof Error) showIfError(e.message);
+          const response = await updateCustomer(user.version, actions, id);
+          dispatch(setVersion(response.body.version));
+          const newUser = await getCustomer(id);
+          if (newUser && !(newUser instanceof Error)) {
+            const body = newUser.body;
+            console.log(body);
+            dispatch(setUserState(body));
+            dispatch(offRedactMood());
+          }
+        } catch (err) {
+          if (err instanceof Error) showIfError(err.message);
         }
       }
-      if (user.userParams.firstName.newValue !== user.userParams.firstName.value) {
-        try {
-          await updateCustomer(
-            user.version,
-            [
-              {
-                action: IUpdateActions.setFirstName,
-                firstName: user.userParams.firstName.newValue,
-              },
-            ],
-            id,
-          );
-          dispatch(setVersion(user.version + 1));
-        } catch (e) {
-          if (e instanceof Error) showIfError(e.message);
-        }
-      }
-      if (user.userParams.lastName.newValue !== user.userParams.lastName.value) {
-        try {
-          await updateCustomer(
-            user.version,
-            [{ action: IUpdateActions.setLastName, lastName: user.userParams.lastName.newValue }],
-            id,
-          );
-          dispatch(setVersion(user.version + 1));
-        } catch (e) {
-          if (e instanceof Error) showIfError(e.message);
-        }
-      }
-      if (user.userParams.birthDay.newValue !== user.userParams.birthDay.value) {
-        try {
-          await updateCustomer(
-            user.version,
-            [
-              {
-                action: IUpdateActions.setDateOfBirth,
-                dateOfBirth: user.userParams.birthDay.newValue,
-              },
-            ],
-            id,
-          );
-          dispatch(setVersion(user.version + 1));
-        } catch (e) {
-          if (e instanceof Error) showIfError(e.message);
-        }
-      }
-      dispatch(setVersion(user.version + 1));
-      await getCustomer(id).then(res => {
-        if (res && !(res instanceof Error)) {
-          const body = res.body;
-          console.log(body);
-          dispatch(setUserState(body));
-          dispatch(setVersion(body.version));
-          dispatch(offRedactMood());
-        }
-      });
     }
   }
 
@@ -187,7 +171,7 @@ export function UserState() {
                 key={item.input}
               >
                 <Input
-                  value={`${item.name} ${item.value.value}`}
+                  value={`${item.name}  ${item.value.value}`}
                   readonly={!user.isRedactMood}
                   className={styles.user_input}
                 />

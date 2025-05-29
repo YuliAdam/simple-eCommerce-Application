@@ -16,7 +16,12 @@ import {
 } from '@/store/slices/registrationSlice';
 import type { RootState } from '@/store/store';
 import { getCodeByCountry } from '@utils/searchInCountryArrayMethods';
-import { PATTERNS } from '@/utils/validation/registrationValidation';
+import {
+  addressIsValid,
+  passwordIsValid,
+  PATTERNS,
+  userDataIsValid,
+} from '@/utils/validation/registrationValidation';
 import type {
   ClientResponse,
   CustomerDraft,
@@ -137,26 +142,34 @@ export function RegistrationForm(): JSX.Element {
 
   function isValidForm() {
     return (
-      new RegExp(PATTERNS.login).test(registration.login.value) &&
-      new RegExp(PATTERNS.password).test(registration.password.value) &&
-      registration.birthDay.value.length > 0 &&
-      new RegExp(PATTERNS.firstName).test(registration.firstName.value) &&
-      new RegExp(PATTERNS.lastName).test(registration.lastName.value) &&
-      new RegExp(PATTERNS.city).test(registration.city.value) &&
-      new RegExp(PATTERNS.country).test(registration.country.value) &&
-      new RegExp(PATTERNS.postalCode).test(registration.postalCode.value) &&
-      new RegExp(PATTERNS.street).test(registration.street.value) &&
+      userDataIsValid(
+        registration.login.value,
+        registration.firstName.value,
+        registration.lastName.value,
+        registration.birthDay.value,
+      ) &&
+      passwordIsValid(registration.password.value) &&
+      addressIsValid(
+        registration.street.value,
+        registration.city.value,
+        registration.postalCode.value,
+        registration.country.value,
+      ) &&
       (registration.billing.isPresent
-        ? new RegExp(PATTERNS.city).test(registration.billing.city.value) &&
-          new RegExp(PATTERNS.country).test(registration.billing.country.value) &&
-          new RegExp(PATTERNS.postalCode).test(registration.billing.postalCode.value) &&
-          new RegExp(PATTERNS.street).test(registration.billing.street.value)
+        ? addressIsValid(
+            registration.billing.street.value,
+            registration.billing.city.value,
+            registration.billing.postalCode.value,
+            registration.billing.country.value,
+          )
         : true) &&
       (registration.shipping.isPresent
-        ? new RegExp(PATTERNS.city).test(registration.shipping.city.value) &&
-          new RegExp(PATTERNS.country).test(registration.shipping.country.value) &&
-          new RegExp(PATTERNS.postalCode).test(registration.shipping.postalCode.value) &&
-          new RegExp(PATTERNS.street).test(registration.shipping.street.value)
+        ? addressIsValid(
+            registration.shipping.street.value,
+            registration.shipping.city.value,
+            registration.shipping.postalCode.value,
+            registration.shipping.country.value,
+          )
         : true)
     );
   }

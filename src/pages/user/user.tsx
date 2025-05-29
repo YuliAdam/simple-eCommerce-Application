@@ -3,7 +3,7 @@ import { getCustomer } from '@/services/customersController';
 import { useEffect } from 'react';
 import styles from './user.module.scss';
 import { useDispatch } from 'react-redux';
-import { UserForm } from '@/components/user/UserForm';
+import { UserRedact } from '@/components/user/UserRedact';
 import { setAddresses, setUserState, setVersion } from '@/store/slices/userSlice';
 
 function User() {
@@ -25,7 +25,7 @@ function User() {
   return (
     <section className={styles.user}>
       <h2 className={styles.user_title}>User Page</h2>
-      <UserForm />
+      <UserRedact />
     </section>
   );
 }
