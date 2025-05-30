@@ -161,3 +161,8 @@ $breakpoint-mobile: 768px;
   height: auto;
   opacity: 1;
 }
+.address {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

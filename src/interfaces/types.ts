@@ -52,10 +52,12 @@ export interface IAddress {
 }
 
 export interface IUserPageAddress {
+  id?: string;
   streetName: { value: string; newValue: string };
   city: { value: string; newValue: string };
   country: { value: string; newValue: string };
   postalCode: { value: string; newValue: string };
+  isRedactMood: boolean;
 }
 
 export interface ICustomer {

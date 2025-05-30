@@ -58,52 +58,26 @@ const initialState: IUserState = {
     lastName: { value: '', newValue: '' },
     birthDay: { value: '', newValue: '' },
   },
-  userAddresses: [
-    {
-      streetName: { value: '', newValue: '' },
-      city: { value: '', newValue: '' },
-      postalCode: { value: '', newValue: '' },
-      country: { value: '', newValue: '' },
-    },
-  ],
-  billingArr: [
-    {
-      streetName: { value: '', newValue: '' },
-      city: { value: '', newValue: '' },
-      postalCode: { value: '', newValue: '' },
-      country: { value: '', newValue: '' },
-    },
-  ],
-  shippingArr: [
-    {
-      streetName: { value: '', newValue: '' },
-      city: { value: '', newValue: '' },
-      postalCode: { value: '', newValue: '' },
-      country: { value: '', newValue: '' },
-    },
-  ],
+  userAddresses: [],
+  billingArr: [],
+  shippingArr: [],
   billingDefault: {
+    id: '',
     streetName: { value: '', newValue: '' },
     city: { value: '', newValue: '' },
     postalCode: { value: '', newValue: '' },
     country: { value: '', newValue: '' },
+    isRedactMood: false,
   },
-
   shippingDefault: {
+    id: '',
     streetName: { value: '', newValue: '' },
     city: { value: '', newValue: '' },
     postalCode: { value: '', newValue: '' },
     country: { value: '', newValue: '' },
+    isRedactMood: false,
   },
 };
-
-function addAddress(address: IUserPageAddress, state: IUserPageAddress | IUserPageAddress[]) {
-  if (Array.isArray(state)) {
-    state.push(address);
-  } else {
-    state = address;
-  }
-}
 
 const userSlice = createSlice({
   name: 'userSlice',
@@ -142,7 +116,8 @@ const userSlice = createSlice({
           input === InputName.firstName ||
           input === InputName.password)
           ? (state.userParams[input].newValue = action.payload.value)
-          : (inputDesc === IUserFildNames.billingDefault ||
+          : state[inputDesc] &&
+              (inputDesc === IUserFildNames.billingDefault ||
                 inputDesc === IUserFildNames.shippingDefault) &&
               (input === InputName.country ||
                 input === InputName.postalCode ||
@@ -193,8 +168,12 @@ const userSlice = createSlice({
     },
 
     setAddresses(state, action: PayloadAction<Customer>) {
+      state.userAddresses = [];
+      state.billingArr = [];
+      state.shippingArr = [];
       action.payload.addresses.forEach(item => {
         const address = {
+          id: item.id,
           streetName: { value: item.streetName ?? '', newValue: item.streetName ?? '' },
           city: { value: item.city ?? '', newValue: item.city ?? '' },
           postalCode: { value: item.postalCode ?? '', newValue: item.postalCode ?? '' },
@@ -202,35 +181,30 @@ const userSlice = createSlice({
             value: getCountryByCode(item.country),
             newValue: getCountryByCode(item.country),
           },
+          isRedactMood: false,
         };
-        let isGenericAddress = true;
+        console.log(address);
         if (item.id === action.payload.defaultBillingAddressId) {
-          addAddress(address, state.billingDefault);
-          isGenericAddress = false;
+          state.billingDefault = address;
         }
         if (item.id === action.payload.defaultShippingAddressId) {
-          addAddress(address, state.shippingDefault);
-          isGenericAddress = false;
+          state.shippingDefault = address;
         }
         if (
           action.payload.billingAddressIds &&
           item.id &&
           action.payload.billingAddressIds.includes(item.id)
         ) {
-          addAddress(address, state.billingArr);
-          isGenericAddress = false;
+          state.billingArr.push(address);
         }
         if (
           action.payload.shippingAddressIds &&
           item.id &&
           action.payload.shippingAddressIds.includes(item.id)
         ) {
-          addAddress(address, state.shippingArr);
-          isGenericAddress = false;
+          state.shippingArr.push(address);
         }
-        if (isGenericAddress) {
-          addAddress(address, state.userAddresses);
-        }
+        state.userAddresses.push(address);
       });
     },
   },
