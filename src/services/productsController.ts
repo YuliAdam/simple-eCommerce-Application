@@ -19,7 +19,7 @@ export const getProducts = async ({ categoryId = null }: { categoryId?: string |
   }
 };
 
-export const getCatregories = async () => {
+export const getCategories = async () => {
   try {
     return await apiRoot.categories().get().execute();
   } catch (err) {
@@ -66,6 +66,23 @@ export const getSortedProducts = async ({
       .search()
       .get({
         queryArgs: options,
+      })
+      .execute();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getProductsBySearch = async (text: string) => {
+  try {
+    return await apiRoot
+      .productProjections()
+      .search()
+      .get({
+        queryArgs: {
+          ['text.en-GB']: text,
+          fuzzy: true,
+        },
       })
       .execute();
   } catch (err) {

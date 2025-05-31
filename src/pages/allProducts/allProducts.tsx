@@ -1,5 +1,10 @@
-import { getProducts, getCatregories, getSortedProducts } from '@/services/productsController';
-import { useEffect, useState } from 'react';
+import {
+  getProducts,
+  getCategories,
+  getSortedProducts,
+  getProductsBySearch,
+} from '@/services/productsController';
+import React, { useEffect, useState } from 'react';
 import ProductCard from '@/components/catalog/product/productCard';
 import type I_Product from '@/interfaces/catalog/product';
 import type I_Category from '@/interfaces/catalog/category';
@@ -62,7 +67,7 @@ function AllProducts() {
   useEffect(() => {
     async function getCategoriesData() {
       try {
-        const response = await getCatregories();
+        const response = await getCategories();
 
         if (response && response.statusCode === 200) {
           const productsData = response.body.results;
@@ -156,6 +161,34 @@ function AllProducts() {
     }
   }
 
+  function handleSearchInput(event: React.KeyboardEvent) {
+    if (event.key !== 'Enter') {
+      return;
+    }
+
+    const target = event.target;
+
+    if (target && target instanceof HTMLInputElement) {
+      const text = target.value.trim();
+      if (text) {
+        async function getSearchData(text: string) {
+          try {
+            const response = await getProductsBySearch(text);
+
+            if (response && response.statusCode === 200) {
+              const productsData = response.body.results;
+              setProducts(productsData);
+              console.log('Searched products: ', productsData);
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        }
+        getSearchData(text);
+      }
+    }
+  }
+
   return (
     <section className={styles.catalog}>
       <div className="container">
@@ -167,6 +200,7 @@ function AllProducts() {
               name="product-name"
               id="product-name"
               placeholder="Search in products..."
+              onKeyDown={handleSearchInput}
             />
           </div>
         </div>
