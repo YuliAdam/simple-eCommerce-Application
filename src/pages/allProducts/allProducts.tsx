@@ -5,11 +5,15 @@ import type I_Product from '@/interfaces/catalog/product';
 import type I_Category from '@/interfaces/catalog/category';
 import type I_SubCategory from '@/interfaces/catalog/subCategory';
 import styles from './allProducts.module.scss';
+import createBreadCrumbs from '@/pages/allProducts/createBreadcrumbs';
+import CategoryItem from '@/components/catalog/category-item/category-item';
 
 function AllProducts() {
   const [products, setProducts] = useState<I_Product[]>([]);
   const [categories, setCategories] = useState<I_Category[]>([]);
   const [subCategories, setSubCategories] = useState<I_SubCategory[]>([]);
+  const [breadcrumbs, setBreadcrumbs] = useState<{ id: string; name: string }[]>([]);
+  const [activeCategoryButton, setactiveCategoryButton] = useState<string | null>(null);
 
   useEffect(() => {
     async function getProductsData() {
@@ -69,6 +73,8 @@ function AllProducts() {
       const id = target.getAttribute('data-id');
 
       if (id) {
+        setactiveCategoryButton(id);
+
         async function getProductsData(id: string) {
           try {
             const response = await getProductsByCategory(id);
@@ -82,7 +88,16 @@ function AllProducts() {
             console.log(err);
           }
         }
+
+        const breadcrumbs = createBreadCrumbs(categories, subCategories, id);
+
+        setBreadcrumbs(breadcrumbs);
         getProductsData(id);
+        window.history.pushState(
+          {},
+          '',
+          `/products/${encodeURIComponent(target.textContent ?? '')}`,
+        );
       }
     }
   }
@@ -101,38 +116,37 @@ function AllProducts() {
             />
           </div>
         </div>
+        <div className={styles.breadcrumbs}>
+          <ul className={styles['breadcrumbs-list']}>
+            {breadcrumbs.map((breadcrumb, i) => (
+              <li
+                key={i}
+                className={`${styles['breadcrumb-item']} ${i === breadcrumbs.length - 1 ? styles['no-arrow'] : ''}`}
+              >
+                <button
+                  data-id={breadcrumb.id}
+                  className={styles['breadcrumb-button']}
+                  onClick={handleCategoryButton}
+                >
+                  {breadcrumb.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
         <div className={styles['catalog-wrapper']}>
           <div className={styles.filters}>
             <div className={styles.categories}>
               <h2 className={styles.header}>Categories</h2>
               <ul className={styles['categories-list']}>
                 {categories.map(category => (
-                  <li key={category.id} className={styles['categories-item']}>
-                    <button
-                      data-id={category.id}
-                      className={styles['categories-button']}
-                      onClick={handleCategoryButton}
-                    >
-                      {category.name?.['en-GB'] ? category.name['en-GB'] : ''}
-                    </button>
-                    <ul className={styles['sub-categories-list']}>
-                      {subCategories.map(subCategory =>
-                        subCategory.parent?.id === category.id ? (
-                          <li key={subCategory.id} className={styles['sub-categories-item']}>
-                            <button
-                              data-id={subCategory.id}
-                              className={styles['sub-categories-button']}
-                              onClick={handleCategoryButton}
-                            >
-                              {subCategory.name?.['en-GB'] ? subCategory.name['en-GB'] : ''}
-                            </button>
-                          </li>
-                        ) : (
-                          ''
-                        ),
-                      )}
-                    </ul>
-                  </li>
+                  <CategoryItem
+                    key={category.id}
+                    category={category}
+                    subCategories={subCategories}
+                    activeCategoryButton={activeCategoryButton}
+                    handleCategoryButton={handleCategoryButton}
+                  />
                 ))}
               </ul>
             </div>

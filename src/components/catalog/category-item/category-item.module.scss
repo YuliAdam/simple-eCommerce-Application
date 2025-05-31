@@ -1,0 +1,23 @@
+.categories-button, .sub-categories-button {
+    padding: 0;
+    white-space: nowrap;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: opacity 1s ease;
+    &:hover {
+        opacity: 0.3;
+    }
+}
+
+.categories-button-active, .categories-button-active {
+    font-weight: 600;
+}
+
+.categories-item {
+    margin-bottom: 10px;
+}
+
+.sub-categories-item {
+    padding-left: 10px;
+}

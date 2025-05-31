@@ -31,7 +31,7 @@ $primary-color: #111827;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
-        transform: translateY(-50%);;
+        transform: translateY(-50%);
     }
 }
 
@@ -71,22 +71,40 @@ $primary-color: #111827;
     color: $body-text-color;
 }
 
-.categories-button, .sub-categories-button {
+.breadcrumbs-list {
+    padding: 0 20px;
+    display: flex;
+    gap: 20px;
+}
+
+.breadcrumb-item {
+    position: relative;
+    &::after {
+        position: absolute;
+        top: 50%;
+        right: -20px;
+        content: '';
+        display: block;
+        width: 16px;
+        height: 16px;
+        background-image: url('../../assets/img/catalog/next.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        transform: translateY(-50%);
+    }
+}
+
+.breadcrumb-button {
     padding: 0;
     white-space: nowrap;
     background: transparent;
     border: none;
     cursor: pointer;
-    transition: opacity 1s ease;
-    &:hover {
-        opacity: 0.3;
+}
+
+.no-arrow {
+    &::after {
+        display: none;
     }
-}
-
-.categories-item {
-    margin-bottom: 10px;
-}
-
-.sub-categories-item {
-    padding-left: 10px;
 }

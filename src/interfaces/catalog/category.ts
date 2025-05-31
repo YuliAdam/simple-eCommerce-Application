@@ -3,4 +3,7 @@ export default interface I_Category {
   name?: {
     ['en-GB']?: string;
   };
+  parent?: {
+    id: string;
+  };
 }
