@@ -1,15 +1,15 @@
-import type I_Product from '@/interfaces/catalog/product';
 import styles from './productCard.module.scss';
 import { Path } from '@/config/routesConfig';
 import { Link } from 'react-router-dom';
+import type I_ProductCardData from '@/interfaces/catalog/productCard';
 
-function ProductCard({ product }: { product: I_Product }) {
-  const data = product.masterData.current,
+function ProductCard({ product }: { product: I_ProductCardData }) {
+  const data = product,
     id = product.id,
-    imagesArray = data.masterVariant.images,
+    imagesArray = data.images,
     productName = data.name,
     productDescription = data.description,
-    productPricesArray = data.masterVariant?.prices,
+    productPricesArray = data.prices,
     priceValue = productPricesArray?.[0]?.value,
     discountedValue = productPricesArray?.[0]?.discounted?.value;
 
@@ -25,9 +25,9 @@ function ProductCard({ product }: { product: I_Product }) {
         </div>
         <div className={styles['product-info']}>
           <div className={styles['product-text-wrapper']}>
-            <p className={styles['product-name']}>{productName ? productName['en-GB'] : ''}</p>
+            <p className={styles['product-name']}>{productName ? productName : ''}</p>
             <p className={styles['product-description']}>
-              {productDescription ? productDescription['en-GB'] : ''}
+              {productDescription ? productDescription : ''}
             </p>
           </div>
           <div className={styles['product-prices']}>
