@@ -15,17 +15,19 @@ export default interface I_Product {
         }[];
         prices?: {
           discounted?: {
-            value?: I_Prices;
+            value?: {
+              centAmount: number;
+              currencyCode: string;
+              fractionDigits: number;
+            };
           };
-          value?: I_Prices;
+          value?: {
+            centAmount: number;
+            currencyCode: string;
+            fractionDigits: number;
+          };
         }[];
       };
     };
   };
-}
-
-interface I_Prices {
-  centAmount: number;
-  currencyCode: string;
-  fractionDigits: number;
 }

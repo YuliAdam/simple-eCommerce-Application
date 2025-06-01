@@ -55,9 +55,13 @@ $primary-color: #111827;
     gap: 20px;
 }
 
+.filters {
+    min-width: 150px;
+}
+
 .header {
     margin: 0;
-    margin-bottom: 20px; 
+    margin-bottom: 10px; 
     font-size: 1.8rem; 
     font-weight: 600; 
     line-height: 28px;
