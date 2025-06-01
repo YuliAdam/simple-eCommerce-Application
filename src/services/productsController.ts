@@ -77,10 +77,10 @@ export const getProductsBySearch = async (text: string) => {
   try {
     return await apiRoot
       .productProjections()
-      .search()
+      .suggest()
       .get({
         queryArgs: {
-          ['text.en-GB']: text,
+          'searchKeywords.en-GB': text,
           fuzzy: true,
         },
       })

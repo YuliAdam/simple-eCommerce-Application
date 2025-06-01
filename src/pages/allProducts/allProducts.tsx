@@ -24,21 +24,21 @@ function AllProducts() {
   const [sortPrice, setsortPrice] = useState<string | null>(null);
   const [sortName, setsortName] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function getProductsData() {
-      try {
-        const response = await getProducts();
+  async function getProductsData() {
+    try {
+      const response = await getProducts();
 
-        if (response && response.statusCode === 200) {
-          const productsData = response.body.results;
-          setProducts(productsData);
-          console.log('Products: ', productsData);
-        }
-      } catch (err) {
-        console.log(err);
+      if (response && response.statusCode === 200) {
+        const productsData = response.body.results;
+        setProducts(productsData);
+        console.log('Products: ', productsData);
       }
+    } catch (err) {
+      console.log(err);
     }
+  }
 
+  useEffect(() => {
     async function getSortedProductsData() {
       try {
         const response = await getSortedProducts({
@@ -176,9 +176,18 @@ function AllProducts() {
             const response = await getProductsBySearch(text);
 
             if (response && response.statusCode === 200) {
-              const productsData = response.body.results;
-              setProducts(productsData);
-              console.log('Searched products: ', productsData);
+              const productsNames = response.body['searchKeywords.en-GB'].map(el => el.text);
+              const productsData = await getProducts();
+
+              if (productsData && productsData.statusCode === 200) {
+                const products = productsData.body.results;
+
+                const searchedProducts = products.filter(el =>
+                  productsNames.includes(el.masterData.current.name['en-GB']),
+                );
+                setProducts(searchedProducts);
+                console.log('Searched products: ', productsNames);
+              }
             }
           } catch (err) {
             console.log(err);
