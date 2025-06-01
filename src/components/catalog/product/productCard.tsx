@@ -11,7 +11,52 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
     productDescription = data.description,
     productPricesArray = data.prices,
     priceValue = productPricesArray?.[0]?.value,
-    discountedValue = productPricesArray?.[0]?.discounted?.value;
+    discountedValue = productPricesArray?.[0]?.discounted?.value,
+    attributes = data?.attributes,
+    variants = data?.variants,
+    brands = new Set<string>(),
+    colors = new Set<string>(),
+    sizes = new Set<string>();
+
+  if (attributes) {
+    attributes.map(attribute => {
+      const attributesData = attribute.value;
+      if (attributesData) {
+        if (attribute.name === 'brand') {
+          brands.add(attribute.value.label);
+        }
+
+        if (attribute.name === 'color') {
+          colors.add(attribute.value.label);
+        }
+
+        if (attribute.name === 'size') {
+          sizes.add(attribute.value.label);
+        }
+      }
+    });
+  }
+
+  if (variants) {
+    variants.map(variant => {
+      const attributesData = variant.attributes;
+      if (attributesData) {
+        attributesData.map(attribute => {
+          if (attribute.name === 'brand') {
+            brands.add(attribute.value.label);
+          }
+
+          if (attribute.name === 'color') {
+            colors.add(attribute.value.label);
+          }
+
+          if (attribute.name === 'size') {
+            sizes.add(attribute.value.label);
+          }
+        });
+      }
+    });
+  }
 
   return (
     <Link to={`${Path.product.replace(':id', id)}`} className={styles.link}>
@@ -29,6 +74,36 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
             <p className={styles['product-description']}>
               {productDescription ? productDescription : ''}
             </p>
+            <ul className={styles['product-details']}>
+              <li className={styles['product-detail']}>
+                <h4 className={styles['product-detail-header']}>Brand:</h4>
+                <p className={styles['product-detail-name']}>
+                  {Array.from(brands)
+                    .map(brand => brand)
+                    .join(', ')}
+                </p>
+              </li>
+            </ul>
+            <ul className={styles['product-details']}>
+              <li className={styles['product-detail']}>
+                <h4 className={styles['product-detail-header']}>Colors:</h4>
+                <p className={styles['product-detail-name']}>
+                  {Array.from(colors)
+                    .map(color => color)
+                    .join(', ')}
+                </p>
+              </li>
+            </ul>
+            <ul className={styles['product-details']}>
+              <li className={styles['product-detail']}>
+                <h4 className={styles['product-detail-header']}>Sizes:</h4>
+                <p className={styles['product-detail-name']}>
+                  {Array.from(sizes)
+                    .map(size => size)
+                    .join(', ')}
+                </p>
+              </li>
+            </ul>
           </div>
           <div className={styles['product-prices']}>
             {discountedValue ? (

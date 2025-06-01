@@ -16,7 +16,7 @@ export default async function getProductsData({
     if (response && response.statusCode === 200) {
       const productsData = response.body.results;
       setProducts(productsData);
-      if (id) {
+      if (!id) {
         console.log('Products: ', productsData);
       } else {
         console.log('Products by category: ', productsData);

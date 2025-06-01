@@ -31,21 +31,29 @@ export const getSortedProducts = async ({
   categoryId,
   sortByPrice,
   sortByName,
+  minPrice = 0,
+  maxPrice = 30,
 }: {
   categoryId?: string | null;
   sortByPrice?: string | null;
   sortByName?: string | null;
+  minPrice?: number;
+  maxPrice?: number;
 } = {}) => {
-  const filterOptions = `categories.id:"${categoryId}"`;
+  const filterByCategoryOption = `categories.id:"${categoryId}"`;
   const sortByPriceOptions = `price ${sortByPrice}`;
   const sortByNameOptions = `name.en-GB ${sortByName}`;
+  const filterByMinPrice = Number.isFinite(minPrice) ? minPrice : 0;
+  const filterByMaxPrice = Number.isFinite(maxPrice) ? maxPrice : 30;
 
   const options: { [key: string]: string[] } = {};
+
+  const filterOptions = [];
 
   const sortOptions = [];
 
   if (categoryId) {
-    options.filter = [filterOptions];
+    filterOptions.push(filterByCategoryOption);
   }
 
   if (sortByPrice) {
@@ -56,8 +64,16 @@ export const getSortedProducts = async ({
     sortOptions.push(sortByNameOptions);
   }
 
+  const min = filterByMinPrice * 100;
+  const max = filterByMaxPrice * 100;
+  filterOptions.push(`variants.price.centAmount:range (${min} to ${max})`);
+
   if (sortOptions.length > 0) {
     options.sort = sortOptions;
+  }
+
+  if (filterOptions.length > 0) {
+    options.filter = filterOptions;
   }
 
   try {

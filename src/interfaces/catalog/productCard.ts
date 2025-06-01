@@ -20,4 +20,20 @@ export default interface I_ProductCardData {
       fractionDigits: number;
     };
   }[];
+  variants?: {
+    attributes?: {
+      name: string;
+      value: {
+        key: string;
+        label: string;
+      };
+    }[];
+  }[];
+  attributes?: {
+    name: string;
+    value: {
+      key: string;
+      label: string;
+    };
+  }[];
 }

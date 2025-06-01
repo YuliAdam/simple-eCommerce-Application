@@ -9,6 +9,13 @@ export default interface I_Product {
         ['en-GB']?: string;
       };
       masterVariant: {
+        attributes?: {
+          name: string;
+          value: {
+            key: string;
+            label: string;
+          };
+        }[];
         images?: {
           url?: string;
           label?: string;
@@ -28,6 +35,15 @@ export default interface I_Product {
           };
         }[];
       };
+      variants?: {
+        attributes?: {
+          name: string;
+          value: {
+            key: string;
+            label: string;
+          };
+        }[];
+      }[];
     };
   };
 }

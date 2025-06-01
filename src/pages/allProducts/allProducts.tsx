@@ -22,14 +22,23 @@ function AllProducts() {
   const [activeCategoryButton, setActiveCategoryButton] = useState<string | null>(null);
   const [sortPrice, setSortPrice] = useState<string | null>(null);
   const [sortName, setSortName] = useState<string | null>(null);
+  const [minPrice, setMinPrice] = useState<number | null>(null);
+  const [maxPrice, setMaxPrice] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!activeCategoryButton && !sortPrice && !sortName) {
+    if (!activeCategoryButton && !sortPrice && !sortName && !minPrice && !maxPrice) {
       getProductsData({ setProducts });
     } else {
-      getSortedProductsData({ activeCategoryButton, sortPrice, sortName, setProducts });
+      getSortedProductsData({
+        activeCategoryButton,
+        sortPrice,
+        sortName,
+        setProducts,
+        minPrice,
+        maxPrice,
+      });
     }
-  }, [activeCategoryButton, sortPrice, sortName]);
+  }, [activeCategoryButton, sortPrice, sortName, minPrice, maxPrice]);
 
   useEffect(() => {
     getCategoriesData({ setCategories, setSubCategories });
@@ -79,6 +88,18 @@ function AllProducts() {
         getSearchData({ text, setProducts });
       }
     }
+  }
+
+  function handleMinPriceInput(event: React.ChangeEvent<HTMLInputElement>) {
+    const price = parseFloat(event.target.value);
+    console.log('Min price ' + price);
+    setMinPrice(price);
+  }
+
+  function handleMaxPriceInput(event: React.ChangeEvent<HTMLInputElement>) {
+    const price = parseFloat(event.target.value);
+    console.log('Max price ' + price);
+    setMaxPrice(price);
   }
 
   return (
@@ -137,6 +158,32 @@ function AllProducts() {
               handleSortNameButton={handleSortNameButton}
               sortName={sortName}
             />
+            <div className={styles['price-filter']}>
+              <ul>
+                <li>
+                  <label htmlFor="min-price">Minimum Price</label>
+                  <input
+                    onChange={handleMinPriceInput}
+                    className={styles['price-input']}
+                    type="number"
+                    id="min-price"
+                    min="0"
+                    placeholder="Min: 0"
+                  ></input>
+                </li>
+                <li>
+                  <label htmlFor="max-price">Maximum Price</label>
+                  <input
+                    onChange={handleMaxPriceInput}
+                    className={styles['price-input']}
+                    type="number"
+                    id="max-price"
+                    max="30"
+                    placeholder="Max: 30"
+                  ></input>
+                </li>
+              </ul>
+            </div>
           </div>
           <ul className={styles.products}>
             {products.map(product => {

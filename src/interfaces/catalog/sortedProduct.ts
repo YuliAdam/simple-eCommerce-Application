@@ -26,4 +26,13 @@ export default interface I_SortedProduct {
       };
     }[];
   };
+  variants?: {
+    attributes?: {
+      name: string;
+      value: {
+        key: string;
+        label: string;
+      };
+    }[];
+  }[];
 }

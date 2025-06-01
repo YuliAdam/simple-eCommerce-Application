@@ -12,6 +12,8 @@ export default function createProductData(
       description: productData.masterData.current.description?.['en-GB'],
       images: productData.masterData.current.masterVariant?.images,
       prices: productData.masterData.current.masterVariant?.prices,
+      attributes: productData.masterData.current.masterVariant?.attributes,
+      variants: productData.masterData.current?.variants,
     };
   } else {
     return {
@@ -20,6 +22,8 @@ export default function createProductData(
       description: productData.description?.['en-GB'],
       images: productData.masterVariant?.images,
       prices: productData.masterVariant?.prices,
+      attributes: productData?.attributes,
+      variants: productData?.variants,
     };
   }
 }
