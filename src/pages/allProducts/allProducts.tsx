@@ -493,9 +493,9 @@ function AllProducts() {
             </button>
           </div>
           <ul className={styles.products}>
-            {products.map(product => {
+            {products.map((product, i) => {
               const productData = createProductData(product);
-              return <ProductCard key={productData.id} product={productData} />;
+              return <ProductCard key={productData.id} product={productData} i={i} />;
             })}
           </ul>
         </div>
