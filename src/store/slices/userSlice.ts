@@ -1,9 +1,15 @@
 import type { IUserPageAddress } from '@/interfaces/types';
+import { AddressType } from '@/interfaces/types';
 import { InputName } from '@/interfaces/types';
 import { getCountryByCode } from '@/utils/searchInCountryArrayMethods';
 import type { Customer } from '@commercetools/platform-sdk';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
+
+interface IdState {
+  value: string;
+  newValue: string;
+}
 
 interface IUserState {
   isRedactUserParamsMood: boolean;
@@ -19,10 +25,11 @@ interface IUserState {
     birthDay: { value: string; newValue: string };
   };
   userAddresses: IUserPageAddress[];
-  billingArr: IUserPageAddress[];
-  shippingArr: IUserPageAddress[];
-  billingDefault: IUserPageAddress;
-  shippingDefault: IUserPageAddress;
+  billingArr: { values: string[]; newValue: string };
+  shippingArr: { values: string[]; newValue: string };
+  billingDefault: IdState;
+  shippingDefault: IdState;
+  addressType: string;
 }
 
 export enum IRedactMoods {
@@ -37,6 +44,7 @@ export enum IUserFildNames {
   shippingArr = 'shippingArr',
   billingDefault = 'billingDefault',
   shippingDefault = 'shippingDefault',
+  addressType = 'addressType',
 }
 
 export enum IPasswordCamp {
@@ -59,24 +67,17 @@ const initialState: IUserState = {
     birthDay: { value: '', newValue: '' },
   },
   userAddresses: [],
-  billingArr: [],
-  shippingArr: [],
+  billingArr: { values: [], newValue: '' },
+  shippingArr: { values: [], newValue: '' },
   billingDefault: {
-    id: '',
-    streetName: { value: '', newValue: '' },
-    city: { value: '', newValue: '' },
-    postalCode: { value: '', newValue: '' },
-    country: { value: '', newValue: '' },
-    isRedactMood: false,
+    value: '',
+    newValue: '',
   },
   shippingDefault: {
-    id: '',
-    streetName: { value: '', newValue: '' },
-    city: { value: '', newValue: '' },
-    postalCode: { value: '', newValue: '' },
-    country: { value: '', newValue: '' },
-    isRedactMood: false,
+    value: '',
+    newValue: '',
   },
+  addressType: 'address',
 };
 
 const userSlice = createSlice({
@@ -86,11 +87,19 @@ const userSlice = createSlice({
     setVersion(state, action: PayloadAction<number>) {
       state.version = action.payload;
     },
-    offRedactMood(state, action: PayloadAction<IRedactMoods>) {
-      state[action.payload] = false;
+    offRedactMood(state, action: PayloadAction<IRedactMoods | number>) {
+      if (typeof action.payload === 'number') {
+        state.userAddresses[action.payload].isRedactMood = false;
+      } else {
+        state[action.payload] = false;
+      }
     },
-    onRedactMood(state, action: PayloadAction<IRedactMoods>) {
-      state[action.payload] = true;
+    onRedactMood(state, action: PayloadAction<IRedactMoods | number>) {
+      if (typeof action.payload === 'number') {
+        state.userAddresses[action.payload].isRedactMood = true;
+      } else {
+        state[action.payload] = true;
+      }
     },
 
     verifyPassword(state, action: PayloadAction<boolean>) {
@@ -101,31 +110,54 @@ const userSlice = createSlice({
       state,
       action: PayloadAction<{
         name: IUserFildNames | { arrayName: IUserFildNames; i: number };
-        input: InputName;
+        input?: InputName;
         value: string;
       }>,
     ) {
       const inputDesc = action.payload.name;
-      let input: InputName | string = action.payload.input;
+      let input: InputName | string | undefined = action.payload.input;
       input = input === InputName.street ? 'streetName' : input;
       if (typeof inputDesc === 'string') {
-        inputDesc === IUserFildNames.userParams &&
-        (input === InputName.login ||
-          input === InputName.birthDay ||
-          input === InputName.lastName ||
-          input === InputName.firstName ||
-          input === InputName.password)
-          ? (state.userParams[input].newValue = action.payload.value)
-          : state[inputDesc] &&
-              (inputDesc === IUserFildNames.billingDefault ||
-                inputDesc === IUserFildNames.shippingDefault) &&
-              (input === InputName.country ||
-                input === InputName.postalCode ||
-                input === InputName.city ||
-                input === 'streetName')
-            ? (state[inputDesc][input].newValue = action.payload.value)
-            : '';
+        if (
+          inputDesc === IUserFildNames.userParams &&
+          (input === InputName.login ||
+            input === InputName.birthDay ||
+            input === InputName.lastName ||
+            input === InputName.firstName ||
+            input === InputName.password)
+        ) {
+          state.userParams[input].newValue = action.payload.value;
+        }
+        if (
+          state[inputDesc] &&
+          (inputDesc === IUserFildNames.billingDefault ||
+            inputDesc === IUserFildNames.shippingDefault)
+        ) {
+          state[inputDesc].newValue = action.payload.value;
+        }
+        if (
+          state[inputDesc] &&
+          (inputDesc === IUserFildNames.billingArr || inputDesc === IUserFildNames.shippingArr)
+        ) {
+          state.billingArr.newValue = '';
+          state.shippingArr.newValue = '';
+          state[inputDesc].newValue = action.payload.value;
+          state.addressType =
+            inputDesc === IUserFildNames.billingArr ? AddressType.billing : AddressType.shipping;
+          action.payload.value === '' && (state.addressType = 'address');
+        }
+        if (state[inputDesc] && inputDesc === IUserFildNames.addressType) {
+          state.addressType = action.payload.value;
+        }
       } else {
+        state[inputDesc.arrayName] &&
+        inputDesc.arrayName === IUserFildNames.userAddresses &&
+        (input === InputName.country ||
+          input === InputName.postalCode ||
+          input === InputName.city ||
+          input === 'streetName')
+          ? (state[inputDesc.arrayName][inputDesc.i][input].newValue = action.payload.value)
+          : '';
       }
     },
     setPassword(state, action: PayloadAction<{ passwordCamp: IPasswordCamp; value: string }>) {
@@ -161,6 +193,17 @@ const userSlice = createSlice({
       state.userParams.login.newValue = state.userParams.login.value;
     },
 
+    backOldAddressValue(state, action: PayloadAction<number>) {
+      state.userAddresses[action.payload].streetName.newValue =
+        state.userAddresses[action.payload].streetName.value;
+      state.userAddresses[action.payload].city.newValue =
+        state.userAddresses[action.payload].city.value;
+      state.userAddresses[action.payload].postalCode.newValue =
+        state.userAddresses[action.payload].postalCode.value;
+      state.userAddresses[action.payload].country.newValue =
+        state.userAddresses[action.payload].country.value;
+    },
+
     clearPasswordCamps(state) {
       state.userParams.password.currentValue = '';
       state.userParams.password.newValue = '';
@@ -169,8 +212,11 @@ const userSlice = createSlice({
 
     setAddresses(state, action: PayloadAction<Customer>) {
       state.userAddresses = [];
-      state.billingArr = [];
-      state.shippingArr = [];
+      state.billingArr = { values: [], newValue: '' };
+      state.shippingArr = { values: [], newValue: '' };
+      state.addressType = 'address';
+      state.shippingDefault.value = '';
+      state.billingDefault.value = '';
       action.payload.addresses.forEach(item => {
         const address = {
           id: item.id,
@@ -183,28 +229,39 @@ const userSlice = createSlice({
           },
           isRedactMood: false,
         };
-        console.log(address);
-        if (item.id === action.payload.defaultBillingAddressId) {
-          state.billingDefault = address;
-        }
-        if (item.id === action.payload.defaultShippingAddressId) {
-          state.shippingDefault = address;
+        if (
+          address.id &&
+          action.payload.defaultBillingAddressId &&
+          item.id === action.payload.defaultBillingAddressId
+        ) {
+          state.billingDefault.value = address.id;
         }
         if (
+          address.id &&
+          action.payload.defaultShippingAddressId &&
+          item.id === action.payload.defaultShippingAddressId
+        ) {
+          state.shippingDefault.value = address.id;
+        }
+        if (
+          address.id &&
           action.payload.billingAddressIds &&
           item.id &&
           action.payload.billingAddressIds.includes(item.id)
         ) {
-          state.billingArr.push(address);
+          state.billingArr.values.push(address.id);
+          state.addressType = AddressType.billing;
         }
         if (
+          address.id &&
           action.payload.shippingAddressIds &&
           item.id &&
           action.payload.shippingAddressIds.includes(item.id)
         ) {
-          state.shippingArr.push(address);
+          state.shippingArr.values.push(address.id);
         }
         state.userAddresses.push(address);
+        state.addressType = AddressType.shipping;
       });
     },
   },
@@ -221,5 +278,6 @@ export const {
   setPassword,
   verifyPassword,
   clearPasswordCamps,
+  backOldAddressValue,
 } = userSlice.actions;
 export default userSlice.reducer;

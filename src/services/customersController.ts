@@ -40,6 +40,7 @@ export async function getCustomer(id: string) {
 }
 
 export async function updateCustomer(version: number, actions: CustomerUpdateAction[], id: string) {
+  console.log(actions);
   return await apiRoot
     .customers()
     .withId({
@@ -53,6 +54,7 @@ export async function updateCustomer(version: number, actions: CustomerUpdateAct
     })
     .execute();
 }
+
 export async function updatePassword(
   id: string,
   version: number,
@@ -72,6 +74,7 @@ export async function updatePassword(
     })
     .execute();
 }
+
 export async function verifyCustomerPassword(id: string, version: number, currentPassword: string) {
   const newPassword = currentPassword;
   return await apiRoot

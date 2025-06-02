@@ -8,6 +8,7 @@ export function Input({
   type,
   placeholder,
   onChange,
+  list,
 }: {
   value: string;
   readonly: boolean;
@@ -15,6 +16,7 @@ export function Input({
   type: InputTypes;
   placeholder: string;
   onChange: (e?: ChangeEvent<HTMLInputElement>) => void;
+  list?: 'address';
 }) {
   const props = {
     onChange: onChange,
@@ -23,6 +25,7 @@ export function Input({
     type: type,
     placeholder: placeholder,
     maxLength: 32,
+    list: list,
   };
 
   return (

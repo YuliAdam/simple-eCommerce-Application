@@ -15,6 +15,7 @@ import {
 import type { ChangeEvent } from 'react';
 import { useCallback } from 'react';
 import { PATTERNS } from '@/utils/validation/registrationValidation';
+import { CheckBox } from './CheckBoxInput';
 
 export default function RegistrationAdditionalAddress({ type }: { type: AddressType }) {
   const registration = useSelector((state: RootState) => state.registration.values);
@@ -46,14 +47,11 @@ export default function RegistrationAdditionalAddress({ type }: { type: AddressT
   return (
     <div className={registration[type].isPresent ? '' : styles.hide}>
       <h5>{addressName} Address</h5>
-      <p>
-        <input
-          type={InputTypes.checkbox}
-          checked={registration[type].isCopy}
-          onChange={callbackSetAddressAsAdditional}
-        />
-        <label>Use main address as {type} address</label>
-      </p>
+      <CheckBox
+        checked={registration[type].isCopy}
+        onChange={callbackSetAddressAsAdditional}
+        text={`Use main address as ${type} address`}
+      />
       <RegistrationInput
         className={''}
         onChangeInput={onChangeValue({ addressType: type, inputName: AddressInputName.street })}
@@ -84,14 +82,12 @@ export default function RegistrationAdditionalAddress({ type }: { type: AddressT
         value={registration[type].country.value}
       />
       <Datalist id={`${type}_countries`} dataName="name" />
-      <p>
-        <input
-          type={InputTypes.checkbox}
-          checked={registration[type].isDefault}
-          onChange={callbackToggleAdditionalAddressAsDefault}
-        />
-        <label>Set as default</label>
-      </p>
+
+      <CheckBox
+        checked={registration[type].isDefault}
+        onChange={callbackToggleAdditionalAddressAsDefault}
+        text="Set as default"
+      />
     </div>
   );
 }

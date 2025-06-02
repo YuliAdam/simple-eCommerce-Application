@@ -117,4 +117,12 @@ export enum IUpdateActions {
   setFirstName = 'setFirstName',
   setLastName = 'setLastName',
   setDateOfBirth = 'setDateOfBirth',
+  changeAddress = 'changeAddress',
+  removeAddress = 'removeAddress',
+  setDefaultShippingAddress = 'setDefaultShippingAddress',
+  addShippingAddressId = 'addShippingAddressId',
+  removeShippingAddressId = 'removeShippingAddressId',
+  setDefaultBillingAddress = 'setDefaultBillingAddress',
+  addBillingAddressId = 'addBillingAddressId',
+  removeBillingAddressId = 'removeBillingAddressId',
 }

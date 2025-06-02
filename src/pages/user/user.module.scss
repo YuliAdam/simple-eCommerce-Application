@@ -59,6 +59,19 @@ $breakpoint-mobile: 768px;
       justify-content: space-between;
     }
   }
+  &_add {
+    width: 30px;
+    height: auto;
+    cursor: pointer;
+    path {
+      transition: all $transition-speed easy;
+    }
+    &:hover {
+      path {
+        stroke: $hover-color;
+      }
+    }
+  }
 
   &_pencil {
     width: 20px;
@@ -165,4 +178,9 @@ $breakpoint-mobile: 768px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  &_additional {
+    color: $vibrant-color;
+    margin-right: 5px;
+  }
 }
