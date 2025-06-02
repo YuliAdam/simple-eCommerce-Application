@@ -25,6 +25,7 @@ function AllProducts() {
   const [minPrice, setMinPrice] = useState<number | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [checkboxFilters, setCheckboxFilters] = useState<{ name: string; value: string[] }[]>([]);
+  const [checkedFilters, setCheckedFilters] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     if (
@@ -95,6 +96,7 @@ function AllProducts() {
       const text = target.value.trim();
       if (text) {
         getSearchData({ text, setProducts });
+        target.value = '';
       }
     }
   }
@@ -195,6 +197,26 @@ function AllProducts() {
     }
   }
 
+  function handleCheckboxChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const key = `${e.target.name}:${e.target.value}`;
+    setCheckedFilters(state => ({
+      ...state,
+      [key]: e.target.checked,
+    }));
+    handleCheckboxFilter(e);
+  }
+
+  function handleResetButton() {
+    setActiveCategoryButton(null);
+    setSortPrice(null);
+    setSortName(null);
+    setMinPrice(null);
+    setMaxPrice(null);
+    setCheckboxFilters([]);
+    setCheckedFilters({});
+    setBreadcrumbs([]);
+  }
+
   return (
     <section className={styles.catalog}>
       <div className="container">
@@ -254,12 +276,15 @@ function AllProducts() {
             {/* temp hardcode, need dynamic build for filters */}
             <div className={styles['price-filter']}>
               <h2 className={styles.header}>Filters</h2>
-              <h3>Price range</h3>
+              <h3 className={styles['sub-header']}>Price range</h3>
               <ul>
                 <li>
-                  <label htmlFor="min-price">Minimum Price</label>
+                  <label className={styles.label} htmlFor="min-price">
+                    Minimum Price
+                  </label>
                   <input
                     onChange={handleMinPriceInput}
+                    value={minPrice ?? ''}
                     className={styles['price-input']}
                     type="number"
                     id="min-price"
@@ -268,9 +293,12 @@ function AllProducts() {
                   ></input>
                 </li>
                 <li>
-                  <label htmlFor="max-price">Maximum Price</label>
+                  <label className={styles.label} htmlFor="max-price">
+                    Maximum Price
+                  </label>
                   <input
                     onChange={handleMaxPriceInput}
+                    value={maxPrice ?? ''}
                     className={styles['price-input']}
                     type="number"
                     id="max-price"
@@ -281,12 +309,15 @@ function AllProducts() {
               </ul>
             </div>
             <div className={styles['attributes-filter']}>
-              <h3>Brand</h3>
+              <h3 className={styles['sub-header']}>Brand</h3>
               <ul>
                 <li>
-                  <label htmlFor="gucci">Gucci</label>
+                  <label className={styles.label} htmlFor="gucci">
+                    Gucci
+                  </label>
                   <input
-                    onChange={handleCheckboxFilter}
+                    onChange={handleCheckboxChange}
+                    checked={checkedFilters['brand:gucci'] ? true : false}
                     type="checkbox"
                     id="gucci"
                     name="brand"
@@ -294,9 +325,12 @@ function AllProducts() {
                   ></input>
                 </li>
                 <li>
-                  <label htmlFor="prada">Prada</label>
+                  <label className={styles.label} htmlFor="prada">
+                    Prada
+                  </label>
                   <input
-                    onChange={handleCheckboxFilter}
+                    onChange={handleCheckboxChange}
+                    checked={checkedFilters['brand:prada'] ? true : false}
                     type="checkbox"
                     id="prada"
                     name="brand"
@@ -304,9 +338,12 @@ function AllProducts() {
                   ></input>
                 </li>
                 <li>
-                  <label htmlFor="carden">Carden</label>
+                  <label className={styles.label} htmlFor="carden">
+                    Carden
+                  </label>
                   <input
-                    onChange={handleCheckboxFilter}
+                    onChange={handleCheckboxChange}
+                    checked={checkedFilters['brand:carden'] ? true : false}
                     type="checkbox"
                     id="carden"
                     name="brand"
@@ -314,12 +351,15 @@ function AllProducts() {
                   ></input>
                 </li>
               </ul>
-              <h4>Color</h4>
+              <h3 className={styles['sub-header']}>Color</h3>
               <ul>
                 <li>
-                  <label htmlFor="black">Black</label>
+                  <label className={styles.label} htmlFor="black">
+                    Black
+                  </label>
                   <input
-                    onChange={handleCheckboxFilter}
+                    onChange={handleCheckboxChange}
+                    checked={checkedFilters['color:black'] ? true : false}
                     type="checkbox"
                     id="black"
                     name="color"
@@ -327,9 +367,12 @@ function AllProducts() {
                   ></input>
                 </li>
                 <li>
-                  <label htmlFor="white">White</label>
+                  <label className={styles.label} htmlFor="white">
+                    White
+                  </label>
                   <input
-                    onChange={handleCheckboxFilter}
+                    onChange={handleCheckboxChange}
+                    checked={checkedFilters['color:white'] ? true : false}
                     type="checkbox"
                     id="white"
                     name="color"
@@ -337,12 +380,15 @@ function AllProducts() {
                   ></input>
                 </li>
               </ul>
-              <h4>Size</h4>
+              <h3 className={styles['sub-header']}>Size</h3>
               <ul>
                 <li>
-                  <label htmlFor="s">Small</label>
+                  <label className={styles.label} htmlFor="s">
+                    Small
+                  </label>
                   <input
-                    onChange={handleCheckboxFilter}
+                    onChange={handleCheckboxChange}
+                    checked={checkedFilters['size:s'] ? true : false}
                     type="checkbox"
                     id="s"
                     name="size"
@@ -350,9 +396,12 @@ function AllProducts() {
                   ></input>
                 </li>
                 <li>
-                  <label htmlFor="m">Medium</label>
+                  <label className={styles.label} htmlFor="m">
+                    Medium
+                  </label>
                   <input
-                    onChange={handleCheckboxFilter}
+                    onChange={handleCheckboxChange}
+                    checked={checkedFilters['size:m'] ? true : false}
                     type="checkbox"
                     id="m"
                     name="size"
@@ -360,9 +409,12 @@ function AllProducts() {
                   ></input>
                 </li>
                 <li>
-                  <label htmlFor="l">Large</label>
+                  <label className={styles.label} htmlFor="l">
+                    Large
+                  </label>
                   <input
-                    onChange={handleCheckboxFilter}
+                    onChange={handleCheckboxChange}
+                    checked={checkedFilters['size:l'] ? true : false}
                     type="checkbox"
                     id="l"
                     name="size"
@@ -370,9 +422,12 @@ function AllProducts() {
                   ></input>
                 </li>
                 <li>
-                  <label htmlFor="xl">Extra large</label>
+                  <label className={styles.label} htmlFor="xl">
+                    Extra large
+                  </label>
                   <input
-                    onChange={handleCheckboxFilter}
+                    onChange={handleCheckboxChange}
+                    checked={checkedFilters['size:xl'] ? true : false}
                     type="checkbox"
                     id="xl"
                     name="size"
@@ -380,9 +435,12 @@ function AllProducts() {
                   ></input>
                 </li>
                 <li>
-                  <label htmlFor="xxl">Extra extra large</label>
+                  <label className={styles.label} htmlFor="xxl">
+                    Extra extra large
+                  </label>
                   <input
-                    onChange={handleCheckboxFilter}
+                    onChange={handleCheckboxChange}
+                    checked={checkedFilters['size:xxl'] ? true : false}
                     type="checkbox"
                     id="xxl"
                     name="size"
@@ -390,9 +448,12 @@ function AllProducts() {
                   ></input>
                 </li>
                 <li>
-                  <label htmlFor="38">38</label>
+                  <label className={styles.label} htmlFor="38">
+                    38
+                  </label>
                   <input
-                    onChange={handleCheckboxFilter}
+                    onChange={handleCheckboxChange}
+                    checked={checkedFilters['size:38'] ? true : false}
                     type="checkbox"
                     id="38"
                     name="size"
@@ -400,9 +461,12 @@ function AllProducts() {
                   ></input>
                 </li>
                 <li>
-                  <label htmlFor="39">39</label>
+                  <label className={styles.label} htmlFor="39">
+                    39
+                  </label>
                   <input
-                    onChange={handleCheckboxFilter}
+                    onChange={handleCheckboxChange}
+                    checked={checkedFilters['size:39'] ? true : false}
                     type="checkbox"
                     id="39"
                     name="size"
@@ -410,9 +474,12 @@ function AllProducts() {
                   ></input>
                 </li>
                 <li>
-                  <label htmlFor="40">40</label>
+                  <label className={styles.label} htmlFor="40">
+                    40
+                  </label>
                   <input
-                    onChange={handleCheckboxFilter}
+                    onChange={handleCheckboxChange}
+                    checked={checkedFilters['size:40'] ? true : false}
                     type="checkbox"
                     id="40"
                     name="size"
@@ -421,6 +488,9 @@ function AllProducts() {
                 </li>
               </ul>
             </div>
+            <button onClick={handleResetButton} className={styles['reset-button']}>
+              Reset
+            </button>
           </div>
           <ul className={styles.products}>
             {products.map(product => {
