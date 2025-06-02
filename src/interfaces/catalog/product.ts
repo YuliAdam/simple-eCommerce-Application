@@ -2,30 +2,48 @@ export default interface I_Product {
   id: string;
   masterData: {
     current: {
-      description: {
+      description?: {
         ['en-GB']?: string;
       };
-      name: {
+      name?: {
         ['en-GB']?: string;
       };
       masterVariant: {
+        attributes?: {
+          name: string;
+          value: {
+            key: string;
+            label: string;
+          };
+        }[];
         images?: {
           url?: string;
           label?: string;
         }[];
         prices?: {
           discounted?: {
-            value?: I_Prices;
+            value?: {
+              centAmount: number;
+              currencyCode: string;
+              fractionDigits: number;
+            };
           };
-          value?: I_Prices;
+          value?: {
+            centAmount: number;
+            currencyCode: string;
+            fractionDigits: number;
+          };
         }[];
       };
+      variants?: {
+        attributes?: {
+          name: string;
+          value: {
+            key: string;
+            label: string;
+          };
+        }[];
+      }[];
     };
   };
-}
-
-interface I_Prices {
-  centAmount: number;
-  currencyCode: string;
-  fractionDigits: number;
 }
