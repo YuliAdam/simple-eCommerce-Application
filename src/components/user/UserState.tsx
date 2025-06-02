@@ -8,13 +8,13 @@ import {
   backOldStateValue,
   clearPasswordCamps,
   IRedactMoods,
-  IUserFildNames,
+  IUserFieldNames,
   offRedactMood,
   onRedactMood,
   setNewUserValue,
   setUserState,
   setVersion,
-  toggleAddAddresForm,
+  toggleAddAddressForm,
   verifyPassword,
 } from '@/store/slices/userSlice';
 import { Close } from '@/assets/img/close';
@@ -65,18 +65,18 @@ export function UserState() {
       dispatch(resetState());
     }
     if (user.addedAddressIsPresent) {
-      dispatch(toggleAddAddresForm(false));
+      dispatch(toggleAddAddressForm(false));
       dispatch(resetState());
-      dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
-      dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
-      dispatch(setNewUserValue({ name: IUserFildNames.addressType, value: '' }));
+      dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' }));
+      dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: '' }));
+      dispatch(setNewUserValue({ name: IUserFieldNames.addressType, value: '' }));
     }
     user.userAddresses.forEach((item, i) => {
       if (item.isRedactMood) {
-        dispatch(setNewUserValue({ name: IUserFildNames.billingArr, value: '' }));
-        dispatch(setNewUserValue({ name: IUserFildNames.shippingArr, value: '' }));
-        dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
-        dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.billingArr, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.shippingArr, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: '' }));
         dispatch(offRedactMood(i));
         dispatch(backOldAddressValue(i));
         dispatch(resetState());
@@ -98,7 +98,7 @@ export function UserState() {
       if (event.target && event.target instanceof HTMLInputElement) {
         const value = event.target.value;
         dispatch(setValue({ name: name, value: value }));
-        dispatch(setNewUserValue({ name: IUserFildNames.userParams, input: name, value: value }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.userParams, input: name, value: value }));
         new RegExp(PATTERNS[name]).test(value)
           ? dispatch(setValid(name))
           : dispatch(setInvalid(name));

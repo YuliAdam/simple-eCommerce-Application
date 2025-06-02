@@ -9,13 +9,13 @@ import {
   backOldStateValue,
   clearPasswordCamps,
   IRedactMoods,
-  IUserFildNames,
+  IUserFieldNames,
   offRedactMood,
   onRedactMood,
   setAddresses,
   setNewUserValue,
   setVersion,
-  toggleAddAddresForm,
+  toggleAddAddressForm,
   verifyPassword,
 } from '@/store/slices/userSlice';
 import { Close } from '@/assets/img/close';
@@ -81,24 +81,24 @@ export function UserAddress() {
 
     const id = user.userAddresses[i].id;
     const addressType = user.billingArr.values.find(item => id === item)
-      ? IUserFildNames.billingArr
+      ? IUserFieldNames.billingArr
       : user.shippingArr.values.find(item => id === item)
-        ? IUserFildNames.shippingArr
+        ? IUserFieldNames.shippingArr
         : null;
     for (let j = 0; j < user.userAddresses.length; j++) {
       if (i !== j) {
         offRedactMoodHandle(j);
-        dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
-        dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: '' }));
       }
     }
     id && addressType && dispatch(setNewUserValue({ name: addressType, value: id }));
     id === user.shippingDefault.value
-      ? dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: id }))
+      ? dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: id }))
       : id === user.billingDefault.value
-        ? dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: id }))
-        : dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' })) &&
-          dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+        ? dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: id }))
+        : dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' })) &&
+          dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: '' }));
     dataArr.map(item => {
       dispatch(setValue({ name: item.input, value: user.userAddresses[i][item.field].newValue }));
     });
@@ -106,10 +106,10 @@ export function UserAddress() {
   }
 
   function offRedactMoodHandle(i: number) {
-    dispatch(setNewUserValue({ name: IUserFildNames.billingArr, value: '' }));
-    dispatch(setNewUserValue({ name: IUserFildNames.shippingArr, value: '' }));
-    dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
-    dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+    dispatch(setNewUserValue({ name: IUserFieldNames.billingArr, value: '' }));
+    dispatch(setNewUserValue({ name: IUserFieldNames.shippingArr, value: '' }));
+    dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' }));
+    dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: '' }));
     dispatch(offRedactMood(i));
     dispatch(backOldAddressValue(i));
     dispatch(resetState());
@@ -176,23 +176,25 @@ export function UserAddress() {
     return () => {
       if (!(user.billingDefault.newValue || user.shippingDefault.newValue) && id) {
         user.addressType === AddressType.billing
-          ? dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: id }))
-          : dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: id }));
+          ? dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: id }))
+          : dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: id }));
       } else if (id && !!(user.billingDefault.newValue || user.shippingDefault.newValue)) {
         user.addressType === AddressType.billing
-          ? dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }))
-          : dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+          ? dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' }))
+          : dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: '' }));
       } else if (!id && !(user.billingDefault.newValue || user.shippingDefault.newValue)) {
         user.addressType === AddressType.billing
-          ? dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: 'new address' }))
+          ? dispatch(
+              setNewUserValue({ name: IUserFieldNames.billingDefault, value: 'new address' }),
+            )
           : user.addressType === AddressType.shipping
             ? dispatch(
-                setNewUserValue({ name: IUserFildNames.shippingDefault, value: 'new address' }),
+                setNewUserValue({ name: IUserFieldNames.shippingDefault, value: 'new address' }),
               )
             : '';
       } else if (!id && !!(user.billingDefault.newValue || user.shippingDefault.newValue)) {
-        dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
-        dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: '' }));
       }
     };
   }
@@ -201,24 +203,24 @@ export function UserAddress() {
     return (event?: ChangeEvent<HTMLInputElement>) => {
       if (event && event.target && event.target instanceof HTMLInputElement && id) {
         const value = event.target.value;
-        dispatch(setNewUserValue({ name: IUserFildNames.addressType, value: value }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.addressType, value: value }));
         if (value === AddressType.billing) {
-          dispatch(setNewUserValue({ name: IUserFildNames.billingArr, value: id }));
+          dispatch(setNewUserValue({ name: IUserFieldNames.billingArr, value: id }));
         }
         if (value === AddressType.shipping) {
-          dispatch(setNewUserValue({ name: IUserFildNames.shippingArr, value: id }));
+          dispatch(setNewUserValue({ name: IUserFieldNames.shippingArr, value: id }));
         }
         if (value === 'address') {
-          dispatch(setNewUserValue({ name: IUserFildNames.billingArr, value: '' }));
-          dispatch(setNewUserValue({ name: IUserFildNames.shippingArr, value: '' }));
-          dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
-          dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+          dispatch(setNewUserValue({ name: IUserFieldNames.billingArr, value: '' }));
+          dispatch(setNewUserValue({ name: IUserFieldNames.shippingArr, value: '' }));
+          dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' }));
+          dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: '' }));
         }
       } else if (event && event.target && event.target instanceof HTMLInputElement) {
         const value = event.target.value;
-        dispatch(setNewUserValue({ name: IUserFildNames.addressType, value: value }));
-        dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
-        dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.addressType, value: value }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: '' }));
       }
     };
   }
@@ -231,7 +233,7 @@ export function UserAddress() {
         dispatch(setValue({ name: name, value: value }));
         dispatch(
           setNewUserValue({
-            name: { arrayName: IUserFildNames.userAddresses, i: i },
+            name: { arrayName: IUserFieldNames.userAddresses, i: i },
             input: name,
             value: value,
           }),
@@ -245,9 +247,9 @@ export function UserAddress() {
 
   function setBillingOrShipping(id: string | undefined) {
     const isBilling = !!user.billingArr.values.find(item => item === id);
-    const isBillingDefaul = user.billingDefault.value === id;
+    const isBillingDefault = user.billingDefault.value === id;
     const isShipping = !!user.shippingArr.values.find(item => item === id);
-    const isShippingDefaul = user.shippingDefault.value === id;
+    const isShippingDefault = user.shippingDefault.value === id;
     return (
       <div>
         {isBilling ? (
@@ -257,7 +259,7 @@ export function UserAddress() {
         ) : (
           ''
         )}
-        {isBillingDefaul || isShippingDefaul ? (
+        {isBillingDefault || isShippingDefault ? (
           <span className={styles.address_additional}>Default</span>
         ) : (
           ''
@@ -442,11 +444,11 @@ export function UserAddress() {
   }
 
   function closeAddAddressForm() {
-    dispatch(toggleAddAddresForm(false));
+    dispatch(toggleAddAddressForm(false));
     dispatch(resetState());
-    dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
-    dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
-    dispatch(setNewUserValue({ name: IUserFildNames.addressType, value: '' }));
+    dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' }));
+    dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: '' }));
+    dispatch(setNewUserValue({ name: IUserFieldNames.addressType, value: '' }));
   }
 
   function addAddressForm() {
@@ -591,7 +593,7 @@ export function UserAddress() {
         offRedactMoodHandle(i);
       }
     });
-    dispatch(toggleAddAddresForm(true));
+    dispatch(toggleAddAddressForm(true));
   }
 
   return (
