@@ -10,14 +10,14 @@ import {
   clearPasswordCamps,
   IPasswordCamp,
   IRedactMoods,
-  IUserFildNames,
+  IUserFieldNames,
   offRedactMood,
   onRedactMood,
   setNewUserValue,
   setPassword,
   setUserState,
   setVersion,
-  toggleAddAddresForm,
+  toggleAddAddressForm,
   verifyPassword,
 } from '@/store/slices/userSlice';
 import { Close } from '@/assets/img/close';
@@ -55,18 +55,18 @@ export function UserPassword() {
 
   function onRedactMoodHandle() {
     if (user.addedAddressIsPresent) {
-      dispatch(toggleAddAddresForm(false));
+      dispatch(toggleAddAddressForm(false));
       dispatch(resetState());
-      dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
-      dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
-      dispatch(setNewUserValue({ name: IUserFildNames.addressType, value: '' }));
+      dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' }));
+      dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: '' }));
+      dispatch(setNewUserValue({ name: IUserFieldNames.addressType, value: '' }));
     }
     user.userAddresses.forEach((item, i) => {
       if (item.isRedactMood) {
-        dispatch(setNewUserValue({ name: IUserFildNames.billingArr, value: '' }));
-        dispatch(setNewUserValue({ name: IUserFildNames.shippingArr, value: '' }));
-        dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
-        dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.billingArr, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.shippingArr, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFieldNames.shippingDefault, value: '' }));
         dispatch(offRedactMood(i));
         dispatch(backOldAddressValue(i));
         dispatch(resetState());
@@ -88,11 +88,11 @@ export function UserPassword() {
     dispatch(resetState());
   }
 
-  function onChangeInput(name: InputName, passwordFild: IPasswordCamp) {
+  function onChangeInput(name: InputName, passwordField: IPasswordCamp) {
     return (event: ChangeEvent<HTMLInputElement>) => {
       if (event.target && event.target instanceof HTMLInputElement) {
         const value = event.target.value;
-        dispatch(setPassword({ passwordCamp: passwordFild, value: value }));
+        dispatch(setPassword({ passwordCamp: passwordField, value: value }));
         dispatch(setValue({ name: name, value: value }));
         new RegExp(PATTERNS[name]).test(value)
           ? dispatch(setValid(name))
@@ -101,11 +101,11 @@ export function UserPassword() {
     };
   }
 
-  function onChangeRepeatPassword(passwordFild: IPasswordCamp) {
+  function onChangeRepeatPassword(passwordField: IPasswordCamp) {
     return (event: ChangeEvent<HTMLInputElement> | undefined) => {
       if (event && event.target && event.target instanceof HTMLInputElement) {
         const value = event.target.value;
-        dispatch(setPassword({ passwordCamp: passwordFild, value: value }));
+        dispatch(setPassword({ passwordCamp: passwordField, value: value }));
       }
     };
   }
@@ -167,7 +167,7 @@ export function UserPassword() {
     dispatch(toggleDialog(true));
   }
 
-  function getCurrentPaswordInput() {
+  function getCurrentPasswordInput() {
     return (
       <>
         <p>Set current password</p>
@@ -247,7 +247,7 @@ export function UserPassword() {
       </div>
       {user.isRedactPasswordMood ? (
         !user.passwordIsVerify ? (
-          getCurrentPaswordInput()
+          getCurrentPasswordInput()
         ) : (
           getNewPasswordsInputs()
         )

@@ -42,7 +42,7 @@ export enum IRedactMoods {
   password = 'isRedactPasswordMood',
 }
 
-export enum IUserFildNames {
+export enum IUserFieldNames {
   userParams = 'userParams',
   userAddresses = 'userAddresses',
   billingArr = 'billingArr',
@@ -115,7 +115,7 @@ const userSlice = createSlice({
     setNewUserValue(
       state,
       action: PayloadAction<{
-        name: IUserFildNames | { arrayName: IUserFildNames; i: number };
+        name: IUserFieldNames | { arrayName: IUserFieldNames; i: number };
         input?: InputName;
         value: string;
       }>,
@@ -125,7 +125,7 @@ const userSlice = createSlice({
       input = input === InputName.street ? 'streetName' : input;
       if (typeof inputDesc === 'string') {
         if (
-          inputDesc === IUserFildNames.userParams &&
+          inputDesc === IUserFieldNames.userParams &&
           (input === InputName.login ||
             input === InputName.birthDay ||
             input === InputName.lastName ||
@@ -136,31 +136,31 @@ const userSlice = createSlice({
         }
         if (
           state[inputDesc] &&
-          (inputDesc === IUserFildNames.billingDefault ||
-            inputDesc === IUserFildNames.shippingDefault)
+          (inputDesc === IUserFieldNames.billingDefault ||
+            inputDesc === IUserFieldNames.shippingDefault)
         ) {
           state[inputDesc].newValue = action.payload.value;
         }
         if (
           state[inputDesc] &&
-          (inputDesc === IUserFildNames.billingArr || inputDesc === IUserFildNames.shippingArr)
+          (inputDesc === IUserFieldNames.billingArr || inputDesc === IUserFieldNames.shippingArr)
         ) {
           state.billingArr.newValue = '';
           state.shippingArr.newValue = '';
           state[inputDesc].newValue = action.payload.value;
           state.addressType =
-            inputDesc === IUserFildNames.billingArr ? AddressType.billing : AddressType.shipping;
+            inputDesc === IUserFieldNames.billingArr ? AddressType.billing : AddressType.shipping;
           action.payload.value === '' && (state.addressType = 'address');
         }
-        if (state[inputDesc] && inputDesc === IUserFildNames.addressType) {
+        if (state[inputDesc] && inputDesc === IUserFieldNames.addressType) {
           state.addressType = action.payload.value;
-        } else if (inputDesc === IUserFildNames.addressType) {
+        } else if (inputDesc === IUserFieldNames.addressType) {
           state.addressType = action.payload.value;
         }
       } else {
         if (
           state[inputDesc.arrayName] &&
-          inputDesc.arrayName === IUserFildNames.userAddresses &&
+          inputDesc.arrayName === IUserFieldNames.userAddresses &&
           (input === InputName.country ||
             input === InputName.postalCode ||
             input === InputName.city ||
@@ -286,7 +286,7 @@ const userSlice = createSlice({
         state.addressType = AddressType.shipping;
       });
     },
-    toggleAddAddresForm(state, action: PayloadAction<boolean>) {
+    toggleAddAddressForm(state, action: PayloadAction<boolean>) {
       state.addedAddressIsPresent = action.payload;
     },
   },
@@ -304,6 +304,6 @@ export const {
   verifyPassword,
   clearPasswordCamps,
   backOldAddressValue,
-  toggleAddAddresForm,
+  toggleAddAddressForm,
 } = userSlice.actions;
 export default userSlice.reducer;
