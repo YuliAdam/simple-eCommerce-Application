@@ -83,6 +83,9 @@ export function UserState() {
       }
     });
     dispatch(onRedactMood(IRedactMoods.userParams));
+    dataArr.map(item => {
+      dispatch(setValue({ name: item.input, value: item.value.newValue }));
+    });
   }
   function offRedactMoodHandle() {
     dispatch(offRedactMood(IRedactMoods.userParams));
@@ -185,7 +188,6 @@ export function UserState() {
       </div>
       {user.isRedactUserParamsMood
         ? dataArr.map(item => {
-            dispatch(setValue({ name: item.input, value: item.value.newValue }));
             return (
               <RegistrationInput
                 key={item.name}
