@@ -1,40 +1,49 @@
 import type I_Product from './product';
 
 type AttributeName = 'brand' | 'size' | 'color';
+type AttributeValue = { key: string; label: string };
+type Attribute = { name: AttributeName; value: AttributeValue };
 
-type AttributeValue = {
-  key: string;
-  label: string;
-};
-
-type Attribute = {
-  name: AttributeName;
-  value: AttributeValue;
+type Prices = {
+  centAmount: number;
+  currencyCode: string;
+  fractionDigits: number;
 };
 
 export default interface I_ProductDetailed extends I_Product {
+  id: string;
   masterData: {
     current: {
-      description?: {
-        [key: string]: string;
+      description: {
+        ['en-GB']?: string;
       };
-      name?: {
-        [key: string]: string;
+      name: {
+        ['en-GB']?: string;
       };
       masterVariant: {
-        prices: [
-          {
-            value: {
-              currencyCode: 'string';
-              centAmount: number;
-            };
-          },
-        ];
         images: {
           url: string;
           label?: string;
         }[];
+        prices: {
+          discounted?: {
+            value: Prices;
+          };
+          value: Prices;
+        }[];
         attributes: Attribute[];
+      };
+      variants: {
+        images: {
+          url: string;
+          label?: string;
+        }[];
+        prices: {
+          discounted?: {
+            value?: Prices;
+          };
+          value: Prices;
+        }[];
       };
     };
   };
