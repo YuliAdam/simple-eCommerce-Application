@@ -6,7 +6,7 @@ import {
   togglePasswordVisible,
 } from '@store/slices/registrationSlice';
 import type { RootState } from '@store/store';
-import InfoSvg from '@assets/img/info';
+import InfoSvg from '@/assets/img/info';
 import { useCallback, type JSX } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Eye } from '@/assets/img/eye';

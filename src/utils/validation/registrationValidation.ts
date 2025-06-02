@@ -34,3 +34,29 @@ function getValidEarlierDateInRegexFormat(year: number): string {
   const day = dateNow.getDate() > 10 ? `${dateNow.getDate()}` : `0${dateNow.getDate()}`;
   return `${dateNow.getFullYear() - year}-${month}-${day}`;
 }
+
+export function userDataIsValid(
+  login: string,
+  firstName: string,
+  lastName: string,
+  birthDay: string,
+) {
+  return (
+    new RegExp(PATTERNS.login).test(login) &&
+    birthDay.length > 0 &&
+    new RegExp(PATTERNS.firstName).test(firstName) &&
+    new RegExp(PATTERNS.lastName).test(lastName)
+  );
+}
+export function passwordIsValid(password: string) {
+  return new RegExp(PATTERNS.password).test(password);
+}
+
+export function addressIsValid(street: string, city: string, postalCode: string, country: string) {
+  return (
+    new RegExp(PATTERNS.city).test(city) &&
+    new RegExp(PATTERNS.country).test(country) &&
+    new RegExp(PATTERNS.postalCode).test(postalCode) &&
+    new RegExp(PATTERNS.street).test(street)
+  );
+}

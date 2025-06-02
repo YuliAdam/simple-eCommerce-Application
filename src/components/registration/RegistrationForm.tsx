@@ -4,21 +4,31 @@ import type { IAddress, ICustomer, ILoginParams } from '@/interfaces/types';
 import { AddressType, InputName, InputTypes } from '@/interfaces/types';
 import { createCustomer, loginCustomer } from '@/services/customersController';
 import { login } from '@/store/slices/authSlice';
-import { resetErrorState, setValue } from '@/store/slices/errorSlice';
+import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 import {
   resetState,
+  setInvalid,
   setLoginNotUnique,
+  setLoginUnique,
+  setValid,
+  setValue,
   toggleAdditionalAddress,
 } from '@/store/slices/registrationSlice';
 import type { RootState } from '@/store/store';
 import { getCodeByCountry } from '@utils/searchInCountryArrayMethods';
-import { PATTERNS } from '@/utils/validation/registrationValidation';
+import {
+  addressIsValid,
+  passwordIsValid,
+  PATTERNS,
+  userDataIsValid,
+} from '@/utils/validation/registrationValidation';
 import type {
   ClientResponse,
   CustomerDraft,
   CustomerSignInResult,
 } from '@commercetools/platform-sdk';
 import styles from '@pages/registration/registration.module.scss';
+import type { ChangeEvent } from 'react';
 import { type FormEvent, type JSX } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -28,11 +38,27 @@ import { RegistrationInput } from './RegistrationInput';
 
 export function RegistrationForm(): JSX.Element {
   const registration = useSelector((state: RootState) => state.registration.values);
-  const error = useSelector((state: RootState) => state.error.values);
+  const dialog = useSelector((state: RootState) => state.dialog.values);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const REGISTRATED_MESSAGE = 'Congratulations, your account has been successfully created!';
   function onClickToggleAdditionalAddress(addressType: AddressType) {
     return () => dispatch(toggleAdditionalAddress(addressType));
+  }
+
+  function onChangeInputValue(name: InputName) {
+    return (event: ChangeEvent<HTMLInputElement>) => {
+      if (event.target && event.target instanceof HTMLInputElement) {
+        const value = event.target.value;
+        dispatch(setValue({ name: name, value: value }));
+        new RegExp(PATTERNS[name]).test(value)
+          ? dispatch(setValid(name))
+          : dispatch(setInvalid(name));
+      }
+      if (name === InputName.login) {
+        dispatch(setLoginUnique());
+      }
+    };
   }
 
   function addAdditionalAddressByTypeIfPresent(
@@ -116,26 +142,34 @@ export function RegistrationForm(): JSX.Element {
 
   function isValidForm() {
     return (
-      new RegExp(PATTERNS.login).test(registration.login.value) &&
-      new RegExp(PATTERNS.password).test(registration.password.value) &&
-      registration.birthDay.value.length > 0 &&
-      new RegExp(PATTERNS.firstName).test(registration.firstName.value) &&
-      new RegExp(PATTERNS.lastName).test(registration.lastName.value) &&
-      new RegExp(PATTERNS.city).test(registration.city.value) &&
-      new RegExp(PATTERNS.country).test(registration.country.value) &&
-      new RegExp(PATTERNS.postalCode).test(registration.postalCode.value) &&
-      new RegExp(PATTERNS.street).test(registration.street.value) &&
+      userDataIsValid(
+        registration.login.value,
+        registration.firstName.value,
+        registration.lastName.value,
+        registration.birthDay.value,
+      ) &&
+      passwordIsValid(registration.password.value) &&
+      addressIsValid(
+        registration.street.value,
+        registration.city.value,
+        registration.postalCode.value,
+        registration.country.value,
+      ) &&
       (registration.billing.isPresent
-        ? new RegExp(PATTERNS.city).test(registration.billing.city.value) &&
-          new RegExp(PATTERNS.country).test(registration.billing.country.value) &&
-          new RegExp(PATTERNS.postalCode).test(registration.billing.postalCode.value) &&
-          new RegExp(PATTERNS.street).test(registration.billing.street.value)
+        ? addressIsValid(
+            registration.billing.street.value,
+            registration.billing.city.value,
+            registration.billing.postalCode.value,
+            registration.billing.country.value,
+          )
         : true) &&
       (registration.shipping.isPresent
-        ? new RegExp(PATTERNS.city).test(registration.shipping.city.value) &&
-          new RegExp(PATTERNS.country).test(registration.shipping.country.value) &&
-          new RegExp(PATTERNS.postalCode).test(registration.shipping.postalCode.value) &&
-          new RegExp(PATTERNS.street).test(registration.shipping.street.value)
+        ? addressIsValid(
+            registration.shipping.street.value,
+            registration.shipping.city.value,
+            registration.shipping.postalCode.value,
+            registration.shipping.country.value,
+          )
         : true)
     );
   }
@@ -145,18 +179,28 @@ export function RegistrationForm(): JSX.Element {
       const body = getData();
       console.log(body);
       const response = await createCustomer(body);
-      !(response instanceof Error)
-        ? loginRequest(body.email, body.password)
-        : response.message === 'There is already an existing customer with the provided email.'
-          ? showRegistrationErrorMessage(response.message)
-          : console.log(response.message);
+      window.scrollTo(0, 0);
+      dispatch(setDialogText(REGISTRATED_MESSAGE));
+      dispatch(toggleDialog(true));
+      if (!(response instanceof Error)) {
+        while (dialog.isOpen) {
+          setTimeout(() => {}, 3000);
+        }
+        loginRequest(body.email, body.password);
+      } else {
+        if (response.message === 'There is already an existing customer with the provided email.') {
+          showRegistrationErrorMessage(response.message);
+        } else {
+          dispatch(setDialogText(response.message));
+          dispatch(toggleDialog(true));
+        }
+      }
     }
   }
 
   function showRegistrationErrorMessage(message: string) {
-    dispatch(setValue(message));
+    dispatch(setDialogText(message));
     dispatch(setLoginNotUnique());
-    window.scrollTo(0, 0);
   }
 
   async function loginRequest(login: string, password: string) {
@@ -173,7 +217,6 @@ export function RegistrationForm(): JSX.Element {
     localStorage.setItem(SHOP.client_id, response.body.customer.id);
     dispatch(login(response.body.customer.id));
     dispatch(resetState());
-    dispatch(resetErrorState());
     navigate(Path.empty);
   }
 
@@ -190,24 +233,78 @@ export function RegistrationForm(): JSX.Element {
             styles.registration_form_info + (registration.login.isUnique ? '' : ' ' + styles.active)
           }
         >
-          {error.value}
+          {dialog.value}
         </p>
-        <RegistrationInput name={InputName.login} type={InputTypes.email} />
-        <RegistrationInput name={InputName.password} type={InputTypes.password} />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.login)}
+          name={InputName.login}
+          type={InputTypes.email}
+          value={registration.login.value}
+        />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.password)}
+          name={InputName.password}
+          type={InputTypes.password}
+          value={registration.password.value}
+        />
       </div>
       <div>
         <h5>Personal Data</h5>
-        <RegistrationInput name={InputName.firstName} type={InputTypes.text} />
-        <RegistrationInput name={InputName.lastName} type={InputTypes.text} />
-        <RegistrationInput name={InputName.birthDay} type={InputTypes.date} />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.firstName)}
+          name={InputName.firstName}
+          type={InputTypes.text}
+          value={registration.firstName.value}
+        />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.lastName)}
+          name={InputName.lastName}
+          type={InputTypes.text}
+          value={registration.lastName.value}
+        />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.birthDay)}
+          name={InputName.birthDay}
+          type={InputTypes.date}
+          value={registration.birthDay.value}
+        />
       </div>
       <div>
         <h5>Address</h5>
-        <RegistrationInput name={InputName.street} type={InputTypes.text} />
-        <RegistrationInput name={InputName.city} type={InputTypes.text} />
-        <RegistrationInput name={InputName.postalCode} type={InputTypes.text} />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.street)}
+          name={InputName.street}
+          type={InputTypes.text}
+          value={registration.street.value}
+        />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.city)}
+          name={InputName.city}
+          type={InputTypes.text}
+          value={registration.city.value}
+        />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.postalCode)}
+          name={InputName.postalCode}
+          type={InputTypes.text}
+          value={registration.postalCode.value}
+        />
         <Datalist id="postalCode" dataName="postalCode" />
-        <RegistrationInput name={InputName.country} type={InputTypes.text} />
+        <RegistrationInput
+          className={''}
+          onChangeInput={onChangeInputValue(InputName.country)}
+          name={InputName.country}
+          type={InputTypes.text}
+          value={registration.country.value}
+        />
         <Datalist id="countries" dataName="name" />
       </div>
       <div className={styles.registration_form_add_address}>

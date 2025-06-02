@@ -1,0 +1,187 @@
+@font-face {
+  font-family: 'Poppins';
+  src: url('@assets/fonts/Poppins/Poppins-Regular.woff');
+}
+
+$hover-color: #333;
+$font: 'Poppins';
+$primary-color: #111827;
+$body-text-color: #4b5563;
+$vibrant-color: #0ea5e9;
+$border-color: #e5e7eb;
+$default-color: #ffffff;
+$gray-background: #f8f8f8;
+$red-border-color: red;
+$transition-speed: 0.3s;
+$breakpoint-mobile: 768px;
+$secondary-color: #4b5563;
+
+.user {
+  width: 50%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  font-family: $font;
+  font-style: normal;
+  color: $primary-color;
+  max-width: 440px;
+  min-width: 300px;
+
+  &_redact {
+    width: 100%;
+    background: $default-color;
+    border: transparent;
+    outline: none;
+    flex-grow: 1;
+  }
+
+  &_redact {
+    width: 100%;
+  }
+
+  &_title {
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 40px;
+    text-align: center;
+  }
+
+  &_section {
+    width: 100%;
+    margin: 12px 0;
+    padding: 12px 16px;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    &_title {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+  &_add {
+    width: 30px;
+    height: auto;
+    cursor: pointer;
+    path {
+      transition: all $transition-speed easy;
+    }
+    &:hover {
+      path {
+        stroke: $hover-color;
+      }
+    }
+  }
+
+  &_pencil {
+    width: 20px;
+    height: auto;
+    cursor: pointer;
+    margin: 5px;
+    path {
+      transition: all $transition-speed easy;
+    }
+    &:hover {
+      path {
+        stroke: $hover-color;
+      }
+    }
+  }
+
+  &_save_wrap {
+    display: flex;
+    align-items: center;
+
+    .user_save_area {
+      &:hover {
+        path {
+          stroke: $hover-color;
+        }
+      }
+    }
+    .user_close_area {
+      &:hover {
+        path {
+          fill: $hover-color;
+        }
+      }
+    }
+    svg {
+      width: 30px;
+      height: auto;
+      cursor: pointer;
+      padding: 5px;
+      path {
+        transition: all $transition-speed easy;
+      }
+    }
+    .user_save path {
+      stroke: $secondary-color;
+    }
+    .user_close path {
+      fill: $secondary-color;
+    }
+  }
+
+  &_wrap {
+    width: 100%;
+    margin: 12px 0;
+    padding: 12px 16px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    &.redact {
+      border: 1px solid $border-color;
+      &.invalid {
+        border-color: $red-border-color;
+      }
+    }
+  }
+  &_input {
+    width: 100%;
+    background: $default-color;
+    border: transparent;
+    outline: none;
+    flex-grow: 1;
+  }
+  h5 {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 5px 0;
+  }
+}
+.eye {
+  width: 20px;
+  height: auto;
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+  &:hover {
+    stroke: $hover-color;
+    path {
+      stroke: $hover-color;
+    }
+  }
+  &.active path {
+    stroke: $hover-color;
+  }
+  &.active circle {
+    stroke: $hover-color;
+  }
+}
+.active {
+  height: auto;
+  opacity: 1;
+}
+.address {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &_additional {
+    color: $vibrant-color;
+    margin-right: 5px;
+  }
+}
