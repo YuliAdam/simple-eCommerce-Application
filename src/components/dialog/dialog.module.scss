@@ -16,9 +16,13 @@ $red-color: red;
 $vibrant-color: #0ea5e9;
 
 .dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100vw;
-  height: calc(100vh - 68px);
-  background: rgba(186, 185, 185, 0.5);
+  height: calc(100% - 68px);
+  margin-top: 68px;
+  background: transparent;
   border-color: transparent;
   font-weight: 500;
   font-size: 16px;
@@ -48,6 +52,7 @@ $vibrant-color: #0ea5e9;
     box-sizing: border-box;
     text-align: center;
     padding: 6vh 0;
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
   }
 
   &_close {
@@ -62,7 +67,7 @@ $vibrant-color: #0ea5e9;
     &:hover {
       cursor: pointer;
       path {
-        fill: $gray-background;
+        fill: $hover-color;
       }
     }
   }

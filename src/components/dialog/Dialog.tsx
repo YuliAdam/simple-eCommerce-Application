@@ -16,10 +16,10 @@ export function Dialog() {
     : document.documentElement.classList.remove('noscroll');
 
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const innerElemontRef = useRef<HTMLDivElement>(null);
+  const innerElementRef = useRef<HTMLDivElement>(null);
 
   function closeDialog(e: React.MouseEvent<HTMLDialogElement, MouseEvent>) {
-    if (e.target !== innerElemontRef.current) {
+    if (e.target !== innerElementRef.current) {
       clickCloseDialog();
     }
   }
@@ -39,7 +39,7 @@ export function Dialog() {
       open={dialog.isOpen}
     >
       <div className={styles.dialog_wrapper}>
-        <div ref={innerElemontRef} className={styles.dialog_text}>
+        <div ref={innerElementRef} className={styles.dialog_text}>
           <p>{dialog.value}</p>
           <div className={styles.dialog_close}>
             <Close onClick={clickCloseDialog} className={styles.dialog_close_icon} />

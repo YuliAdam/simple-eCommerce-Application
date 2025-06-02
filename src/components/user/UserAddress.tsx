@@ -280,7 +280,6 @@ export function UserAddress() {
   }
 
   function showMessage(value: string) {
-    window.scrollTo(0, 0);
     dispatch(setDialogText(value));
     dispatch(toggleDialog(true));
   }
