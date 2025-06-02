@@ -50,7 +50,7 @@ export function UserState() {
       type: InputTypes.text,
     },
     {
-      name: 'Bith day:',
+      name: 'Birth day:',
       value: user.userParams.birthDay,
       input: InputName.birthDay,
       type: InputTypes.date,
