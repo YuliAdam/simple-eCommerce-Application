@@ -7,6 +7,13 @@ export default interface I_SortedProduct {
     ['en-GB']?: string;
   };
   masterVariant: {
+    attributes?: {
+      name: string;
+      value: {
+        key: string;
+        label: string;
+      };
+    }[];
     images?: {
       url?: string;
       label?: string;

@@ -32,13 +32,15 @@ export const getSortedProducts = async ({
   sortByPrice,
   sortByName,
   minPrice = 0,
-  maxPrice = 30,
+  maxPrice = 30, // temp
+  checkboxFilters,
 }: {
   categoryId?: string | null;
   sortByPrice?: string | null;
   sortByName?: string | null;
   minPrice?: number;
   maxPrice?: number;
+  checkboxFilters?: { name: string; value: string[] }[];
 } = {}) => {
   const filterByCategoryOption = `categories.id:"${categoryId}"`;
   const sortByPriceOptions = `price ${sortByPrice}`;
@@ -62,6 +64,14 @@ export const getSortedProducts = async ({
 
   if (sortByName) {
     sortOptions.push(sortByNameOptions);
+  }
+
+  if (checkboxFilters) {
+    checkboxFilters.forEach(checkboxFilter => {
+      const options = checkboxFilter.value.map(value => `"${value}"`).join(',');
+      const filter = `variants.attributes.${checkboxFilter.name}.key:${options}`;
+      filterOptions.push(filter);
+    });
   }
 
   const min = filterByMinPrice * 100;

@@ -22,7 +22,7 @@ export default function createProductData(
       description: productData.description?.['en-GB'],
       images: productData.masterVariant?.images,
       prices: productData.masterVariant?.prices,
-      attributes: productData?.attributes,
+      attributes: productData.masterVariant?.attributes,
       variants: productData?.variants,
     };
   }

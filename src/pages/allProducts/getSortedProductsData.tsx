@@ -9,6 +9,7 @@ export default async function getSortedProductsData({
   setProducts,
   minPrice = 0,
   maxPrice,
+  checkboxFilters,
 }: {
   activeCategoryButton: string | null;
   sortPrice: string | null;
@@ -16,6 +17,7 @@ export default async function getSortedProductsData({
   setProducts: React.Dispatch<React.SetStateAction<I_Product[] | I_SortedProduct[]>>;
   minPrice?: number | null;
   maxPrice?: number | null;
+  checkboxFilters?: { name: string; value: string[] }[];
 }) {
   try {
     const response = await getSortedProducts({
@@ -24,6 +26,7 @@ export default async function getSortedProductsData({
       sortByName: sortName,
       minPrice: minPrice ?? 0,
       maxPrice: maxPrice ?? 30,
+      checkboxFilters: checkboxFilters,
     });
 
     if (response && response.statusCode === 200) {
