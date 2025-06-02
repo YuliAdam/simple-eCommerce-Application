@@ -7,7 +7,6 @@ import styles from './allProducts.module.scss';
 import createBreadCrumbs from '@/pages/allProducts/createBreadcrumbs';
 import CategoryItem from '@/components/catalog/category-item/category-item';
 import type I_SortedProduct from '@/interfaces/catalog/sortedProduct';
-import getProductsData from '@/pages/allProducts/getProductsData';
 import createProductData from '@/pages/allProducts/createProductData';
 import getSortedProductsData from '@/pages/allProducts/getSortedProductsData';
 import getCategoriesData from '@/pages/allProducts/getCategoriesData';
@@ -28,26 +27,15 @@ function AllProducts() {
   const [checkedFilters, setCheckedFilters] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
-    if (
-      !activeCategoryButton &&
-      !sortPrice &&
-      !sortName &&
-      !minPrice &&
-      !maxPrice &&
-      !checkboxFilters
-    ) {
-      getProductsData({ setProducts });
-    } else {
-      getSortedProductsData({
-        activeCategoryButton,
-        sortPrice,
-        sortName,
-        setProducts,
-        minPrice,
-        maxPrice,
-        checkboxFilters,
-      });
-    }
+    getSortedProductsData({
+      activeCategoryButton,
+      sortPrice,
+      sortName,
+      setProducts,
+      minPrice,
+      maxPrice,
+      checkboxFilters,
+    });
   }, [activeCategoryButton, sortPrice, sortName, minPrice, maxPrice, checkboxFilters]);
 
   useEffect(() => {
@@ -66,7 +54,6 @@ function AllProducts() {
         const breadcrumbs = createBreadCrumbs(categories, subCategories, id);
 
         setBreadcrumbs(breadcrumbs);
-        getProductsData({ setProducts, id });
         // temp
         window.history.pushState(
           {},
