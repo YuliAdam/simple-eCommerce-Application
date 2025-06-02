@@ -77,9 +77,10 @@ export function UserPassword() {
       dispatch(backOldStateValue());
       dispatch(resetState());
     }
-
+    dispatch(setValue({ name: InputName.password, value: user.userParams.password.currentValue }));
     dispatch(onRedactMood(IRedactMoods.password));
   }
+
   function offRedactMoodHandle() {
     dispatch(offRedactMood(IRedactMoods.password));
     dispatch(verifyPassword(false));
@@ -167,7 +168,6 @@ export function UserPassword() {
   }
 
   function getCurrentPaswordInput() {
-    dispatch(setValue({ name: InputName.password, value: user.userParams.password.currentValue }));
     return (
       <>
         <p>Set current password</p>

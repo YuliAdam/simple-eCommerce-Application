@@ -99,6 +99,9 @@ export function UserAddress() {
         ? dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: id }))
         : dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' })) &&
           dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+    dataArr.map(item => {
+      dispatch(setValue({ name: item.input, value: user.userAddresses[i][item.field].newValue }));
+    });
     dispatch(onRedactMood(i));
   }
 
@@ -114,7 +117,6 @@ export function UserAddress() {
 
   function getRedactForm(j: number) {
     return dataArr.map(item => {
-      dispatch(setValue({ name: item.input, value: user.userAddresses[j][item.field].newValue }));
       return (
         <div key={item.name}>
           <RegistrationInput
@@ -620,7 +622,7 @@ export function UserAddress() {
                     </div>
                   </div>
                 </div>
-                {getRedactForm(i)}
+                {...getRedactForm(i)}
                 {addAddressTypeDiv(item.id)}
               </>
             ) : (
