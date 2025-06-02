@@ -5,9 +5,6 @@ import { Close } from '@/assets/img/close';
 import { toggleDialog } from '@/store/slices/dialogSlice';
 import { useRef } from 'react';
 
-//TODO: Integrate component in structure
-// (if response have some errors errorSlise => isErrore set true => message set as value => dialog is open )
-
 export function Dialog() {
   const dialog = useSelector((state: RootState) => state.dialog.values);
   const dispatch = useDispatch();
