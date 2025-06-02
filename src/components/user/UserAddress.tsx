@@ -6,12 +6,17 @@ import { AddressType, InputName, InputTypes, IUpdateActions } from '@/interfaces
 import Trash from '@/assets/img/trash';
 import {
   backOldAddressValue,
+  backOldStateValue,
+  clearPasswordCamps,
+  IRedactMoods,
   IUserFildNames,
   offRedactMood,
   onRedactMood,
   setAddresses,
   setNewUserValue,
   setVersion,
+  toggleAddAddresForm,
+  verifyPassword,
 } from '@/store/slices/userSlice';
 import { Close } from '@/assets/img/close';
 import { Save } from '@/assets/img/save';
@@ -35,11 +40,12 @@ import Add from '@/assets/img/add';
 
 const UPDATE_MESSAGE = 'Your address was updated successfully!';
 const DELETE_MESSAGE = 'Your address was deleted successfully!';
+const ADD_MESSAGE = 'Your address was add successfully!';
 
 export function UserAddress() {
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
-
+  const registration = useSelector((state: RootState) => state.registration.values);
   const dataArr: {
     name: string;
     input: InputName;
@@ -64,6 +70,19 @@ export function UserAddress() {
   ];
 
   function onRedactMoodHandler(i: number) {
+    if (user.isRedactPasswordMood) {
+      dispatch(offRedactMood(IRedactMoods.password));
+      dispatch(verifyPassword(false));
+      dispatch(clearPasswordCamps());
+      dispatch(resetState());
+    }
+    if (user.addedAddressIsPresent) closeAddAddressForm();
+    if (user.isRedactUserParamsMood) {
+      dispatch(offRedactMood(IRedactMoods.userParams));
+      dispatch(backOldStateValue());
+      dispatch(resetState());
+    }
+
     const id = user.userAddresses[i].id;
     const addressType = user.billingArr.values.find(item => id === item)
       ? IUserFildNames.billingArr
@@ -124,7 +143,9 @@ export function UserAddress() {
   function addAddressTypeDiv(id: string | undefined) {
     return (
       <>
-        <div className={`${styles.user_wrap} ${styles.redact}`}>
+        <div
+          className={`${styles.user_wrap} ${styles.redact} ${[AddressType.billing, AddressType.shipping, 'address'].includes(user.addressType) ? '' : styles.invalid}`}
+        >
           <Input
             type={InputTypes.text}
             value={user.addressType}
@@ -155,14 +176,25 @@ export function UserAddress() {
 
   function onChangeAsDefault(id: string | undefined) {
     return () => {
-      if (!(user.billingDefault.newValue || user.shippingDefault.newValue)) {
+      if (!(user.billingDefault.newValue || user.shippingDefault.newValue) && id) {
         user.addressType === AddressType.billing
-          ? dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: id || '' }))
-          : dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: id || '' }));
-      } else {
+          ? dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: id }))
+          : dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: id }));
+      } else if (id && !!(user.billingDefault.newValue || user.shippingDefault.newValue)) {
         user.addressType === AddressType.billing
           ? dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }))
           : dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+      } else if (!id && !(user.billingDefault.newValue || user.shippingDefault.newValue)) {
+        user.addressType === AddressType.billing
+          ? dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: 'new address' }))
+          : user.addressType === AddressType.shipping
+            ? dispatch(
+                setNewUserValue({ name: IUserFildNames.shippingDefault, value: 'new address' }),
+              )
+            : '';
+      } else if (!id && !!(user.billingDefault.newValue || user.shippingDefault.newValue)) {
+        dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
       }
     };
   }
@@ -184,6 +216,11 @@ export function UserAddress() {
           dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
           dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
         }
+      } else if (event && event.target && event.target instanceof HTMLInputElement) {
+        const value = event.target.value;
+        dispatch(setNewUserValue({ name: IUserFildNames.addressType, value: value }));
+        dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
       }
     };
   }
@@ -248,11 +285,13 @@ export function UserAddress() {
   }
 
   function isValid(i: number) {
-    return addressIsValid(
-      user.userAddresses[i].streetName.newValue.trim(),
-      user.userAddresses[i].city.newValue.trim(),
-      user.userAddresses[i].postalCode.newValue.trim(),
-      user.userAddresses[i].country.newValue.trim(),
+    return (
+      addressIsValid(
+        user.userAddresses[i].streetName.newValue.trim(),
+        user.userAddresses[i].city.newValue.trim(),
+        user.userAddresses[i].postalCode.newValue.trim(),
+        user.userAddresses[i].country.newValue.trim(),
+      ) && [AddressType.billing, AddressType.shipping, 'address'].includes(user.addressType)
     );
   }
 
@@ -408,13 +447,178 @@ export function UserAddress() {
       }
     }
   }
+  function onChangeInputValue(name: InputName) {
+    return (event: ChangeEvent<HTMLInputElement>) => {
+      if (event.target && event.target instanceof HTMLInputElement) {
+        const value = event.target.value;
+        dispatch(setValue({ name: name, value: value }));
+        new RegExp(PATTERNS[name]).test(value)
+          ? dispatch(setValid(name))
+          : dispatch(setInvalid(name));
+      }
+    };
+  }
+
+  function closeAddAddressForm() {
+    dispatch(toggleAddAddresForm(false));
+    dispatch(resetState());
+    dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
+    dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+    dispatch(setNewUserValue({ name: IUserFildNames.addressType, value: '' }));
+  }
+
+  function addAddressForm() {
+    return (
+      <div className={styles.user_section}>
+        <div className={styles.address}>
+          <h5>Add address</h5>
+          <div className={styles.address_redact}>
+            <div className={styles.user_save_wrap}>
+              <div className={styles.user_close_area}>
+                <Close className={styles.user_close} onClick={closeAddAddressForm} />
+              </div>
+              <div className={styles.user_save_area}>
+                <Save className={styles.user_save} onClick={sendFormAddNewAddress} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <RegistrationInput
+          className={styles.user_redact}
+          onChangeInput={onChangeInputValue(InputName.street)}
+          name={InputName.street}
+          type={InputTypes.text}
+          value={registration.street.value}
+        />
+        <RegistrationInput
+          className={styles.user_redact}
+          onChangeInput={onChangeInputValue(InputName.city)}
+          name={InputName.city}
+          type={InputTypes.text}
+          value={registration.city.value}
+        />
+        <RegistrationInput
+          className={styles.user_redact}
+          onChangeInput={onChangeInputValue(InputName.postalCode)}
+          name={InputName.postalCode}
+          type={InputTypes.text}
+          value={registration.postalCode.value}
+        />
+        <Datalist id="postalCode" dataName="postalCode" />
+        <RegistrationInput
+          className={styles.user_redact}
+          onChangeInput={onChangeInputValue(InputName.country)}
+          name={InputName.country}
+          type={InputTypes.text}
+          value={registration.country.value}
+        />
+        <Datalist id="countries" dataName="name" />
+        {addAddressTypeDiv(undefined)}
+      </div>
+    );
+  }
+
+  function newAddressIsValid() {
+    return (
+      addressIsValid(
+        registration.street.value.trim(),
+        registration.city.value.trim(),
+        registration.postalCode.value.trim(),
+        registration.country.value.trim(),
+      ) && [AddressType.billing, AddressType.shipping, 'address'].includes(user.addressType)
+    );
+  }
+
+  async function sendFormAddNewAddress() {
+    const id = localStorage.getItem(SHOP.client_id);
+    let actions: CustomerUpdateAction[] = [];
+    if (newAddressIsValid() && id) {
+      actions.push({
+        action: IUpdateActions.addAddress,
+        address: {
+          city: registration.city.value.trim(),
+          country: getCodeByCountry(registration.country.value.trim()),
+          postalCode: registration.postalCode.value.trim(),
+          streetName: registration.street.value.trim(),
+        },
+      });
+
+      try {
+        await updateCustomer(user.version, actions, id);
+        const newUser = await getCustomer(id);
+        if (newUser && !(newUser instanceof Error)) {
+          const body = newUser.body;
+          const newAddressId = body.addresses[body.addresses.length - 1].id;
+          actions = [];
+          if (user.shippingDefault.newValue) {
+            actions.push({
+              action: IUpdateActions.setDefaultShippingAddress,
+              addressId: newAddressId,
+            });
+          }
+          if (user.billingDefault.newValue) {
+            actions.push({
+              action: IUpdateActions.setDefaultBillingAddress,
+              addressId: newAddressId,
+            });
+          }
+          if (user.addressType === AddressType.billing) {
+            actions.push({
+              action: IUpdateActions.addBillingAddressId,
+              addressId: newAddressId,
+            });
+          }
+          if (user.addressType === AddressType.shipping) {
+            actions.push({
+              action: IUpdateActions.addShippingAddressId,
+              addressId: newAddressId,
+            });
+          }
+          const response = await updateCustomer(user.version + 1, actions, id);
+          dispatch(setVersion(response.body.version));
+          showMessage(ADD_MESSAGE);
+          const newFinalUser = await getCustomer(id);
+          if (newFinalUser && !(newFinalUser instanceof Error)) {
+            const body = newFinalUser.body;
+            console.log(body);
+            closeAddAddressForm();
+            dispatch(setAddresses(body));
+          }
+        }
+      } catch (err) {
+        if (err instanceof Error) showMessage(err.message);
+      }
+    }
+  }
+
+  function addAddressMood() {
+    if (user.isRedactPasswordMood) {
+      dispatch(offRedactMood(IRedactMoods.password));
+      dispatch(verifyPassword(false));
+      dispatch(clearPasswordCamps());
+      dispatch(resetState());
+    }
+    if (user.isRedactUserParamsMood) {
+      dispatch(offRedactMood(IRedactMoods.userParams));
+      dispatch(backOldStateValue());
+      dispatch(resetState());
+    }
+    user.userAddresses.forEach((item, i) => {
+      if (item.isRedactMood) {
+        offRedactMoodHandle(i);
+      }
+    });
+    dispatch(toggleAddAddresForm(true));
+  }
 
   return (
     <section className={styles.user_section}>
       <div className={styles.user_section_title}>
         <h5>Addresses</h5>
-        <Add className={styles.user_add} onClick={() => {}} />
+        <Add className={styles.user_add} onClick={addAddressMood} />
       </div>
+      {user.addedAddressIsPresent ? addAddressForm() : ''}
       {user.userAddresses.map((item, i) => {
         return (
           <div className={styles.user_section} key={item.id}>

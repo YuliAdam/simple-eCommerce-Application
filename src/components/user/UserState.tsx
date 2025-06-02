@@ -4,7 +4,9 @@ import { Input } from './Input';
 import styles from '@pages/user/user.module.scss';
 import { Pencil } from '@/assets/img/pencil';
 import {
+  backOldAddressValue,
   backOldStateValue,
+  clearPasswordCamps,
   IRedactMoods,
   IUserFildNames,
   offRedactMood,
@@ -12,6 +14,8 @@ import {
   setNewUserValue,
   setUserState,
   setVersion,
+  toggleAddAddresForm,
+  verifyPassword,
 } from '@/store/slices/userSlice';
 import { Close } from '@/assets/img/close';
 import { Save } from '@/assets/img/save';
@@ -54,6 +58,30 @@ export function UserState() {
   ];
 
   function onRedactMoodHandle() {
+    if (user.isRedactPasswordMood) {
+      dispatch(offRedactMood(IRedactMoods.password));
+      dispatch(verifyPassword(false));
+      dispatch(clearPasswordCamps());
+      dispatch(resetState());
+    }
+    if (user.addedAddressIsPresent) {
+      dispatch(toggleAddAddresForm(false));
+      dispatch(resetState());
+      dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
+      dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+      dispatch(setNewUserValue({ name: IUserFildNames.addressType, value: '' }));
+    }
+    user.userAddresses.forEach((item, i) => {
+      if (item.isRedactMood) {
+        dispatch(setNewUserValue({ name: IUserFildNames.billingArr, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFildNames.shippingArr, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFildNames.billingDefault, value: '' }));
+        dispatch(setNewUserValue({ name: IUserFildNames.shippingDefault, value: '' }));
+        dispatch(offRedactMood(i));
+        dispatch(backOldAddressValue(i));
+        dispatch(resetState());
+      }
+    });
     dispatch(onRedactMood(IRedactMoods.userParams));
   }
   function offRedactMoodHandle() {

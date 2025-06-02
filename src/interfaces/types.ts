@@ -125,4 +125,5 @@ export enum IUpdateActions {
   setDefaultBillingAddress = 'setDefaultBillingAddress',
   addBillingAddressId = 'addBillingAddressId',
   removeBillingAddressId = 'removeBillingAddressId',
+  addAddress = 'addAddress',
 }

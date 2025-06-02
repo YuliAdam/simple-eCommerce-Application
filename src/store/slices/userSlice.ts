@@ -30,6 +30,7 @@ interface IUserState {
   billingDefault: IdState;
   shippingDefault: IdState;
   addressType: string;
+  addedAddressIsPresent: boolean;
 }
 
 export enum IRedactMoods {
@@ -78,6 +79,7 @@ const initialState: IUserState = {
     newValue: '',
   },
   addressType: 'address',
+  addedAddressIsPresent: false,
 };
 
 const userSlice = createSlice({
@@ -147,6 +149,8 @@ const userSlice = createSlice({
           action.payload.value === '' && (state.addressType = 'address');
         }
         if (state[inputDesc] && inputDesc === IUserFildNames.addressType) {
+          state.addressType = action.payload.value;
+        } else if (inputDesc === IUserFildNames.addressType) {
           state.addressType = action.payload.value;
         }
       } else {
@@ -264,6 +268,9 @@ const userSlice = createSlice({
         state.addressType = AddressType.shipping;
       });
     },
+    toggleAddAddresForm(state, action: PayloadAction<boolean>) {
+      state.addedAddressIsPresent = action.payload;
+    },
   },
 });
 
@@ -279,5 +286,6 @@ export const {
   verifyPassword,
   clearPasswordCamps,
   backOldAddressValue,
+  toggleAddAddresForm,
 } = userSlice.actions;
 export default userSlice.reducer;

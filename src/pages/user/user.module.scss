@@ -131,11 +131,11 @@ $breakpoint-mobile: 768px;
     border-radius: 12px;
     display: flex;
     justify-content: space-between;
-    &.invalid {
-      border-color: $red-border-color;
-    }
     &.redact {
       border: 1px solid $border-color;
+      &.invalid {
+        border-color: $red-border-color;
+      }
     }
   }
   &_input {
