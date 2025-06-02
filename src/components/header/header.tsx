@@ -64,7 +64,7 @@ export function Header() {
               <Link to={Path.about}>About</Link>
             </li>
             {isAuthorized && (
-              <li className={styles.linkLogout}>
+              <li style={{ display: 'flex' }} className={styles.linkLogout}>
                 <button className={styles.buttonLogout} onClick={handleLogout}>
                   Logout
                 </button>
