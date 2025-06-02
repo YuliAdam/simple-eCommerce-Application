@@ -24,7 +24,7 @@ $mobile-breakpoint: 768px;
   // padding: 2rem;
 
   @media (max-width: $mobile-breakpoint) {
-    padding: 1.5rem 0.75rem;
+    padding: 1.5rem 6.75rem;
   }
 }
 
@@ -36,7 +36,7 @@ $mobile-breakpoint: 768px;
   text-align: center;
 
   @media (max-width: $mobile-breakpoint) {
-    font-size: $text-2xl;
+    font-size: $text-lg;
     margin-bottom: 1.5rem;
   }
 }
@@ -59,9 +59,9 @@ $mobile-breakpoint: 768px;
 }
 
 .label {
-  font-size: $text-2xl;
-  font-weight: bold;
+  font-size: $text-lg;
   color: $primary-color;
+  font-weight: 600;
 
   @media (max-width: $mobile-breakpoint) {
     font-size: $text-base;
@@ -71,12 +71,34 @@ $mobile-breakpoint: 768px;
 .inputWrapper {
   position: relative;
   width: 100%;
+  padding: 1.5rem 1rem;
+  border: 1px solid $border-color;
+  border-radius: 1.2rem;
+  outline: none;
+  transition: border-color 0.2s;
+  max-height: 44.4px;
+
+  @media (max-width: $mobile-breakpoint) {
+    padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+    font-size: $text-sm;
+  }
+
+  input {
+    width: calc(100% - 2rem);
+    font-size: $text-lg;
+    border: none;
+    outline: none;
+    padding: 0;
+
+    @media (max-width: $mobile-breakpoint) {
+      font-size: $text-sm;
+    }
+  }
 }
 
 .input {
-  width: 100%;
-  padding: 1.5rem 3.5rem 1.5rem 1rem;
-  font-size: 1.4rem;
+  padding: 1.5rem 1rem;
+  font-size: $text-lg;
   border: 1px solid $border-color;
   border-radius: 1.2rem;
   outline: none;
@@ -101,7 +123,7 @@ $mobile-breakpoint: 768px;
   padding: 1.7rem;
   background-color: $primary-color;
   color: $default-bg;
-  font-size: $text-2xl;
+  font-size: $text-lg;
   font-weight: 500;
   border: none;
   border-radius: 9999px;
@@ -151,7 +173,7 @@ $mobile-breakpoint: 768px;
 .dividerText {
   padding: 0 1rem;
   color: $text-muted;
-  font-size: $text-lg;
+  font-size: $text-base;
 
   @media (max-width: $mobile-breakpoint) {
     padding: 0 0.5rem;
@@ -167,14 +189,14 @@ $mobile-breakpoint: 768px;
 
 .newUser {
   color: $text-muted;
-  font-size: $text-lg;
+  font-size: $text-base;
 }
 
 .link {
   color: $vibrant-color;
   text-decoration: none;
   font-weight: 500;
-  font-size: $text-lg;
+  font-size: $text-base;
 
   &:hover {
     text-decoration: underline;
@@ -187,7 +209,7 @@ $mobile-breakpoint: 768px;
   padding: 0.75rem;
   border-radius: 0.375rem;
   margin-bottom: 1rem;
-  font-size: $text-lg;
+  font-size: $text-base;
 }
 
 .spanEye {
@@ -200,18 +222,11 @@ $mobile-breakpoint: 768px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
 }
 
 .eye {
-  width: 1.4rem;
-  height: 1.4rem;
+  height: 12.8px;
+  width: auto;
   color: $text-muted;
   stroke: $text-muted;
-
-  @media (max-width: $mobile-breakpoint) {
-    width: 1.2rem;
-    height: 1.2rem;
-  }
 }
