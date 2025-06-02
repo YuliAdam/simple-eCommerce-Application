@@ -3,9 +3,9 @@ import { Path } from '@/config/routesConfig';
 import { Link } from 'react-router-dom';
 import type I_ProductCardData from '@/interfaces/catalog/productCard';
 
-function ProductCard({ product, i }: { product: I_ProductCardData; i: number }) {
+function ProductCard({ product }: { product: I_ProductCardData; i: number }) {
   const data = product,
-    // id = product.id,
+    productId = product.id,
     imagesArray = data.images,
     productName = data.name,
     productDescription = data.description,
@@ -16,8 +16,7 @@ function ProductCard({ product, i }: { product: I_ProductCardData; i: number }) 
     variants = data?.variants,
     brands = new Set<string>(),
     colors = new Set<string>(),
-    sizes = new Set<string>(),
-    index = i;
+    sizes = new Set<string>();
 
   if (attributes) {
     attributes.map(attribute => {
@@ -60,7 +59,7 @@ function ProductCard({ product, i }: { product: I_ProductCardData; i: number }) 
   }
 
   return (
-    <Link to={`${Path.product.replace(':id', `${index}`)}`} className={styles.link}>
+    <Link to={`${Path.product.replace(':id', `${productId}`)}`} className={styles.link}>
       <li className={styles.product}>
         <div className={styles['img-wrapper']}>
           <img

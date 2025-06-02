@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 import styles from './product.module.scss';
 
 function Product() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [title, setTitle] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const params = useParams<{ id: string }>();
@@ -20,13 +20,13 @@ function Product() {
 
         if (response && response.statusCode === 200) {
           const productsData = response.body.results;
-          setProducts(productsData);
+          const productId = params.id;
+          const foundProduct = productsData.find(product => product.id === productId);
 
-          const requestedIndex = parseInt(params.id ?? '0', 10);
-          const maxIndex = productsData.length - 1;
-          const productIndex = Math.min(Math.max(0, requestedIndex), maxIndex);
-          const currentProduct = productsData[productIndex];
-          setTitle(currentProduct?.masterData?.current?.name?.['en-GB'] ?? '');
+          if (foundProduct) {
+            setCurrentProduct(foundProduct);
+            setTitle(foundProduct?.masterData?.current?.name?.['en-GB'] ?? '');
+          }
         }
       } catch (error) {
         console.log(error);
@@ -36,12 +36,6 @@ function Product() {
     }
     fetchProducts();
   }, [params.id]);
-
-  const requestedIndex = parseInt(params.id ?? '0', 10);
-  //FIXME: 10id product doesnt work properly
-  const maxIndex = products.length - 1;
-  const productIndex = Math.min(Math.max(0, requestedIndex), maxIndex);
-  const currentProduct = products[productIndex];
 
   if (isLoading) {
     return (
@@ -53,10 +47,10 @@ function Product() {
 
   return (
     <div className={styles.container}>
-      <title>{`Product: ${title || `Product ${productIndex + 1}`}`}</title>
-      {requestedIndex > maxIndex ? (
+      <title>{`Product: ${title || 'not found'}`}</title>
+      {!currentProduct ? (
         <p style={{ fontSize: '1.9rem', color: 'gray' }}>
-          Product not found. Available products: 0-{maxIndex}
+          Product not found. Please check the product ID.
         </p>
       ) : (
         <ProductDetailed key={currentProduct.id} product={currentProduct} />
@@ -64,4 +58,5 @@ function Product() {
     </div>
   );
 }
+
 export default Product;
