@@ -1,0 +1,44 @@
+$font-family: 'Poppins', sans-serif;
+
+$primary-color: #111827;
+$body-text-color: #4b5563;
+$vibrant-color: #0ea5e9;
+$border-color: #e5e7eb;
+$default-bg: #ffffff;
+$error-color: #ef4444;
+
+$divider-color: #e5e7eb;
+$text-muted: #6b7280;
+
+$text-4xl: 3.6rem;
+$text-2xl: 1.6rem;
+$text-lg: 1.125rem;
+$text-base: 1rem;
+$text-sm: 0.875rem;
+
+$mobile-breakpoint: 768px;
+
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+
+  @media (max-width: $mobile-breakpoint) {
+    padding: 1.5rem 6.75rem;
+  }
+}
+
+.title {
+  font-size: $text-4xl;
+  font-weight: 600;
+  color: $primary-color;
+  margin-bottom: 2rem;
+  text-align: center;
+
+  @media (max-width: $mobile-breakpoint) {
+    font-size: $text-lg;
+    margin-bottom: 1.5rem;
+  }
+}

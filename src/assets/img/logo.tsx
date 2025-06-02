@@ -1,11 +1,9 @@
-// import styles from "@components/header/header.module.scss";
 export function Logo() {
-  // className={styles["logo"]}
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 14 165.6999969482422 51.599998474121094"
-      width="165.6999969482422"
+      width="140"
       height="51.599998474121094"
     >
       <defs />

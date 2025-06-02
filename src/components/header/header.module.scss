@@ -6,7 +6,7 @@ $background-color: #fff;
 $gray-background: #f8f8f8;
 $border-color: #e5e7eb;
 $transition-speed: 0.3s;
-$breakpoint-mobile: 768px;
+$mobile-breakpoint: 768px;
 $text-2xl: 1.6rem;
 
 .header {
@@ -16,7 +16,7 @@ $text-2xl: 1.6rem;
   position: sticky;
   top: 0;
   z-index: 100;
-  padding: 2rem;
+  padding: 4rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -47,6 +47,7 @@ $text-2xl: 1.6rem;
       margin: 0;
       padding: 0;
       flex-wrap: wrap;
+      gap: 2rem;
 
       li {
         margin-right: 1rem;
@@ -71,6 +72,7 @@ $text-2xl: 1.6rem;
   justify-content: flex-end;
   align-items: center;
   flex-grow: 1;
+  gap: 2rem;
 
   .icon-button {
     background: none;
@@ -116,7 +118,7 @@ $text-2xl: 1.6rem;
   }
 }
 
-@media (max-width: $breakpoint-mobile) {
+@media (max-width: $mobile-breakpoint) {
   .nav-links {
     position: fixed;
     top: 70px;
