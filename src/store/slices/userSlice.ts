@@ -1,7 +1,11 @@
 import type { IUserPageAddress } from '@/interfaces/types';
 import { AddressType } from '@/interfaces/types';
 import { InputName } from '@/interfaces/types';
-import { getCountryByCode } from '@/utils/searchInCountryArrayMethods';
+import {
+  getCountryByCode,
+  getCountryByPostalCode,
+  getPostalCodeByCountry,
+} from '@/utils/searchInCountryArrayMethods';
 import type { Customer } from '@commercetools/platform-sdk';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
@@ -154,14 +158,28 @@ const userSlice = createSlice({
           state.addressType = action.payload.value;
         }
       } else {
-        state[inputDesc.arrayName] &&
-        inputDesc.arrayName === IUserFildNames.userAddresses &&
-        (input === InputName.country ||
-          input === InputName.postalCode ||
-          input === InputName.city ||
-          input === 'streetName')
-          ? (state[inputDesc.arrayName][inputDesc.i][input].newValue = action.payload.value)
-          : '';
+        if (
+          state[inputDesc.arrayName] &&
+          inputDesc.arrayName === IUserFildNames.userAddresses &&
+          (input === InputName.country ||
+            input === InputName.postalCode ||
+            input === InputName.city ||
+            input === 'streetName')
+        ) {
+          console.log('redact');
+          console.log(action.payload.input, action.payload.name, action.payload.value);
+          if (action.payload.input === InputName.postalCode) {
+            state[inputDesc.arrayName][inputDesc.i].country.newValue = getCountryByPostalCode(
+              action.payload.value,
+            );
+          }
+          if (action.payload.input === InputName.country) {
+            state[inputDesc.arrayName][inputDesc.i].postalCode.newValue = getPostalCodeByCountry(
+              action.payload.value,
+            );
+          }
+          state[inputDesc.arrayName][inputDesc.i][input].newValue = action.payload.value;
+        }
       }
     },
     setPassword(state, action: PayloadAction<{ passwordCamp: IPasswordCamp; value: string }>) {

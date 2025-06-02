@@ -14,6 +14,7 @@ $gray-background: #f8f8f8;
 $red-border-color: red;
 $transition-speed: 0.3s;
 $breakpoint-mobile: 768px;
+$secondary-color: #4b5563;
 
 .user {
   width: 50%;
@@ -116,10 +117,10 @@ $breakpoint-mobile: 768px;
       }
     }
     .user_save path {
-      stroke: $border-color;
+      stroke: $secondary-color;
     }
     .user_close path {
-      fill: $border-color;
+      fill: $secondary-color;
     }
   }
 

@@ -25,11 +25,7 @@ import { RegistrationInput } from '../registration/RegistrationInput';
 import type { ChangeEvent } from 'react';
 import { addressIsValid, PATTERNS } from '@/utils/validation/registrationValidation';
 import { Datalist } from '../registration/Datalist';
-import {
-  getCodeByCountry,
-  getCountryByPostalCode,
-  getPostalCodeByCountry,
-} from '@/utils/searchInCountryArrayMethods';
+import { getCodeByCountry } from '@/utils/searchInCountryArrayMethods';
 import { CheckBox } from '../registration/CheckBoxInput';
 import { Input } from './Input';
 import { SHOP } from '@/config/localStorageConfig';
@@ -229,6 +225,7 @@ export function UserAddress() {
     return (event: ChangeEvent<HTMLInputElement>) => {
       if (event.target && event.target instanceof HTMLInputElement) {
         const value = event.target.value;
+        console.log(value);
         dispatch(setValue({ name: name, value: value }));
         dispatch(
           setNewUserValue({
@@ -237,23 +234,6 @@ export function UserAddress() {
             value: value,
           }),
         );
-        name == InputName.postalCode
-          ? dispatch(
-              setNewUserValue({
-                name: { arrayName: IUserFildNames.userAddresses, i: i },
-                input: InputName.country,
-                value: getCountryByPostalCode(value),
-              }),
-            )
-          : name == InputName.country
-            ? dispatch(
-                setNewUserValue({
-                  name: { arrayName: IUserFildNames.userAddresses, i: i },
-                  input: InputName.postalCode,
-                  value: getPostalCodeByCountry(value),
-                }),
-              )
-            : '';
         new RegExp(PATTERNS[name]).test(value)
           ? dispatch(setValid(name))
           : dispatch(setInvalid(name));

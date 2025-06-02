@@ -17,7 +17,7 @@ export default function Forward({
     >
       <path
         d="M15 17H9C6.79086 17 5 15.2091 5 13V13C5 10.7909 6.79086 9 9 9H19M19 9L17 11M19 9L17 7"
-        stroke="#e5e7eb"
+        stroke="#4b5563"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
