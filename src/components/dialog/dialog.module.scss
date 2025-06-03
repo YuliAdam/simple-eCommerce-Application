@@ -16,9 +16,13 @@ $red-color: red;
 $vibrant-color: #0ea5e9;
 
 .dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100vw;
-  height: calc(100vh - 68px);
-  background: rgba(186, 185, 185, 0.5);
+  height: calc(100% - 68px);
+  margin-top: 68px;
+  background: transparent;
   border-color: transparent;
   font-weight: 500;
   font-size: 16px;
@@ -41,29 +45,31 @@ $vibrant-color: #0ea5e9;
     justify-content: center;
     align-items: center;
     position: relative;
-    background-color: $gray-background;
-    border-radius: 12px;
+    background-color: $background-color;
     width: 70%;
+    max-width: 500px;
     height: 50%;
     box-sizing: border-box;
     text-align: center;
     padding: 6vh 0;
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
   }
 
-  &_close {
+  &_closeButton {
     position: absolute;
-    top: -25px;
-    right: -25px;
-    svg {
-      transition: all 0.2s ease-in;
-      width: 30px;
-      height: auto;
-    }
+    top: 3px;
+    right: 3px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-family: 'Poppins';
+    cursor: pointer;
+    padding: 8px;
+    line-height: 1;
+    transition: transform 0.2s ease;
+    color: $primary-color;
     &:hover {
-      cursor: pointer;
-      path {
-        fill: $gray-background;
-      }
+      color: $hover-color;
     }
   }
 }

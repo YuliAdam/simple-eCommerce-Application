@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './header.module.scss';
 import { Login } from '@/assets/img/login';
+import { toggleDialog } from '@/store/slices/dialogSlice';
 
 export function Header() {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ export function Header() {
   }
 
   return (
-    <header className={styles.header}>
+    <header className={styles.header} onClick={() => dispatch(toggleDialog(false))}>
       <button
         ref={burgerBtnRef}
         className={`${styles['mobile-menu-button']} ${isMenuOpen ? styles.active : ''}`}
