@@ -67,11 +67,19 @@ $body-text-color: #4b5563;
 
 .link {
   max-height: fit-content;
+  max-width: 320px;
   transition:
     transform 1s ease,
     opacity 1s ease;
+
+  @media (max-width: 780px) {
+    margin: 0 auto;
+  }
+
   &:hover {
     opacity: 0.5;
+    max-width: 320px;
+    margin: 0 auto;
     transform: scale(1.03);
   }
 }
