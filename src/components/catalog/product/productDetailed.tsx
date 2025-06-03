@@ -1,5 +1,5 @@
 import { Dot } from '@/assets/img/dot';
-import type { Product, ProductVariant as SDKProductVariant } from '@commercetools/platform-sdk';
+import type { Product, ProductVariant } from '@commercetools/platform-sdk';
 import { useState } from 'react';
 import Spinner from '../spinner/spinner';
 import ImageModal from './components/modal/ImageModal';
@@ -15,7 +15,7 @@ function ProductDetailed({ product }: { product: Product }) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalImageIndex, setModalImageIndex] = useState<number>(0);
 
-  const getAttributeValues = (variants: SDKProductVariant[], name: string): string[] => {
+  const getAttributeValues = (variants: ProductVariant[], name: string): string[] => {
     if (!variants?.length) return [];
     const values = variants
       .map(variant => variant.attributes?.find(attribute => attribute.name === name)?.value?.key)
@@ -23,7 +23,7 @@ function ProductDetailed({ product }: { product: Product }) {
     return [...new Set(values)];
   };
 
-  const getAllVariantImages = (variants: SDKProductVariant[]): Thumbnail[] => {
+  const getAllVariantImages = (variants: ProductVariant[]): Thumbnail[] => {
     if (!variants?.length) return [];
     return variants.flatMap(variant =>
       (variant.images ?? []).map(img => ({
@@ -33,7 +33,7 @@ function ProductDetailed({ product }: { product: Product }) {
     );
   };
 
-  const getLowestPrice = (variants: SDKProductVariant[]): { amount: number; currency: string } => {
+  const getLowestPrice = (variants: ProductVariant[]): { amount: number; currency: string } => {
     if (!variants?.length) return { amount: 0, currency: '' };
     const prices = variants.flatMap(variant =>
       (variant.prices ?? []).map(product => product.value),

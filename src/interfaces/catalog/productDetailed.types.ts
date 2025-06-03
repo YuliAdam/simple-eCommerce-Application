@@ -33,18 +33,6 @@ export default interface I_ProductDetailed extends I_Product {
         }[];
         attributes: Attribute[];
       };
-      variants: {
-        images: {
-          url: string;
-          label?: string;
-        }[];
-        prices: {
-          discounted?: {
-            value?: Prices;
-          };
-          value: Prices;
-        }[];
-      };
     };
   };
 }
