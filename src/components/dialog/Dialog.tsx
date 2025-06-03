@@ -1,7 +1,6 @@
 import type { RootState } from '@/store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './dialog.module.scss';
-import { Close } from '@/assets/img/close';
 import { toggleDialog } from '@/store/slices/dialogSlice';
 import { useRef } from 'react';
 
@@ -39,7 +38,9 @@ export function Dialog() {
         <div ref={innerElementRef} className={styles.dialog_text}>
           <p>{dialog.value}</p>
           <div className={styles.dialog_close}>
-            <Close onClick={clickCloseDialog} className={styles.dialog_close_icon} />
+            <button className={styles.dialog_closeButton} onClick={clickCloseDialog}>
+              close
+            </button>
           </div>
         </div>
       </div>
