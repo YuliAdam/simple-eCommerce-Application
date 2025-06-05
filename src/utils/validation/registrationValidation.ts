@@ -1,6 +1,8 @@
 export const MAX_INPUT_LENGTH = 32;
-export const MAX_DATE = getValidEarlierDateInRegexFormat(13);
-export const MIN_DATE = getValidEarlierDateInRegexFormat(130);
+const MAX_AGE = 130;
+const MIN_AGE = 13;
+export const MAX_DATE = getValidEarlierDateInRegexFormat(MIN_AGE);
+export const MIN_DATE = getValidEarlierDateInRegexFormat(MAX_AGE);
 export const PATTERNS = {
   login: '^[a-zA-Z0-9.%!_]+(?:\\.[a-zA-Z0-9.%!_]+)*@[a-zA-Z0-9.%!_]+(?:\\.[a-zA-Z0-9.%!_]+)+$',
   password: '(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}',
@@ -30,7 +32,7 @@ export const VALIDATION_MESSAGES = {
 
 function getValidEarlierDateInRegexFormat(year: number): string {
   const dateNow = new Date();
-  const month = String(dateNow.getMonth()).padStart(2, '0');
+  const month = String(dateNow.getMonth() + 1).padStart(2, '0');
   const day = String(dateNow.getDate()).padStart(2, '0');
   return `${dateNow.getFullYear() - year}-${month}-${day}`;
 }
@@ -49,9 +51,39 @@ export function userDataIsValid(
     testPattern(PATTERNS.login, login) &&
     testPattern(PATTERNS.firstName, firstName) &&
     testPattern(PATTERNS.lastName, lastName) &&
-    birthDay.length > 0
+    birthDay.length > 0 &&
+    birthDayValidation(birthDay)
   );
 }
+
+function birthDayValidation(birthDay: string) {
+  return isDateBeforeMinAgeDate(birthDay, MAX_DATE) && !isDateBeforeMinAgeDate(birthDay, MIN_DATE);
+}
+
+function isDateBeforeMinAgeDate(birthDay: string, minDay: string) {
+  const birthDate = new Date(birthDay);
+  const minDate = new Date(minDay);
+  const yearDiff = birthDate.getFullYear() - minDate.getFullYear();
+  if (yearDiff > 0) {
+    return false;
+  } else if (yearDiff < 0) {
+    return true;
+  }
+  const monthDiff = birthDate.getMonth() - minDate.getMonth();
+  if (monthDiff > 0) {
+    return false;
+  } else if (monthDiff < 0) {
+    return true;
+  }
+  const dayDiff = birthDate.getDate() - minDate.getDate();
+  if (dayDiff > 0) {
+    return false;
+  } else if (dayDiff < 0) {
+    return true;
+  }
+  return true;
+}
+
 export function passwordIsValid(password: string) {
   return testPattern(PATTERNS.password, password);
 }
