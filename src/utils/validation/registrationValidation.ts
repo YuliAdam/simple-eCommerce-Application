@@ -6,8 +6,8 @@ export const PATTERNS = {
   password: '(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}',
   firstName: '[a-zA-Z\\s]{1,32}',
   lastName: '[a-zA-Z\\s]{1,32}',
-  street: '[a-zA-Z0-9\\s]{1,32}',
-  city: '[a-zA-Z\\s]{1,32}',
+  street: '[a-zA-Z0-9\\s\\-]{1,32}',
+  city: '[a-zA-Z\\s\\-]{1,32}',
   postalCode: '[a-zA-Z0-9]{1,32}',
   country: '[a-zA-Z\\s]{1,32}',
   birthDay: '',
@@ -30,9 +30,13 @@ export const VALIDATION_MESSAGES = {
 
 function getValidEarlierDateInRegexFormat(year: number): string {
   const dateNow = new Date();
-  const month = dateNow.getMonth() > 9 ? `${dateNow.getMonth() + 1}` : `0${dateNow.getMonth() + 1}`;
-  const day = dateNow.getDate() > 10 ? `${dateNow.getDate()}` : `0${dateNow.getDate()}`;
+  const month = String(dateNow.getMonth()).padStart(2, '0');
+  const day = String(dateNow.getDate()).padStart(2, '0');
   return `${dateNow.getFullYear() - year}-${month}-${day}`;
+}
+
+function testPattern(pattern: string, value: string): boolean {
+  return new RegExp(pattern).test(value);
 }
 
 export function userDataIsValid(
@@ -42,21 +46,21 @@ export function userDataIsValid(
   birthDay: string,
 ) {
   return (
-    new RegExp(PATTERNS.login).test(login) &&
-    birthDay.length > 0 &&
-    new RegExp(PATTERNS.firstName).test(firstName) &&
-    new RegExp(PATTERNS.lastName).test(lastName)
+    testPattern(PATTERNS.login, login) &&
+    testPattern(PATTERNS.firstName, firstName) &&
+    testPattern(PATTERNS.lastName, lastName) &&
+    birthDay.length > 0
   );
 }
 export function passwordIsValid(password: string) {
-  return new RegExp(PATTERNS.password).test(password);
+  return testPattern(PATTERNS.password, password);
 }
 
 export function addressIsValid(street: string, city: string, postalCode: string, country: string) {
   return (
-    new RegExp(PATTERNS.city).test(city) &&
-    new RegExp(PATTERNS.country).test(country) &&
-    new RegExp(PATTERNS.postalCode).test(postalCode) &&
-    new RegExp(PATTERNS.street).test(street)
+    testPattern(PATTERNS.city, city) &&
+    testPattern(PATTERNS.country, country) &&
+    testPattern(PATTERNS.postalCode, postalCode) &&
+    testPattern(PATTERNS.street, street)
   );
 }

@@ -7,7 +7,7 @@ import Trash from '@/assets/img/trash';
 import {
   backOldAddressValue,
   backOldStateValue,
-  clearPasswordCamps,
+  clearPasswordFields,
   IRedactMoods,
   IUserFieldNames,
   offRedactMood,
@@ -18,7 +18,7 @@ import {
   toggleAddAddressForm,
   verifyPassword,
 } from '@/store/slices/userSlice';
-import { Close } from '@/assets/img/close';
+import { CloseButton } from '@/assets/img/CloseButton';
 import { Save } from '@/assets/img/save';
 import { resetState, setInvalid, setValid, setValue } from '@/store/slices/registrationSlice';
 import { RegistrationInput } from '../registration/RegistrationInput';
@@ -26,7 +26,7 @@ import type { ChangeEvent } from 'react';
 import { addressIsValid, PATTERNS } from '@/utils/validation/registrationValidation';
 import { Datalist } from '../registration/Datalist';
 import { getCodeByCountry } from '@/utils/searchInCountryArrayMethods';
-import { CheckBox } from '../registration/CheckBoxInput';
+import { Checkbox } from '../registration/CheckboxInput';
 import { Input } from './Input';
 import { SHOP } from '@/config/localStorageConfig';
 import type { CustomerUpdateAction } from '@commercetools/platform-sdk';
@@ -69,7 +69,7 @@ export function UserAddress() {
     if (user.isRedactPasswordMood) {
       dispatch(offRedactMood(IRedactMoods.password));
       dispatch(verifyPassword(false));
-      dispatch(clearPasswordCamps());
+      dispatch(clearPasswordFields());
       dispatch(resetState());
     }
     if (user.addedAddressIsPresent) closeAddAddressForm();
@@ -147,7 +147,7 @@ export function UserAddress() {
           <Input
             type={InputTypes.text}
             value={user.addressType}
-            readonly={false}
+            readOnly={false}
             className={styles.user_input}
             placeholder="address type"
             onChange={onChangeAddressType(id)}
@@ -160,7 +160,7 @@ export function UserAddress() {
           <option value={AddressType.shipping} />
         </datalist>
         {user.addressType !== 'address' ? (
-          <CheckBox
+          <Checkbox
             checked={!!(user.billingDefault.newValue || user.shippingDefault.newValue)}
             onChange={onChangeAsDefault(id)}
             text="Set as default"
@@ -457,11 +457,11 @@ export function UserAddress() {
           <h5>Add address</h5>
           <div className={styles.address_redact}>
             <div className={styles.user_save_wrap}>
-              <div className={styles.user_close_area}>
-                <Close className={styles.user_close} onClick={closeAddAddressForm} />
+              <div className={styles.user_close_area} onClick={closeAddAddressForm}>
+                <CloseButton className={styles.user_close} />
               </div>
-              <div className={styles.user_save_area}>
-                <Save className={styles.user_save} onClick={sendFormAddNewAddress} />
+              <div className={styles.user_save_area} onClick={sendFormAddNewAddress}>
+                <Save className={styles.user_save} />
               </div>
             </div>
           </div>
@@ -579,7 +579,7 @@ export function UserAddress() {
     if (user.isRedactPasswordMood) {
       dispatch(offRedactMood(IRedactMoods.password));
       dispatch(verifyPassword(false));
-      dispatch(clearPasswordCamps());
+      dispatch(clearPasswordFields());
       dispatch(resetState());
     }
     if (user.isRedactUserParamsMood) {
@@ -588,7 +588,7 @@ export function UserAddress() {
       dispatch(resetState());
     }
     user.userAddresses.forEach((item, i) => {
-      if (item.isRedactMood) {
+      if (item.isEditMode) {
         offRedactMoodHandle(i);
       }
     });
@@ -605,20 +605,21 @@ export function UserAddress() {
       {user.userAddresses.map((item, i) => {
         return (
           <div className={styles.user_section} key={item.id}>
-            {user.userAddresses[i].isRedactMood ? (
+            {user.userAddresses[i].isEditMode ? (
               <>
                 <div className={styles.address}>
                   {setBillingOrShipping(user.userAddresses[i].id)}
                   <div className={styles.address_redact}>
                     <div className={styles.user_save_wrap}>
-                      <div className={styles.user_close_area}>
-                        <Close
-                          className={styles.user_close}
-                          onClick={() => offRedactMoodHandle(i)}
-                        />
+                      <div
+                        role="button"
+                        className={styles.user_close_area}
+                        onClick={() => offRedactMoodHandle(i)}
+                      >
+                        <CloseButton className={styles.user_close} />
                       </div>
-                      <div className={styles.user_save_area}>
-                        <Save className={styles.user_save} onClick={() => sendForm(i)} />
+                      <div className={styles.user_save_area} onClick={() => sendForm(i)}>
+                        <Save className={styles.user_save} />
                       </div>
                     </div>
                   </div>
@@ -631,8 +632,12 @@ export function UserAddress() {
                 <div className={styles.address}>
                   {setBillingOrShipping(user.userAddresses[i].id)}
                   <div className={styles.address_redact}>
-                    <Pencil className={styles.user_pencil} onClick={() => onRedactMoodHandler(i)} />
-                    <Trash className={styles.user_pencil} onClick={() => deleteAddress(i)} />
+                    <div role="button" onClick={() => onRedactMoodHandler(i)}>
+                      <Pencil className={styles.user_pencil} />
+                    </div>
+                    <div role="button" onClick={() => deleteAddress(i)}>
+                      <Trash className={styles.user_pencil} />
+                    </div>
                   </div>
                 </div>
                 <p>{`${item.streetName.value} ${item.city.value} ${item.country.value}, ${item.postalCode.value}`}</p>
