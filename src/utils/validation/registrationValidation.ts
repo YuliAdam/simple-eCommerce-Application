@@ -1,13 +1,15 @@
 export const MAX_INPUT_LENGTH = 32;
-export const MAX_DATE = getValidEarlierDateInRegexFormat(13);
-export const MIN_DATE = getValidEarlierDateInRegexFormat(130);
+const MAX_AGE = 130;
+const MIN_AGE = 13;
+export const MAX_DATE = getValidEarlierDateInRegexFormat(MIN_AGE);
+export const MIN_DATE = getValidEarlierDateInRegexFormat(MAX_AGE);
 export const PATTERNS = {
-  login: '[a-zA-Z0-9.%!_]+@[a-zA-Z0-9.%!_]+',
+  login: '^[a-zA-Z0-9.%!_]+(?:\\.[a-zA-Z0-9.%!_]+)*@[a-zA-Z0-9.%!_]+(?:\\.[a-zA-Z0-9.%!_]+)+$',
   password: '(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}',
   firstName: '[a-zA-Z\\s]{1,32}',
   lastName: '[a-zA-Z\\s]{1,32}',
-  street: '[a-zA-Z0-9\\s]{1,32}',
-  city: '[a-zA-Z\\s]{1,32}',
+  street: '[a-zA-Z0-9\\s\\-]{1,32}',
+  city: '[a-zA-Z\\s\\-]{1,32}',
   postalCode: '[a-zA-Z0-9]{1,32}',
   country: '[a-zA-Z\\s]{1,32}',
   birthDay: '',
@@ -30,7 +32,67 @@ export const VALIDATION_MESSAGES = {
 
 function getValidEarlierDateInRegexFormat(year: number): string {
   const dateNow = new Date();
-  const month = dateNow.getMonth() > 9 ? `${dateNow.getMonth() + 1}` : `0${dateNow.getMonth() + 1}`;
-  const day = dateNow.getDate() > 10 ? `${dateNow.getDate()}` : `0${dateNow.getDate()}`;
+  const month = String(dateNow.getMonth() + 1).padStart(2, '0');
+  const day = String(dateNow.getDate()).padStart(2, '0');
   return `${dateNow.getFullYear() - year}-${month}-${day}`;
+}
+
+function testPattern(pattern: string, value: string): boolean {
+  return new RegExp(pattern).test(value);
+}
+
+export function userDataIsValid(
+  login: string,
+  firstName: string,
+  lastName: string,
+  birthDay: string,
+) {
+  return (
+    testPattern(PATTERNS.login, login) &&
+    testPattern(PATTERNS.firstName, firstName) &&
+    testPattern(PATTERNS.lastName, lastName) &&
+    birthDay.length > 0 &&
+    birthDayValidation(birthDay)
+  );
+}
+
+function birthDayValidation(birthDay: string) {
+  return isDateBeforeMinAgeDate(birthDay, MAX_DATE) && !isDateBeforeMinAgeDate(birthDay, MIN_DATE);
+}
+
+function isDateBeforeMinAgeDate(birthDay: string, minDay: string) {
+  const birthDate = new Date(birthDay);
+  const minDate = new Date(minDay);
+  const yearDiff = birthDate.getFullYear() - minDate.getFullYear();
+  if (yearDiff > 0) {
+    return false;
+  } else if (yearDiff < 0) {
+    return true;
+  }
+  const monthDiff = birthDate.getMonth() - minDate.getMonth();
+  if (monthDiff > 0) {
+    return false;
+  } else if (monthDiff < 0) {
+    return true;
+  }
+  const dayDiff = birthDate.getDate() - minDate.getDate();
+  if (dayDiff > 0) {
+    return false;
+  } else if (dayDiff < 0) {
+    return true;
+  }
+  return true;
+}
+
+export function passwordIsValid(password: string) {
+  return testPattern(PATTERNS.password, password);
+}
+
+export function addressIsValid(street: string, city: string, postalCode: string, country: string) {
+  return (
+    testPattern(PATTERNS.city, city) &&
+    testPattern(PATTERNS.country, country) &&
+    testPattern(PATTERNS.postalCode, postalCode) &&
+    testPattern(PATTERNS.street, street)
+  );
 }

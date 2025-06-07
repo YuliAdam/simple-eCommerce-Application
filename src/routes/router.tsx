@@ -3,7 +3,8 @@ import { Layout } from '@/layout/layout';
 import { NotFound } from '@/pages/notFound/notFound';
 import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import { AuthRedirect } from './redirect';
+import { AuthRedirect, AuthRedirectIfAnonimUser } from './redirect';
+import User from '@pages/user/user';
 
 const LoginForm = lazy(() => import('@pages/login/login'));
 const RegisterForm = lazy(() => import('@pages/registration/registration'));
@@ -52,7 +53,11 @@ export const router = createBrowserRouter([
       },
       {
         path: Path.user,
-        Component: lazy(() => import('@pages/user/user')),
+        element: (
+          <AuthRedirectIfAnonimUser>
+            <User />
+          </AuthRedirectIfAnonimUser>
+        ),
       },
     ],
   },

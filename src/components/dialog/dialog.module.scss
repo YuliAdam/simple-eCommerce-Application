@@ -1,0 +1,75 @@
+@font-face {
+  font-family: 'Poppins';
+  src: url('@assets/fonts/Poppins/Poppins-Regular.woff');
+}
+
+$font: 'Poppins';
+$primary-color: #111827;
+$secondary-color: #4b5563;
+$hover-color: #333;
+$background-color: #fff;
+$gray-background: #f8f8f8;
+$border-color: #e5e7eb;
+$transition-speed: 0.3s;
+$breakpoint-mobile: 768px;
+$red-color: red;
+$vibrant-color: #0ea5e9;
+
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: calc(100% - 68px);
+  margin-top: 68px;
+  background: transparent;
+  border-color: transparent;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: $primary-color;
+  font-family: $font;
+  z-index: 2;
+  transition: all $transition-speed;
+
+  &_wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &_text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: $background-color;
+    width: 70%;
+    max-width: 500px;
+    height: 50%;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 6vh 0;
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+  }
+
+  &_closeButton {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-family: 'Poppins';
+    cursor: pointer;
+    padding: 8px;
+    line-height: 1;
+    transition: transform 0.2s ease;
+    color: $primary-color;
+    &:hover {
+      color: $hover-color;
+    }
+  }
+}

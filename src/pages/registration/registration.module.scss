@@ -1,3 +1,5 @@
+$hover-color: #333;
+
 @font-face {
   font-family: 'Poppins';
   src: url('@assets/fonts/Poppins/Poppins-Regular.woff');
@@ -66,20 +68,18 @@
         width: 20px;
         height: auto;
         cursor: pointer;
-        margin-left: 5px;
         transition: all 0.2s ease-in;
         &:hover {
-          stroke: var(--vibrant-color);
+          stroke: $hover-color;
           path {
-            stroke: var(--vibrant-color);
+            stroke: $hover-color;
           }
         }
-        path.active,
-        &.active {
-          stroke: var(--vibrant-color);
+        &.active path {
+          stroke: $hover-color;
         }
-        circle.active {
-          fill: var(--vibrant-color);
+        &.active  circle{
+          stroke: $hover-color;
         }
       }
     }
