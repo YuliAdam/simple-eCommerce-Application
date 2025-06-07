@@ -1,0 +1,214 @@
+$font-family: 'Poppins', sans-serif;
+
+$primary-color: #111827;
+$body-text-color: #4b5563;
+$vibrant-color: #0ea5e9;
+$border-color: #e5e7eb;
+$default-bg: #ffffff;
+$error-color: #ef4444;
+
+$divider-color: #e5e7eb;
+$text-muted: #6b7280;
+
+$text-4xl: 3.6rem;
+$text-2xl: 1.6rem;
+$text-lg: 1.125rem;
+$text-base: 1rem;
+$text-sm: 0.875rem;
+
+$mobile-breakpoint: 768px;
+
+.aboutContainer {
+  line-height: 1.4;
+  color: $body-text-color;
+  background-color: $default-bg;
+  padding: 0;
+  margin: 0;
+}
+
+.heroSection {
+  // background: linear-gradient(135deg, #f4c2c2 0%, #e8a5a5 100%);
+  padding: 4rem;
+  text-align: left;
+
+  @media(max-width: $mobile-breakpoint) {
+    padding: 2rem
+  }
+}
+
+.heroTitle {
+  font-size: $text-4xl;
+  font-weight: 700;
+  line-height: 0.9;
+  margin: 0;
+  color: $primary-color;
+  letter-spacing: -0.02em;
+}
+
+.heroSubtitle {
+  font-size: $text-2xl;
+  font-weight: 400;
+  margin: 30px 0 0 0;
+  color: $body-text-color;
+  max-width: 600px;
+}
+
+.mainContent {
+  padding: 4rem;
+
+  @media(max-width: $mobile-breakpoint) {
+    padding: 2rem
+  }
+}
+
+.mainSection {
+  margin: 120px 0;
+}
+
+.sectionTitle {
+  font-size: $text-4xl;
+  color: $body-text-color;
+}
+
+.teamList {
+  margin-top: 60px;
+
+  display: flex;
+  gap: 80px;
+  justify-content: space-between;
+
+  @media(max-width: $mobile-breakpoint) {
+    flex-direction: column;
+  }
+}
+
+.teamMember {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.memberImage {
+  width: 400px;
+  height: 400px;
+  margin-bottom: 30px;
+
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.memberContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.memberGithubLink {
+  width: 24px;
+  height: 24px;
+}
+
+.memberName {
+  font-size: $text-2xl;
+  color: $body-text-color;
+}
+
+
+.memberRole {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 20px 0;
+  color: #8b5a5a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.memberDescription {
+  max-width: 400px;
+  font-size: $text-2xl;
+  line-height: 1.6;
+  color: #5a5a5a;
+}
+
+.schoolSection {
+  padding: 4rem;
+  margin-top: 120px;
+
+  @media(max-width: $mobile-breakpoint) {
+    padding: 2rem
+  }
+}
+
+.schoolContent {
+  display: flex;
+
+  gap: 100px;
+  align-items: center;
+
+  @media(max-width: $mobile-breakpoint) {
+    flex-direction: column;
+  }
+}
+
+.schoolTitle {
+  font-size: $text-4xl;
+  font-weight: 700;
+  margin: 0 0 30px 0;
+  color: $body-text-color;
+  letter-spacing: -0.01em;
+}
+
+.schoolText {
+  font-size: $text-2xl;
+  line-height: 1.7;
+  color: #5a5a5a;
+  margin: 0;
+}
+
+.schoolImage {
+  width: 600px;
+  height: 100%;
+  object-fit: cover;
+  filter: invert(1);
+}
+
+@media (max-width: 768px) {
+
+
+  .heroTitle {
+    font-size: 3rem;
+  }
+
+
+  .sectionTitle {
+    font-size: 2.2rem;
+  }
+
+  .teamGrid {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+
+  .companySection {
+    padding: 80px 30px;
+    margin: 80px -30px 0 -30px;
+  }
+
+  .companyContent {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+
+  .companyImage {
+    height: 300px;
+  }
+
+  .companyTitle {
+    font-size: 2.2rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}

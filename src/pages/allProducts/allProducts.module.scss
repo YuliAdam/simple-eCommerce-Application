@@ -21,6 +21,7 @@ $default-color: #ffffff;
   margin: 0 auto;
   max-width: 400px;
   width: 100%;
+
   &::before {
     position: absolute;
     top: 50%;
@@ -51,19 +52,21 @@ $default-color: #ffffff;
 }
 
 .catalog-wrapper {
-  padding: 20px;
+  // padding: 20px;
   width: 100%;
   display: flex;
   gap: 20px;
-    @media (max-width: 650px) {
-      flex-direction: column;
+
+  @media (max-width: 650px) {
+    flex-direction: column;
   }
 }
 
 .filters {
   min-width: 150px;
-      @media (max-width: 650px) {
-      order: 2;
+
+  @media (max-width: 650px) {
+    order: 2;
   }
 }
 
@@ -91,6 +94,7 @@ $default-color: #ffffff;
 
 .breadcrumb-item {
   position: relative;
+
   &::after {
     position: absolute;
     top: 50%;
@@ -149,8 +153,9 @@ $default-color: #ffffff;
   border-radius: 25px;
   cursor: pointer;
   transition:
-  transform 1s ease,
-  opacity 1s ease;
+    transform 1s ease,
+    opacity 1s ease;
+
   &:hover {
     opacity: 0.3;
   }
