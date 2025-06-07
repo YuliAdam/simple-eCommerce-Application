@@ -2,64 +2,65 @@ import styles from './productCard.module.scss';
 import { Path } from '@/config/routesConfig';
 import { Link } from 'react-router-dom';
 import type I_ProductCardData from '@/interfaces/catalog/productCard';
+import ProductDetails from '@/components/catalog/product/components/productDetails/productDetails';
 
-function ProductCard({ product }: { product: I_ProductCardData; i: number }) {
-  const data = product,
-    productId = product.id,
-    imagesArray = data.images,
-    productName = data.name,
-    productDescription = data.description,
-    productPricesArray = data.prices,
-    priceValue = productPricesArray?.[0]?.value,
-    discountedValue = productPricesArray?.[0]?.discounted?.value,
-    attributes = data?.attributes,
-    variants = data?.variants,
-    brands = new Set<string>(),
-    colors = new Set<string>(),
-    sizes = new Set<string>();
+interface I_Attributes {
+  name: string;
+  value: {
+    key: string;
+    label: string;
+  };
+}
 
-  if (attributes) {
-    attributes.map(attribute => {
-      const attributesData = attribute.value;
-      if (attributesData) {
-        if (attribute.name === 'brand') {
-          brands.add(attribute.value.label);
+enum attributeNames {
+  brand = 'brand',
+  color = 'color',
+  size = 'size',
+}
+
+function ProductCard({ product }: { product: I_ProductCardData }) {
+  const {
+    id: productId,
+    images: imagesArray,
+    name: productName,
+    description: productDescription,
+    prices: productPricesArray,
+    attributes,
+    variants,
+  } = product;
+
+  const priceValue = productPricesArray?.[0]?.value;
+  const discountedValue = productPricesArray?.[0]?.discounted?.value;
+
+  const variantAttributes: I_Attributes[] = (variants || []).flatMap(
+    variant => variant.attributes || [],
+  );
+  const allAttributes = [...(attributes || []), ...variantAttributes];
+
+  const brands = getAttributes(attributeNames.brand, allAttributes);
+  const colors = getAttributes(attributeNames.color, allAttributes);
+  const sizes = getAttributes(attributeNames.size, allAttributes);
+
+  const currencySymbol = '€';
+
+  function getAttributes(name: string, attributes?: I_Attributes[]): Set<string> {
+    const set = new Set<string>();
+    if (attributes) {
+      attributes.forEach(attribute => {
+        if (attribute.name === name) {
+          set.add(attribute.value.label);
         }
-
-        if (attribute.name === 'color') {
-          colors.add(attribute.value.label);
-        }
-
-        if (attribute.name === 'size') {
-          sizes.add(attribute.value.label);
-        }
-      }
-    });
+      });
+    }
+    return set;
   }
 
-  if (variants) {
-    variants.map(variant => {
-      const attributesData = variant.attributes;
-      if (attributesData) {
-        attributesData.map(attribute => {
-          if (attribute.name === 'brand') {
-            brands.add(attribute.value.label);
-          }
-
-          if (attribute.name === 'color') {
-            colors.add(attribute.value.label);
-          }
-
-          if (attribute.name === 'size') {
-            sizes.add(attribute.value.label);
-          }
-        });
-      }
-    });
+  function formatPrice(price: number, fractionDigits: number = 2) {
+    return (price / 100).toFixed(fractionDigits);
   }
 
   return (
-    <Link to={`${Path.product.replace(':id', `${productId}`)}`} className={styles.link}>
+    <Link to={`${Path.product.replace(':id', productId)}`} className={styles.link}>
       <li className={styles.product}>
         <div className={styles['img-wrapper']}>
           <img
@@ -70,61 +71,30 @@ function ProductCard({ product }: { product: I_ProductCardData; i: number }) {
         </div>
         <div className={styles['product-info']}>
           <div className={styles['product-text-wrapper']}>
-            <p className={styles['product-name']}>{productName ? productName : ''}</p>
-            <p className={styles['product-description']}>
-              {productDescription ? productDescription : ''}
-            </p>
-            <ul className={styles['product-details']}>
-              <li className={styles['product-detail']}>
-                <h4 className={styles['product-detail-header']}>Brand:</h4>
-                <p className={styles['product-detail-name']}>
-                  {Array.from(brands)
-                    .map(brand => brand)
-                    .join(', ')}
-                </p>
-              </li>
-            </ul>
-            <ul className={styles['product-details']}>
-              <li className={styles['product-detail']}>
-                <h4 className={styles['product-detail-header']}>Colors:</h4>
-                <p className={styles['product-detail-name']}>
-                  {Array.from(colors)
-                    .map(color => color)
-                    .join(', ')}
-                </p>
-              </li>
-            </ul>
-            <ul className={styles['product-details']}>
-              <li className={styles['product-detail']}>
-                <h4 className={styles['product-detail-header']}>Sizes:</h4>
-                <p className={styles['product-detail-name']}>
-                  {Array.from(sizes)
-                    .map(size => size)
-                    .join(', ')}
-                </p>
-              </li>
-            </ul>
+            <p className={styles['product-name']}>{productName || ''}</p>
+            <p className={styles['product-description']}>{productDescription || ''}</p>
+            <ProductDetails name="Brand" attributes={brands} />
+            <ProductDetails name="Colors" attributes={colors} />
+            <ProductDetails name="Sizes" attributes={sizes} />
           </div>
           <div className={styles['product-prices']}>
             {discountedValue ? (
               <>
                 <p className={`${styles['product-discountPrice']} ${styles['product-main-price']}`}>
-                  <span>€</span>{' '}
+                  <span>{currencySymbol}</span>{' '}
                   {discountedValue
-                    ? (discountedValue.centAmount / 100).toFixed(discountedValue.fractionDigits)
+                    ? formatPrice(discountedValue.centAmount, discountedValue.fractionDigits)
                     : ''}
                 </p>
                 <p className={`${styles['product-price']} ${styles['product-price-old']}`}>
-                  <span>€</span>{' '}
-                  {priceValue
-                    ? (priceValue.centAmount / 100).toFixed(priceValue.fractionDigits)
-                    : ''}
+                  <span>{currencySymbol}</span>{' '}
+                  {priceValue ? formatPrice(priceValue.centAmount, priceValue.fractionDigits) : ''}
                 </p>
               </>
             ) : (
               <p className={`${styles['product-price']} ${styles['product-main-price']}`}>
-                <span>€</span>{' '}
-                {priceValue ? (priceValue.centAmount / 100).toFixed(priceValue.fractionDigits) : ''}
+                <span>{currencySymbol}</span>{' '}
+                {priceValue ? formatPrice(priceValue.centAmount, priceValue.fractionDigits) : ''}
               </p>
             )}
           </div>
