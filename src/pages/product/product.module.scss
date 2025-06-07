@@ -22,11 +22,10 @@ $mobile-breakpoint: 768px;
 .container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 2rem;
+  padding: 4rem;
 
   @media (max-width: $mobile-breakpoint) {
-    padding: 1.5rem 6.75rem;
+    padding: 1.5rem 2rem;
   }
 }
 

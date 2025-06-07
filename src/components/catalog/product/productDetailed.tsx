@@ -83,9 +83,7 @@ function ProductDetailed({ product }: { product: Product }) {
   };
   return (
     <div className={styles['productDetailedContainer']}>
-      <div
-        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', maxWidth: '60vw' }}
-      >
+      <div className={styles['sliderContainer']}>
         <CustomSlider thumbnails={combinedImages}>
           {combinedImages ? (
             combinedImages.map((image, index) => {
@@ -109,15 +107,8 @@ function ProductDetailed({ product }: { product: Product }) {
             <Spinner />
           )}
         </CustomSlider>
-        <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}></div>
       </div>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-        }}
-      >
+      <div className={styles['detailsContainer']}>
         <p style={{ fontSize: '2.2rem' }} className={styles['product-name']}>
           {productName ? productName['en-GB'] : ''}
         </p>
@@ -187,19 +178,7 @@ function ProductDetailed({ product }: { product: Product }) {
             <Spinner />
           )}
         </div>
-        <button
-          style={{
-            border: 'transparent 1px solid',
-            borderRadius: '2px',
-            padding: '1rem',
-            marginTop: '1rem',
-            marginBottom: '1rem',
-            cursor: 'pointer',
-            fontFamily: 'Poppins',
-          }}
-        >
-          Add to cart
-        </button>
+        <button className={styles['product-button']}>Add to cart</button>
         <p style={{ fontSize: '1.9rem' }} className={styles['product-description']}>
           {productDescription && productName ? productDescription['en-GB'] : ''}
         </p>

@@ -7,7 +7,7 @@ export default function Hero() {
     <section className={styles.hero}>
       <div className={styles.content}>
         <h1 className={styles.title}>
-          simple
+          modern
           <br />
           clothes
         </h1>
@@ -16,21 +16,13 @@ export default function Hero() {
         </Link>
         <div className={styles.promocodesContainer}>
           <h2>promocodes:</h2>
-          <p className={styles.promocodes}>xxx-xxx-xxx-xxx</p>
-          <p className={styles.promocodes}>xxx-xxx-xxx-xxx</p>
-          <p className={styles.promocodes}>xxx-xxx-xxx-xxx</p>
+          <p className={styles.promocodes}>*** *** ***</p>
+          <p className={styles.promocodes}>*** *** ***</p>
+          <p className={styles.promocodes}>*** *** ***</p>
         </div>
       </div>
       <div className={styles.imageContainer}>
-        <video
-          preload="none"
-          src="/indexVideo.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          className={styles.heroImage}
-        />
+        <img className={styles.heroImage} src="/clot.jpeg" />
       </div>
     </section>
   );
