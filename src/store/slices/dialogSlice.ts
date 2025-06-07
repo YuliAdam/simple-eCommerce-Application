@@ -20,7 +20,7 @@ export const errorSlice = createSlice({
   initialState,
   reducers: {
     toggleDialog(state, action: PayloadAction<boolean>) {
-      state.values.isOpen = action.payload;
+      if (state.values.isOpen !== action.payload) state.values.isOpen = action.payload;
     },
     setDialogText(state, action: PayloadAction<string>) {
       state.values.value = action.payload;

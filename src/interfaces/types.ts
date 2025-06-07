@@ -57,7 +57,7 @@ export interface IUserPageAddress {
   city: { value: string; newValue: string };
   country: { value: string; newValue: string };
   postalCode: { value: string; newValue: string };
-  isRedactMood: boolean;
+  isEditMode: boolean;
 }
 
 export interface ICustomer {

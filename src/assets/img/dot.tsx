@@ -1,4 +1,10 @@
 export function Dot({ stroke }: { stroke?: string[] | string }) {
+  function setStroke() {
+    const baseColor = Array.isArray(stroke) ? (stroke[0] ?? '') : stroke;
+    if (baseColor === 'white') return '#F2F2F2';
+    return baseColor;
+  }
+
   return (
     <svg
       style={{
@@ -11,11 +17,7 @@ export function Dot({ stroke }: { stroke?: string[] | string }) {
       height="24"
       viewBox="0 0 24 24"
       fill="none"
-      stroke={(() => {
-        const baseColor = Array.isArray(stroke) ? stroke[0] : stroke;
-        if (baseColor === 'white') return '#F2F2F2';
-        return baseColor;
-      })()}
+      stroke={setStroke()}
       strokeWidth="16"
       strokeLinecap="round"
       strokeLinejoin="round"

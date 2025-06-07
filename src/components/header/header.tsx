@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './header.module.scss';
 import { Login } from '@/assets/img/login';
+import { toggleDialog } from '@/store/slices/dialogSlice';
 
 export function Header() {
   const dispatch = useDispatch();
@@ -24,22 +25,22 @@ export function Header() {
     : document.documentElement.classList.remove('noscroll');
 
   useEffect(() => {
-    const authToken = localStorage.getItem(SHOP?.client_token);
+    const authToken = localStorage.getItem(SHOP.client_token);
     if (authToken) {
       dispatch(login(authToken));
     }
-  });
+  }, []);
 
   function handleLogout() {
-    localStorage.removeItem(SHOP?.client_token);
-    localStorage.removeItem(SHOP?.client_id);
+    localStorage.removeItem(SHOP.client_token);
+    localStorage.removeItem(SHOP.client_id);
     dispatch(logout());
     navigate(Path.login);
     setIsMenuOpen(false);
   }
 
   return (
-    <header className={styles.header}>
+    <header className={styles.header} onClick={() => dispatch(toggleDialog(false))}>
       <button
         ref={burgerBtnRef}
         className={`${styles['mobile-menu-button']} ${isMenuOpen ? styles.active : ''}`}

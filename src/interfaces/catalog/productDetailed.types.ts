@@ -1,5 +1,7 @@
 import type I_Product from './product';
 
+//Interface I_ProductDetailed don't used. Can we delete it?
+
 type AttributeName = 'brand' | 'size' | 'color';
 type AttributeValue = { key: string; label: string };
 type Attribute = { name: AttributeName; value: AttributeValue };

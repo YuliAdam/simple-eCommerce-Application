@@ -1,4 +1,4 @@
-import type { AddressType } from '@/interfaces/types';
+import { AddressType } from '@/interfaces/types';
 import { AddressInputName, InputTypes } from '@/interfaces/types';
 import type { RootState } from '@/store/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,11 +15,16 @@ import {
 import type { ChangeEvent } from 'react';
 import { useCallback } from 'react';
 import { PATTERNS } from '@/utils/validation/registrationValidation';
-import { CheckBox } from './CheckBoxInput';
+import { Checkbox } from './CheckboxInput';
+
+const addressLabelMap: Record<AddressType, string> = {
+  [AddressType.billing]: 'Billing',
+  [AddressType.shipping]: 'Shipping',
+};
 
 export default function RegistrationAdditionalAddress({ type }: { type: AddressType }) {
   const registration = useSelector((state: RootState) => state.registration.values);
-  const addressName = type[0].toUpperCase() + type.slice(1);
+  const addressName = addressLabelMap[type];
   const dispatch = useDispatch();
 
   const callbackSetAddressAsAdditional = useCallback(
@@ -47,27 +52,24 @@ export default function RegistrationAdditionalAddress({ type }: { type: AddressT
   return (
     <div className={registration[type].isPresent ? '' : styles.hide}>
       <h5>{addressName} Address</h5>
-      <CheckBox
+      <Checkbox
         checked={registration[type].isCopy}
         onChange={callbackSetAddressAsAdditional}
         text={`Use main address as ${type} address`}
       />
       <RegistrationInput
-        className={''}
         onChangeInput={onChangeValue({ addressType: type, inputName: AddressInputName.street })}
         name={{ addressType: type, inputName: AddressInputName.street }}
         type={InputTypes.text}
         value={registration[type].street.value}
       />
       <RegistrationInput
-        className={''}
         onChangeInput={onChangeValue({ addressType: type, inputName: AddressInputName.city })}
         name={{ addressType: type, inputName: AddressInputName.city }}
         type={InputTypes.text}
         value={registration[type].city.value}
       />
       <RegistrationInput
-        className={''}
         onChangeInput={onChangeValue({ addressType: type, inputName: AddressInputName.postalCode })}
         name={{ addressType: type, inputName: AddressInputName.postalCode }}
         type={InputTypes.text}
@@ -75,7 +77,6 @@ export default function RegistrationAdditionalAddress({ type }: { type: AddressT
       />
       <Datalist id={`${type}_postalCode`} dataName="postalCode" />
       <RegistrationInput
-        className={''}
         onChangeInput={onChangeValue({ addressType: type, inputName: AddressInputName.country })}
         name={{ addressType: type, inputName: AddressInputName.country }}
         type={InputTypes.text}
@@ -83,7 +84,7 @@ export default function RegistrationAdditionalAddress({ type }: { type: AddressT
       />
       <Datalist id={`${type}_countries`} dataName="name" />
 
-      <CheckBox
+      <Checkbox
         checked={registration[type].isDefault}
         onChange={callbackToggleAdditionalAddressAsDefault}
         text="Set as default"

@@ -3,7 +3,7 @@ import type { ChangeEvent } from 'react';
 
 export function Input({
   value,
-  readonly,
+  readOnly,
   className,
   type,
   placeholder,
@@ -11,21 +11,21 @@ export function Input({
   list,
 }: {
   value: string;
-  readonly: boolean;
+  readOnly: boolean;
   className: string;
   type: InputTypes;
   placeholder: string;
-  onChange: (e?: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e?: ChangeEvent<HTMLInputElement>) => void;
   list?: 'address';
 }) {
   const props = {
-    onChange: onChange,
-    readOnly: readonly,
-    className: className,
-    type: type,
-    placeholder: placeholder,
+    onChange,
+    readOnly,
+    className,
+    type,
+    placeholder,
     maxLength: 32,
-    list: list,
+    list,
   };
 
   return (

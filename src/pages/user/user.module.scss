@@ -1,5 +1,5 @@
 @font-face {
-  font-family: 'Poppins';
+  font-family: 'Poppins',Arial, Helvetica, sans-serif;
   src: url('@assets/fonts/Poppins/Poppins-Regular.woff');
 }
 
@@ -183,5 +183,8 @@ $secondary-color: #4b5563;
   &_additional {
     color: $vibrant-color;
     margin-right: 5px;
+  }
+  &_redact{
+    display: flex;
   }
 }

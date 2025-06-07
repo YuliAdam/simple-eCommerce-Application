@@ -6,7 +6,7 @@ import { Pencil } from '@/assets/img/pencil';
 import {
   backOldAddressValue,
   backOldStateValue,
-  clearPasswordCamps,
+  clearPasswordFields,
   IRedactMoods,
   IUserFieldNames,
   offRedactMood,
@@ -17,7 +17,7 @@ import {
   toggleAddAddressForm,
   verifyPassword,
 } from '@/store/slices/userSlice';
-import { Close } from '@/assets/img/close';
+import { CloseButton } from '@/assets/img/CloseButton';
 import { Save } from '@/assets/img/save';
 import { RegistrationInput } from '../registration/RegistrationInput';
 import { InputName, InputTypes, IUpdateActions } from '@/interfaces/types';
@@ -61,7 +61,7 @@ export function UserState() {
     if (user.isRedactPasswordMood) {
       dispatch(offRedactMood(IRedactMoods.password));
       dispatch(verifyPassword(false));
-      dispatch(clearPasswordCamps());
+      dispatch(clearPasswordFields());
       dispatch(resetState());
     }
     if (user.addedAddressIsPresent) {
@@ -72,7 +72,7 @@ export function UserState() {
       dispatch(setNewUserValue({ name: IUserFieldNames.addressType, value: '' }));
     }
     user.userAddresses.forEach((item, i) => {
-      if (item.isRedactMood) {
+      if (item.isEditMode) {
         dispatch(setNewUserValue({ name: IUserFieldNames.billingArr, value: '' }));
         dispatch(setNewUserValue({ name: IUserFieldNames.shippingArr, value: '' }));
         dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' }));
@@ -175,47 +175,45 @@ export function UserState() {
         <h5>Personal Data</h5>
         {user.isRedactUserParamsMood ? (
           <div className={styles.user_save_wrap}>
-            <div className={styles.user_close_area}>
-              <Close className={styles.user_close} onClick={offRedactMoodHandle} />
+            <div className={styles.user_close_area} onClick={offRedactMoodHandle}>
+              <CloseButton className={styles.user_close} />
             </div>
-            <div className={styles.user_save_area}>
-              <Save className={styles.user_save} onClick={sendForm} />
+            <div className={styles.user_save_area} onClick={sendForm}>
+              <Save className={styles.user_save} />
             </div>
           </div>
         ) : (
-          <Pencil className={styles.user_pencil} onClick={onRedactMoodHandle} />
+          <div role="button" onClick={onRedactMoodHandle}>
+            <Pencil className={styles.user_pencil} />
+          </div>
         )}
       </div>
-      {user.isRedactUserParamsMood
-        ? dataArr.map(item => {
-            return (
-              <RegistrationInput
-                key={item.name}
-                onChangeInput={onChangeInput(item.input)}
-                name={item.input}
-                type={item.type}
-                value={item.value.newValue}
-                className={styles.user_redact}
-              />
-            );
-          })
-        : dataArr.map(item => {
-            return (
-              <div
-                className={`${styles.user_wrap} ${user.isRedactUserParamsMood ? styles.redact : ''}`}
-                key={item.input}
-              >
-                <Input
-                  value={`${item.name}  ${item.value.value}`}
-                  readonly={!user.isRedactUserParamsMood}
-                  className={styles.user_input}
-                  type={InputTypes.text}
-                  placeholder=""
-                  onChange={() => {}}
-                />
-              </div>
-            );
-          })}
+      {dataArr.map(item => {
+        return user.isRedactUserParamsMood ? (
+          <RegistrationInput
+            key={item.name}
+            onChangeInput={onChangeInput(item.input)}
+            name={item.input}
+            type={item.type}
+            value={item.value.newValue}
+            className={styles.user_redact}
+          />
+        ) : (
+          <div
+            className={`${styles.user_wrap} ${user.isRedactUserParamsMood ? styles.redact : ''}`}
+            key={item.input}
+          >
+            <Input
+              value={`${item.name}  ${item.value.value}`}
+              readOnly={!user.isRedactUserParamsMood}
+              className={styles.user_input}
+              type={InputTypes.text}
+              placeholder=""
+              onChange={() => {}}
+            />
+          </div>
+        );
+      })}
     </section>
   );
 }

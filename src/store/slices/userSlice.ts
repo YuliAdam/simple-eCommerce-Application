@@ -95,14 +95,14 @@ const userSlice = createSlice({
     },
     offRedactMood(state, action: PayloadAction<IRedactMoods | number>) {
       if (typeof action.payload === 'number') {
-        state.userAddresses[action.payload].isRedactMood = false;
+        state.userAddresses[action.payload].isEditMode = false;
       } else {
         state[action.payload] = false;
       }
     },
     onRedactMood(state, action: PayloadAction<IRedactMoods | number>) {
       if (typeof action.payload === 'number') {
-        state.userAddresses[action.payload].isRedactMood = true;
+        state.userAddresses[action.payload].isEditMode = true;
       } else {
         state[action.payload] = true;
       }
@@ -226,7 +226,7 @@ const userSlice = createSlice({
         state.userAddresses[action.payload].country.value;
     },
 
-    clearPasswordCamps(state) {
+    clearPasswordFields(state) {
       state.userParams.password.currentValue = '';
       state.userParams.password.newValue = '';
       state.userParams.password.repeatNewValue = '';
@@ -249,41 +249,39 @@ const userSlice = createSlice({
             value: getCountryByCode(item.country),
             newValue: getCountryByCode(item.country),
           },
-          isRedactMood: false,
+          isEditMode: false,
         };
-        if (
-          address.id &&
-          action.payload.defaultBillingAddressId &&
-          item.id === action.payload.defaultBillingAddressId
-        ) {
-          state.billingDefault.value = address.id;
+        if (address.id) {
+          if (
+            action.payload.defaultBillingAddressId &&
+            item.id === action.payload.defaultBillingAddressId
+          ) {
+            state.billingDefault.value = address.id;
+          }
+          if (
+            action.payload.defaultShippingAddressId &&
+            item.id === action.payload.defaultShippingAddressId
+          ) {
+            state.shippingDefault.value = address.id;
+          }
+          if (
+            action.payload.billingAddressIds &&
+            item.id &&
+            action.payload.billingAddressIds.includes(item.id)
+          ) {
+            state.billingArr.values.push(address.id);
+            state.addressType = AddressType.billing;
+          }
+          if (
+            action.payload.shippingAddressIds &&
+            item.id &&
+            action.payload.shippingAddressIds.includes(item.id)
+          ) {
+            state.shippingArr.values.push(address.id);
+          }
+          state.userAddresses.push(address);
+          state.addressType = AddressType.shipping;
         }
-        if (
-          address.id &&
-          action.payload.defaultShippingAddressId &&
-          item.id === action.payload.defaultShippingAddressId
-        ) {
-          state.shippingDefault.value = address.id;
-        }
-        if (
-          address.id &&
-          action.payload.billingAddressIds &&
-          item.id &&
-          action.payload.billingAddressIds.includes(item.id)
-        ) {
-          state.billingArr.values.push(address.id);
-          state.addressType = AddressType.billing;
-        }
-        if (
-          address.id &&
-          action.payload.shippingAddressIds &&
-          item.id &&
-          action.payload.shippingAddressIds.includes(item.id)
-        ) {
-          state.shippingArr.values.push(address.id);
-        }
-        state.userAddresses.push(address);
-        state.addressType = AddressType.shipping;
       });
     },
     toggleAddAddressForm(state, action: PayloadAction<boolean>) {
@@ -302,7 +300,7 @@ export const {
   setVersion,
   setPassword,
   verifyPassword,
-  clearPasswordCamps,
+  clearPasswordFields,
   backOldAddressValue,
   toggleAddAddressForm,
 } = userSlice.actions;

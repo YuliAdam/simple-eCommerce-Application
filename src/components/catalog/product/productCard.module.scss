@@ -79,35 +79,20 @@ $body-text-color: #4b5563;
 
 .link {
   max-height: fit-content;
+  max-width: 320px;
   transition:
     transform 1s ease,
     opacity 1s ease;
 
+  @media (max-width: 780px) {
+    margin: 0 auto;
+  }
+
   &:hover {
     opacity: 0.5;
+    max-width: 320px;
     transform: scale(1.03);
   }
-}
-
-.product-details {
-  display: flex;
-  font-size: 1.4rem;
-  font-weight: 400;
-  line-height: 20px;
-  color: $primary-color;
-}
-
-.product-detail {
-  display: flex;
-  gap: 5px;
-}
-
-.product-detail-header {
-  margin: 0;
-}
-
-.product-detail-name {
-  margin: 0;
 }
 
 .productDetailedContainer {
