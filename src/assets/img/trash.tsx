@@ -1,8 +1,7 @@
-export default function Trash({ onClick, className }: { onClick: () => void; className: string }) {
+export default function Trash({ className }: { className: string }) {
   return (
     <svg
       className={className}
-      onClick={onClick}
       width="800px"
       height="800px"
       viewBox="0 0 24 24"

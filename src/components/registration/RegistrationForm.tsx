@@ -236,14 +236,12 @@ export function RegistrationForm(): JSX.Element {
           {dialog.value}
         </p>
         <RegistrationInput
-          className={''}
           onChangeInput={onChangeInputValue(InputName.login)}
           name={InputName.login}
           type={InputTypes.email}
           value={registration.login.value}
         />
         <RegistrationInput
-          className={''}
           onChangeInput={onChangeInputValue(InputName.password)}
           name={InputName.password}
           type={InputTypes.password}
@@ -253,21 +251,18 @@ export function RegistrationForm(): JSX.Element {
       <div>
         <h5>Personal Data</h5>
         <RegistrationInput
-          className={''}
           onChangeInput={onChangeInputValue(InputName.firstName)}
           name={InputName.firstName}
           type={InputTypes.text}
           value={registration.firstName.value}
         />
         <RegistrationInput
-          className={''}
           onChangeInput={onChangeInputValue(InputName.lastName)}
           name={InputName.lastName}
           type={InputTypes.text}
           value={registration.lastName.value}
         />
         <RegistrationInput
-          className={''}
           onChangeInput={onChangeInputValue(InputName.birthDay)}
           name={InputName.birthDay}
           type={InputTypes.date}
@@ -277,21 +272,18 @@ export function RegistrationForm(): JSX.Element {
       <div>
         <h5>Address</h5>
         <RegistrationInput
-          className={''}
           onChangeInput={onChangeInputValue(InputName.street)}
           name={InputName.street}
           type={InputTypes.text}
           value={registration.street.value}
         />
         <RegistrationInput
-          className={''}
           onChangeInput={onChangeInputValue(InputName.city)}
           name={InputName.city}
           type={InputTypes.text}
           value={registration.city.value}
         />
         <RegistrationInput
-          className={''}
           onChangeInput={onChangeInputValue(InputName.postalCode)}
           name={InputName.postalCode}
           type={InputTypes.text}
@@ -299,7 +291,6 @@ export function RegistrationForm(): JSX.Element {
         />
         <Datalist id="postalCode" dataName="postalCode" />
         <RegistrationInput
-          className={''}
           onChangeInput={onChangeInputValue(InputName.country)}
           name={InputName.country}
           type={InputTypes.text}

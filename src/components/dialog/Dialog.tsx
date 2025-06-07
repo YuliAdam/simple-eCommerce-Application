@@ -2,20 +2,19 @@ import type { RootState } from '@/store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './dialog.module.scss';
 import { toggleDialog } from '@/store/slices/dialogSlice';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 export function Dialog() {
   const dialog = useSelector((state: RootState) => state.dialog.values);
   const dispatch = useDispatch();
-  dialog.isOpen
-    ? document.documentElement.classList.add('noscroll')
-    : document.documentElement.classList.remove('noscroll');
-
+  useEffect(() => {
+    document.documentElement.classList.toggle('noscroll', dialog.isOpen);
+    return () => document.documentElement.classList.remove('noscroll');
+  }, [dialog.isOpen]);
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const innerElementRef = useRef<HTMLDivElement>(null);
 
-  function closeDialog(e: React.MouseEvent<HTMLDialogElement, MouseEvent>) {
-    if (e.target !== innerElementRef.current) {
+  function handleBackgroundClick(e: React.MouseEvent<HTMLDialogElement>) {
+    if (dialogRef.current && e.target === dialogRef.current.firstChild) {
       clickCloseDialog();
     }
   }
@@ -29,13 +28,13 @@ export function Dialog() {
 
   return (
     <dialog
-      onClick={e => closeDialog(e)}
+      onClick={e => handleBackgroundClick(e)}
       ref={dialogRef}
       className={styles.dialog}
       open={dialog.isOpen}
     >
       <div className={styles.dialog_wrapper}>
-        <div ref={innerElementRef} className={styles.dialog_text}>
+        <div className={styles.dialog_text}>
           <p>{dialog.value}</p>
           <div className={styles.dialog_close}>
             <button className={styles.dialog_closeButton} onClick={clickCloseDialog}>

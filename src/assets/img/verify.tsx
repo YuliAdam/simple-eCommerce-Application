@@ -1,8 +1,7 @@
-export function Verify({ onClick, className }: { onClick: () => void; className: string }) {
+export function Verify({ className }: { className: string }) {
   return (
     <svg
       className={className}
-      onClick={onClick}
       width="800px"
       height="800px"
       viewBox="0 0 24 24"

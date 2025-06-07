@@ -21,7 +21,7 @@ interface RegistrationInput {
   name: InputName | { addressType: AddressType; inputName: AddressInputName };
   type: InputTypes;
   value: string;
-  className: string;
+  className?: string;
   onChangeInput: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 

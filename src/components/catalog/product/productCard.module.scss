@@ -83,27 +83,6 @@ $body-text-color: #4b5563;
   }
 }
 
-.product-details {
-  display: flex;
-  font-size: 1.4rem;
-  font-weight: 400;
-  line-height: 20px;
-  color: $primary-color;
-}
-
-.product-detail {
-  display: flex;
-  gap: 5px;
-}
-
-.product-detail-header {
-  margin: 0;
-}
-
-.product-detail-name {
-  margin: 0;
-}
-
 .productDetailedContainer {
   display: flex;
   flex-direction: row;

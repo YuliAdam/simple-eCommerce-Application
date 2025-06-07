@@ -25,15 +25,15 @@ export function Header() {
     : document.documentElement.classList.remove('noscroll');
 
   useEffect(() => {
-    const authToken = localStorage.getItem(SHOP?.client_token);
+    const authToken = localStorage.getItem(SHOP.client_token);
     if (authToken) {
       dispatch(login(authToken));
     }
-  });
+  }, []);
 
   function handleLogout() {
-    localStorage.removeItem(SHOP?.client_token);
-    localStorage.removeItem(SHOP?.client_id);
+    localStorage.removeItem(SHOP.client_token);
+    localStorage.removeItem(SHOP.client_id);
     dispatch(logout());
     navigate(Path.login);
     setIsMenuOpen(false);

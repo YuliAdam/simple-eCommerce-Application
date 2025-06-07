@@ -1,6 +1,6 @@
 import { InputTypes } from '@/interfaces/types';
 
-export function CheckBox({
+export function Checkbox({
   checked,
   onChange,
   text,

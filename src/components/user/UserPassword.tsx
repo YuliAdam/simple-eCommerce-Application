@@ -7,7 +7,7 @@ import { Pencil } from '@/assets/img/pencil';
 import {
   backOldAddressValue,
   backOldStateValue,
-  clearPasswordCamps,
+  clearPasswordFields,
   IPasswordCamp,
   IRedactMoods,
   IUserFieldNames,
@@ -20,7 +20,7 @@ import {
   toggleAddAddressForm,
   verifyPassword,
 } from '@/store/slices/userSlice';
-import { Close } from '@/assets/img/close';
+import { CloseButton } from '@/assets/img/CloseButton';
 import { Save } from '@/assets/img/save';
 import { RegistrationInput } from '../registration/RegistrationInput';
 import { InputName, InputTypes } from '@/interfaces/types';
@@ -62,7 +62,7 @@ export function UserPassword() {
       dispatch(setNewUserValue({ name: IUserFieldNames.addressType, value: '' }));
     }
     user.userAddresses.forEach((item, i) => {
-      if (item.isRedactMood) {
+      if (item.isEditMode) {
         dispatch(setNewUserValue({ name: IUserFieldNames.billingArr, value: '' }));
         dispatch(setNewUserValue({ name: IUserFieldNames.shippingArr, value: '' }));
         dispatch(setNewUserValue({ name: IUserFieldNames.billingDefault, value: '' }));
@@ -84,7 +84,7 @@ export function UserPassword() {
   function offRedactMoodHandle() {
     dispatch(offRedactMood(IRedactMoods.password));
     dispatch(verifyPassword(false));
-    dispatch(clearPasswordCamps());
+    dispatch(clearPasswordFields());
     dispatch(resetState());
   }
 
@@ -112,9 +112,13 @@ export function UserPassword() {
 
   function showSaveOrVerifyIcon() {
     return user.passwordIsVerify ? (
-      <Save className={styles.user_save} onClick={sendForm} />
+      <div role="button" onClick={sendForm}>
+        <Save className={styles.user_save} />
+      </div>
     ) : (
-      <Verify className={styles.user_save} onClick={onClickVerify} />
+      <div role="button" onClick={onClickVerify}>
+        <Verify className={styles.user_save} />
+      </div>
     );
   }
 
@@ -216,7 +220,7 @@ export function UserPassword() {
           <Input
             type={isVisible ? InputTypes.text : password.type}
             value={password.value.repeatNewValue}
-            readonly={!user.isRedactPasswordMood}
+            readOnly={!user.isRedactPasswordMood}
             className={styles.user_input}
             placeholder={PLACEHOLDER_REPEAT_PASSWORD}
             onChange={onChangeRepeatPassword(IPasswordCamp.repeatNewValue)}
@@ -236,30 +240,31 @@ export function UserPassword() {
         <h5>Password</h5>
         {user.isRedactPasswordMood ? (
           <div className={styles.user_save_wrap}>
-            <div className={styles.user_close_area}>
-              <Close className={styles.user_close} onClick={offRedactMoodHandle} />
+            <div role="button" className={styles.user_close_area} onClick={offRedactMoodHandle}>
+              <CloseButton className={styles.user_close} />
             </div>
             <div className={styles.user_save_area}>{showSaveOrVerifyIcon()}</div>
           </div>
         ) : (
-          <Pencil className={styles.user_pencil} onClick={onRedactMoodHandle} />
+          <div role="button" onClick={onRedactMoodHandle}>
+            <Pencil className={styles.user_pencil} />
+          </div>
         )}
       </div>
       {user.isRedactPasswordMood ? (
-        !user.passwordIsVerify ? (
-          getCurrentPasswordInput()
-        ) : (
+        user.passwordIsVerify ? (
           getNewPasswordsInputs()
+        ) : (
+          getCurrentPasswordInput()
         )
       ) : (
         <div className={`${styles.user_wrap} ${user.isRedactPasswordMood ? styles.redact : ''}`}>
           <Input
             type={password.type}
             value={password.value.value}
-            readonly={!user.isRedactPasswordMood}
+            readOnly={!user.isRedactPasswordMood}
             className={styles.user_input}
             placeholder=""
-            onChange={() => {}}
           />
         </div>
       )}
