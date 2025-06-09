@@ -29,11 +29,12 @@ export function Header() {
     if (authToken) {
       dispatch(login(authToken));
     }
-  }, []);
+  }, ['']);
 
   function handleLogout() {
     localStorage.removeItem(SHOP.client_token);
     localStorage.removeItem(SHOP.client_id);
+    localStorage.removeItem(SHOP.client_cart_id);
     dispatch(logout());
     navigate(Path.login);
     setIsMenuOpen(false);

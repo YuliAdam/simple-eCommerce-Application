@@ -81,6 +81,7 @@ export function LoginForm(): JSX.Element {
 
       // TODO: add credentials data from response to redux global state
       localStorage.setItem(SHOP.client_id, response.body.customer.id);
+      response.body.cart && localStorage.setItem(SHOP.client_cart_id, response.body.cart.id);
 
       dispatch(login(response.body.customer.id));
     } catch (error) {
