@@ -5,6 +5,7 @@ import { apiRootAnonymous } from './anonymousFlow';
 import { withPasswordFlow } from './flow/passwordFlow';
 
 export async function getBasket(id = localStorage.getItem(SHOP.anonymous_cart_id)) {
+  console.log(id);
   if (id) {
     return await apiRoot.carts().withId({ ID: id }).get().execute();
   }
@@ -42,7 +43,7 @@ export async function updateBasket(
   id = localStorage.getItem(SHOP.anonymous_cart_id),
 ) {
   if (id) {
-    await apiRootAnonymous
+    await apiRoot
       .carts()
       .withId({ ID: id })
       .post({

@@ -3,6 +3,7 @@ import { Path } from '@/config/routesConfig';
 import { Link } from 'react-router-dom';
 import type I_ProductCardData from '@/interfaces/catalog/productCard';
 import ProductDetails from '@/components/catalog/product/components/productDetails/productDetails';
+import { MONEY_SYMBOLS } from '@/interfaces/types';
 
 interface I_Attributes {
   name: string;
@@ -40,8 +41,6 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
   const brands = getAttributes(attributeNames.brand, allAttributes);
   const colors = getAttributes(attributeNames.color, allAttributes);
   const sizes = getAttributes(attributeNames.size, allAttributes);
-
-  const currencySymbol = '€';
 
   function getAttributes(name: string, attributes?: I_Attributes[]): Set<string> {
     const set = new Set<string>();
@@ -81,19 +80,19 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
             {discountedValue ? (
               <>
                 <p className={`${styles['product-discountPrice']} ${styles['product-main-price']}`}>
-                  <span>{currencySymbol}</span>{' '}
+                  <span>{MONEY_SYMBOLS.euro}</span>{' '}
                   {discountedValue
                     ? formatPrice(discountedValue.centAmount, discountedValue.fractionDigits)
                     : ''}
                 </p>
                 <p className={`${styles['product-price']} ${styles['product-price-old']}`}>
-                  <span>{currencySymbol}</span>{' '}
+                  <span>{MONEY_SYMBOLS.euro}</span>{' '}
                   {priceValue ? formatPrice(priceValue.centAmount, priceValue.fractionDigits) : ''}
                 </p>
               </>
             ) : (
               <p className={`${styles['product-price']} ${styles['product-main-price']}`}>
-                <span>{currencySymbol}</span>{' '}
+                <span>{MONEY_SYMBOLS.euro}</span>{' '}
                 {priceValue ? formatPrice(priceValue.centAmount, priceValue.fractionDigits) : ''}
               </p>
             )}

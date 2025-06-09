@@ -1,10 +1,13 @@
 import { Dot } from '@/assets/img/dot';
-import type { Product, ProductVariant } from '@commercetools/platform-sdk';
+import type { CartUpdateAction, Product, ProductVariant } from '@commercetools/platform-sdk';
 import { useState } from 'react';
 import Spinner from '../spinner/spinner';
 import ImageModal from './components/modal/ImageModal';
 import CustomSlider from './components/slider/productImageSlider';
 import styles from './productCard.module.scss';
+import { IBasketUpdateActions } from '@/interfaces/types';
+import { getBasket, updateBasket } from '@/services/basketController';
+import { SHOP } from '@/config/localStorageConfig';
 
 type Thumbnail = {
   url: string;
@@ -13,7 +16,9 @@ type Thumbnail = {
 
 function ProductDetailed({ product }: { product: Product }) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [variantId, setVariantId] = useState(0);
   const [modalImageIndex, setModalImageIndex] = useState<number>(0);
+  setVariantId(product.masterData.current.masterVariant.id);
 
   const getAttributeValues = (variants: ProductVariant[], name: string): string[] => {
     if (!variants?.length) return [];
@@ -81,6 +86,17 @@ function ProductDetailed({ product }: { product: Product }) {
       prevIndex => (prevIndex - 1 + combinedImages.length) % combinedImages.length,
     );
   };
+
+  async function addProductInBasket() {
+    const basket = await getBasket(localStorage.getItem(SHOP.client_cart_id));
+    const actions: CartUpdateAction[] = [
+      { action: IBasketUpdateActions.addLineItem, productId: product.id, variantId: variantId },
+    ];
+    if (basket) {
+      await updateBasket(basket.body.version, actions, localStorage.getItem(SHOP.client_cart_id));
+    }
+  }
+
   return (
     <div className={styles['productDetailedContainer']}>
       <div
@@ -197,6 +213,7 @@ function ProductDetailed({ product }: { product: Product }) {
             cursor: 'pointer',
             fontFamily: 'Poppins',
           }}
+          onClick={addProductInBasket}
         >
           Add to cart
         </button>

@@ -187,7 +187,7 @@ export function RegistrationForm(): JSX.Element {
         await createBasket(
           {
             currency: 'EUR',
-            country: body.addresses[0].country,
+            country: 'GB',
             customerEmail: response?.body.customer.email,
           },
           body.email,

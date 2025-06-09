@@ -136,3 +136,17 @@ export enum IBasketUpdateActions {
   removeLineItem = 'removeLineItem',
   addDiscountCode = 'addDiscountCode',
 }
+
+export enum TEXT_LANGUAGES {
+  enGB = 'en-GB',
+}
+
+export enum MONEY_SYMBOLS {
+  euro = '€',
+}
+
+export enum AttributesName {
+  brand = 'brand',
+  size = 'size',
+  color = 'color',
+}
