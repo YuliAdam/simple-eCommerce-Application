@@ -8,6 +8,8 @@ import styles from './productCard.module.scss';
 import { IBasketUpdateActions } from '@/interfaces/types';
 import { getBasket, updateBasket } from '@/services/basketController';
 import { SHOP } from '@/config/localStorageConfig';
+import { useDispatch } from 'react-redux';
+import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 
 type Thumbnail = {
   url: string;
@@ -16,9 +18,9 @@ type Thumbnail = {
 
 function ProductDetailed({ product }: { product: Product }) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [variantId, setVariantId] = useState(0);
+  const [variantId, setVariantId] = useState(product.masterData.current.masterVariant.id);
   const [modalImageIndex, setModalImageIndex] = useState<number>(0);
-  setVariantId(product.masterData.current.masterVariant.id);
+  const dispatch = useDispatch();
 
   const getAttributeValues = (variants: ProductVariant[], name: string): string[] => {
     if (!variants?.length) return [];
@@ -88,12 +90,22 @@ function ProductDetailed({ product }: { product: Product }) {
   };
 
   async function addProductInBasket() {
-    const basket = await getBasket(localStorage.getItem(SHOP.client_cart_id));
-    const actions: CartUpdateAction[] = [
-      { action: IBasketUpdateActions.addLineItem, productId: product.id, variantId: variantId },
-    ];
-    if (basket) {
-      await updateBasket(basket.body.version, actions, localStorage.getItem(SHOP.client_cart_id));
+    try {
+      setVariantId(product.masterData.current.masterVariant.id);
+      const id =
+        localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
+      const basket = await getBasket(id);
+      const actions: CartUpdateAction[] = [
+        { action: IBasketUpdateActions.addLineItem, productId: product.id, variantId: variantId },
+      ];
+      if (basket) {
+        await updateBasket(basket.body.version, actions, id);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        dispatch(setDialogText(err.message));
+        dispatch(toggleDialog(true));
+      }
     }
   }
 

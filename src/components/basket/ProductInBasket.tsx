@@ -1,6 +1,7 @@
 import { Dot } from '@/assets/img/dot';
 import Minus from '@/assets/img/minus';
 import Plus from '@/assets/img/plus';
+import Trash from '@/assets/img/trash';
 import { AttributesName, MONEY_SYMBOLS, TEXT_LANGUAGES } from '@/interfaces/types';
 import formatPrice from '@/utils/formatPrice';
 import type { Attribute, LineItem } from '@commercetools/platform-sdk';
@@ -61,13 +62,18 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
             <h5 className={styles.item_title}>{item.name[TEXT_LANGUAGES.enGB]}</h5>
             {getAttributes()}
           </div>
-          <div className={styles.item_quantity_wrap}>
-            <div className={styles.item_btn_wrap}>
-              <Minus className={styles.item_btn} />
+          <div className={styles.item_controller}>
+            <div className={styles.item_quantity_wrap}>
+              <div className={styles.item_btn_wrap}>
+                <Minus className={styles.item_btn} />
+              </div>
+              <p>{item.quantity}</p>
+              <div className={styles.item_btn_wrap}>
+                <Plus className={styles.item_btn} />
+              </div>
             </div>
-            <p>{item.quantity}</p>
-            <div className={styles.item_btn_wrap}>
-              <Plus className={styles.item_btn} />
+            <div>
+              <Trash className={styles.item_trash} />
             </div>
           </div>
         </div>

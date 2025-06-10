@@ -1,8 +1,8 @@
 // import styles from "@components/header/header.module.scss";
-export function ShoppingCart() {
-  // className={styles["logo"]}
+export function ShoppingCart({ className }: { className?: string }) {
   return (
     <svg
+      className={className || ''}
       xmlns="http://www.w3.org/2000/svg"
       width="20"
       height="20"
