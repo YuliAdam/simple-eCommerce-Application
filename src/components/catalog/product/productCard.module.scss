@@ -110,7 +110,7 @@ $body-text-color: #4b5563;
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 60vw;
+  max-width: 500px;
 
   @media (max-width: 768px) {
     max-width: 100%;
@@ -119,7 +119,6 @@ $body-text-color: #4b5563;
 }
 
 .detailsContainer {
-  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -128,5 +127,7 @@ $body-text-color: #4b5563;
     width: auto;
   }
 
-
+  @media (max-width: 390px) {
+    margin: 0 auto;
+  }
 }

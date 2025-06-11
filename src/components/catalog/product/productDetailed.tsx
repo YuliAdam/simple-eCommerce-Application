@@ -108,6 +108,7 @@ function ProductDetailed({ product }: { product: Product }) {
           )}
         </CustomSlider>
       </div>
+
       <div className={styles['detailsContainer']}>
         <p style={{ fontSize: '2.2rem' }} className={styles['product-name']}>
           {productName ? productName['en-GB'] : ''}
