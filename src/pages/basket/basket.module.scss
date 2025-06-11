@@ -69,6 +69,25 @@ $secondary-color: #4b5563;
       color: $hover-color;
     }
   }
+
+  &_confirm {
+    width: 100%;
+    text-align: right;
+    margin-top: 0;
+    margin-bottom: 14px;
+    span {
+      margin: 0 8px;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      color: $body-text-color;
+      cursor: pointer;
+      &:hover {
+        color: $hover-color;
+      }
+    }
+  }
+
   &_empty {
     width: 100%;
     margin-top: 20px;
@@ -161,6 +180,9 @@ $secondary-color: #4b5563;
       color: $primary-color;
       margin: 0;
       margin-right: 10px;
+    }
+    svg {
+      cursor: default !important;
     }
   }
   &_controller {

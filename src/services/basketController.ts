@@ -42,7 +42,7 @@ export async function updateBasket(
   id = localStorage.getItem(SHOP.anonymous_cart_id),
 ) {
   if (id) {
-    await apiRoot
+    return await apiRoot
       .carts()
       .withId({ ID: id })
       .post({

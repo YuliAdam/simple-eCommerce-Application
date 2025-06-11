@@ -3,22 +3,26 @@ import { getBasket, updateBasket } from '@/services/basketController';
 import styles from './basket.module.scss';
 import { useEffect, useState } from 'react';
 import type { CartUpdateAction, LineItem } from '@commercetools/platform-sdk';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 import ProductInBasket from '@/components/basket/ProductInBasket';
 import { IBasketUpdateActions, MONEY_SYMBOLS } from '@/interfaces/types';
 import formatPrice from '@/utils/formatPrice';
 import EmptyBasket from '@/components/basket/EmptyBasket';
+import { setTotalItems } from '@/store/slices/basketSlice';
+import type { RootState } from '@/store/store';
 
 const SHIPPING_AMOUNT = 4.99;
 
 function Basket() {
   const [items, setItems] = useState<LineItem[]>([]);
-  const [totalItems, setTotalItems] = useState(0);
+
   const [totalPrice, setTotalPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
+  const [isConfirmMessage, isVisible] = useState(false);
   const id =
     localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
+  const basket = useSelector((state: RootState) => state.basket);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -28,7 +32,8 @@ function Basket() {
           if (res) {
             setItems(res.body.lineItems || []);
             setTotalPrice(res.body.totalPrice.centAmount);
-            setTotalItems(res.body.totalLineItemQuantity || 0);
+
+            dispatch(setTotalItems(res.body.totalLineItemQuantity || 0));
             let discountSum = res.body.lineItems.reduce(
               (sum, item) =>
                 item.price.discounted
@@ -44,7 +49,7 @@ function Basket() {
           dispatch(toggleDialog(true));
         });
     }
-  }, [totalItems]);
+  }, [basket.totalItems]);
 
   function getItems() {
     return (
@@ -69,7 +74,8 @@ function Basket() {
       });
       if (basket) {
         await updateBasket(basket.body.version, actions, id);
-        setTotalItems(0);
+
+        dispatch(setTotalItems(0));
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -79,17 +85,31 @@ function Basket() {
     }
   }
 
+  function confirmMessage() {
+    return (
+      <div className={styles.basket_confirm}>
+        <span onClick={clearBasket}>Confirm</span>
+        <span onClick={() => isVisible(false)}>Close</span>
+      </div>
+    );
+  }
+
   function getOrdersSection() {
     return (
       <>
-        <p className={styles.basket_clear} onClick={clearBasket}>
-          Clear basket
-        </p>
+        {isConfirmMessage ? (
+          confirmMessage()
+        ) : (
+          <p className={styles.basket_clear} onClick={() => isVisible(true)}>
+            Clear basket
+          </p>
+        )}
+
         <div className={styles.basket_products}>{getItems()}</div>
         <div className={styles.basket_totals}>
           <div className={styles.total}>
             <p>Products</p>
-            <p>{totalItems}</p>
+            <p>{basket.totalItems}</p>
           </div>
           <div className={styles.total}>
             <p>Subtotal</p>
@@ -120,7 +140,7 @@ function Basket() {
   return (
     <section className={styles.basket}>
       <h2 className={styles.basket_title}>Checkout</h2>
-      {totalItems ? getOrdersSection() : <EmptyBasket />}
+      {basket.totalItems ? getOrdersSection() : <EmptyBasket />}
     </section>
   );
 }

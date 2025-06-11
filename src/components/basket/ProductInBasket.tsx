@@ -2,12 +2,25 @@ import { Dot } from '@/assets/img/dot';
 import Minus from '@/assets/img/minus';
 import Plus from '@/assets/img/plus';
 import Trash from '@/assets/img/trash';
-import { AttributesName, MONEY_SYMBOLS, TEXT_LANGUAGES } from '@/interfaces/types';
+import { SHOP } from '@/config/localStorageConfig';
+import {
+  AttributesName,
+  IBasketUpdateActions,
+  MONEY_SYMBOLS,
+  TEXT_LANGUAGES,
+} from '@/interfaces/types';
+import { getBasket, updateBasket } from '@/services/basketController';
+import { setTotalItems } from '@/store/slices/basketSlice';
+import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 import formatPrice from '@/utils/formatPrice';
-import type { Attribute, LineItem } from '@commercetools/platform-sdk';
+import type { Attribute, CartUpdateAction, LineItem } from '@commercetools/platform-sdk';
 import styles from '@pages/basket/basket.module.scss';
+import { useDispatch } from 'react-redux';
 
 export default function ProductInBasket({ item }: { item: LineItem }) {
+  const basketId = localStorage.getItem(SHOP.client_cart_id || SHOP.anonymous_cart_id);
+  const dispatch = useDispatch();
+
   function getAttributeValue(name: string, attributes: Attribute[]) {
     return attributes.find(attribute => attribute.name === name);
   }
@@ -48,6 +61,43 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
     );
   }
 
+  async function deleteProduct() {
+    try {
+      const basket = await getBasket(basketId);
+      const actions: CartUpdateAction[] = [];
+      actions.push({ action: IBasketUpdateActions.removeLineItem, lineItemId: item.id });
+      if (basket) {
+        await updateBasket(basket.body.version, actions, basketId);
+        dispatch(setTotalItems(0));
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        dispatch(setDialogText(err.message));
+        dispatch(toggleDialog(true));
+      }
+    }
+  }
+  async function changeProductQuantity(num: number) {
+    try {
+      const basket = await getBasket(basketId);
+      const actions: CartUpdateAction[] = [];
+      actions.push({
+        action: IBasketUpdateActions.changeLineItemQuantity,
+        lineItemId: item.id,
+        quantity: item.quantity + num,
+      });
+      if (basket) {
+        const response = await updateBasket(basket.body.version, actions, basketId);
+        dispatch(setTotalItems(response?.body.totalLineItemQuantity || 0));
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        dispatch(setDialogText(err.message));
+        dispatch(toggleDialog(true));
+      }
+    }
+  }
+
   return (
     <div className={styles.basket_item}>
       <div
@@ -64,15 +114,15 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
           </div>
           <div className={styles.item_controller}>
             <div className={styles.item_quantity_wrap}>
-              <div className={styles.item_btn_wrap}>
+              <div className={styles.item_btn_wrap} onClick={() => changeProductQuantity(-1)}>
                 <Minus className={styles.item_btn} />
               </div>
               <p>{item.quantity}</p>
-              <div className={styles.item_btn_wrap}>
+              <div className={styles.item_btn_wrap} onClick={() => changeProductQuantity(+1)}>
                 <Plus className={styles.item_btn} />
               </div>
             </div>
-            <div>
+            <div onClick={deleteProduct}>
               <Trash className={styles.item_trash} />
             </div>
           </div>
