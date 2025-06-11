@@ -9,15 +9,16 @@ import {
 
 import { projectKey, authUrl, apiUrl, clientId, clientSecret, scopes } from '@/services/apiEnv';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
+import { SHOP } from '@/config/localStorageConfig';
 
 // anonymousId
 export function getAnonymousId() {
-  let id = localStorage.getItem('anonymousId');
+  let id = localStorage.getItem(SHOP.anonymous_id);
   if (!id) {
     id = crypto.randomUUID();
-    localStorage.setItem('anonymousId', id);
   }
-  console.log(id);
+  console.log('anon id', id);
+  localStorage.setItem(SHOP.anonymous_id, id);
   return id;
 }
 

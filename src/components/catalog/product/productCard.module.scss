@@ -102,14 +102,15 @@ $body-text-color: #4b5563;
 }
 
 .product_add {
-  border: 'transparent 1px solid';
-  border-radius: '2px';
-  padding: '1rem';
-  margin-top: '1rem';
-  margin-bottom: '1rem';
-  cursor: 'pointer';
-  font-family: 'Poppins';
+  border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  font-family: Poppins;
   &:disabled {
     opacity: 0.5;
+    cursor: default;
   }
 }

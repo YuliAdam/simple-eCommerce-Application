@@ -1,6 +1,5 @@
 import { SHOP } from '@/config/localStorageConfig';
 import { Path } from '@/config/routesConfig';
-import { withPasswordFlow } from '@/services/flow/passwordFlow';
 import { login } from '@/store/slices/authSlice';
 import { PATTERNS, VALIDATION_MESSAGES } from '@/utils/validation/registrationValidation';
 import type { JSX } from 'react';
@@ -10,6 +9,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from './login.module.scss';
 import { Eye } from '@/assets/img/eye';
 import { EyeOff } from '@/assets/img/eyeoff';
+import type { ILoginParams } from '@/interfaces/types';
+import { loginCustomer } from '@/services/customersController';
+import { clearBasket, copyInBasket } from '@/services/basketController';
+import { setTotalItems } from '@/store/slices/basketSlice';
 
 /** TODO: LIST
 
@@ -67,23 +70,33 @@ export function LoginForm(): JSX.Element {
     }
 
     try {
-      const response = await withPasswordFlow(email, password)
-        .me()
-        .login()
-        .post({
-          body: {
-            email,
-            password,
-          },
-        })
-        .execute();
+      const body: ILoginParams = {
+        email,
+        password,
+        anonymousCartSignInMode: ' MergeWithExistingCustomerCart',
+        anonymousCart: { id: localStorage.getItem(SHOP.anonymous_cart_id) || '' },
+        anonymousId: localStorage.getItem(SHOP.anonymous_id) || '',
+      };
+      const response = await loginCustomer(body);
       navigate(Path.empty);
-
-      // TODO: add credentials data from response to redux global state
-      localStorage.setItem(SHOP.client_id, response.body.customer.id);
-      response.body.cart && localStorage.setItem(SHOP.client_cart_id, response.body.cart.id);
-
-      dispatch(login(response.body.customer.id));
+      if (response && !(response instanceof Error)) {
+        // TODO: add credentials data from response to redux global state
+        localStorage.setItem(SHOP.client_id, response.body.customer.id);
+        if (response.body.cart) {
+          localStorage.setItem(SHOP.client_cart_id, response.body.cart.id);
+          const newBasket = await copyInBasket(response.body.cart.version, response.body.cart.id);
+          newBasket &&
+            dispatch(
+              setTotalItems(
+                newBasket.body.totalLineItemQuantity ||
+                  response.body.cart.totalLineItemQuantity ||
+                  0,
+              ),
+            );
+        }
+        dispatch(login(response.body.customer.id));
+        await clearBasket();
+      }
     } catch (error) {
       if (error instanceof Error) {
         setLoginResponse(<div className={styles.error}>Login failed: {error.message}</div>);

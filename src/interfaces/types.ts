@@ -79,8 +79,9 @@ export interface ICustomerDraft {
 export interface ILoginParams {
   email: string;
   password: string;
-  activeCartSignInMode?: string;
+  anonymousCartSignInMode: ' MergeWithExistingCustomerCart';
   anonymousCart?: { id: string };
+  anonymousId?: string;
 }
 
 export interface IRegistrationState {

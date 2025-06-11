@@ -13,6 +13,7 @@ document.body.prepend(rootElement);
 const root = createRoot(rootElement);
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log(localStorage.getItem(SHOP.anonymous_cart_id));
   localStorage.getItem(SHOP.client_cart_id)
     ? getBasket(localStorage.getItem(SHOP.client_cart_id))
     : localStorage.getItem(SHOP.anonymous_cart_id)

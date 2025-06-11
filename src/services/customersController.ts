@@ -4,31 +4,23 @@ import type { ILoginParams } from '@/interfaces/types';
 import { withPasswordFlow } from './flow/passwordFlow';
 
 export async function createCustomer(body: MyCustomerDraft) {
-  try {
-    return await apiRoot
-      .me()
-      .signup()
-      .post({
-        body: body,
-      })
-      .execute();
-  } catch (err) {
-    if (err instanceof Error) return err;
-  }
+  return await apiRoot
+    .me()
+    .signup()
+    .post({
+      body: body,
+    })
+    .execute();
 }
 
 export async function loginCustomer(body: ILoginParams) {
-  try {
-    return await withPasswordFlow(body.email, body.password)
-      .me()
-      .login()
-      .post({
-        body: body,
-      })
-      .execute();
-  } catch (err) {
-    if (err instanceof Error) return err;
-  }
+  return await withPasswordFlow(body.email, body.password)
+    .me()
+    .login()
+    .post({
+      body: body,
+    })
+    .execute();
 }
 
 export async function getCustomer(id: string) {

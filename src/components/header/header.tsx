@@ -12,8 +12,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from './header.module.scss';
 import { Login } from '@/assets/img/login';
 import { toggleDialog } from '@/store/slices/dialogSlice';
+import { setTotalItems } from '@/store/slices/basketSlice';
 
 export function Header() {
+  const basket = useSelector((state: RootState) => state.basket);
   const dispatch = useDispatch();
   const isAuthorized = useSelector((state: RootState) => state.auth.isAuthorized);
   const navigate = useNavigate();
@@ -36,6 +38,7 @@ export function Header() {
     localStorage.removeItem(SHOP.client_id);
     localStorage.removeItem(SHOP.client_cart_id);
     dispatch(logout());
+    dispatch(setTotalItems(0));
     navigate(Path.login);
     setIsMenuOpen(false);
   }
@@ -91,7 +94,7 @@ export function Header() {
           </Link>
         )}
         <Link to={Path.basket} className={styles['icon-button']}>
-          <ShoppingCart />
+          <ShoppingCart className={styles['icon-basket']} text={basket.totalItems} />
         </Link>
       </div>
     </header>

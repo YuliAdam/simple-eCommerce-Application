@@ -31,7 +31,7 @@ import { useNavigate } from 'react-router-dom';
 import { Datalist } from './Datalist';
 import RegistrationAdditionalAddress from './RegistrationAdditionalAddress';
 import { RegistrationInput } from './RegistrationInput';
-import { createBasket } from '@/services/basketController';
+import { clearBasket, copyInBasket, createBasket } from '@/services/basketController';
 
 export function RegistrationForm(): JSX.Element {
   const registration = useSelector((state: RootState) => state.registration.values);
@@ -175,12 +175,11 @@ export function RegistrationForm(): JSX.Element {
   async function submitForm() {
     if (isValidForm()) {
       const body = getData();
-      console.log(body);
-      const response = await createCustomer(body);
-      window.scrollTo(0, 0);
-      dispatch(setDialogText(REGISTER_MESSAGE));
-      dispatch(toggleDialog(true));
-      if (!(response instanceof Error)) {
+      try {
+        const response = await createCustomer(body);
+        window.scrollTo(0, 0);
+        dispatch(setDialogText(REGISTER_MESSAGE));
+        dispatch(toggleDialog(true));
         while (dialog.isOpen) {
           setTimeout(() => {}, 3000);
         }
@@ -194,12 +193,14 @@ export function RegistrationForm(): JSX.Element {
           body.password,
         );
         await loginRequest(body.email, body.password);
-      } else {
-        if (response.message === 'There is already an existing customer with the provided email.') {
-          showRegistrationErrorMessage(response.message);
-        } else {
-          dispatch(setDialogText(response.message));
-          dispatch(toggleDialog(true));
+      } catch (err) {
+        if (err instanceof Error) {
+          if (err.message === 'There is already an existing customer with the provided email.') {
+            showRegistrationErrorMessage(err.message);
+          } else {
+            dispatch(setDialogText(err.message));
+            dispatch(toggleDialog(true));
+          }
         }
       }
     }
@@ -214,13 +215,21 @@ export function RegistrationForm(): JSX.Element {
     const body: ILoginParams = {
       email: login,
       password: password,
+      anonymousCartSignInMode: ' MergeWithExistingCustomerCart',
     };
-    const response = await loginCustomer(body);
-    !(response instanceof Error) && response
-      ? goToIndexPage(response)
-      : response instanceof Error
-        ? console.log(response.message)
-        : console.log(response);
+    try {
+      const response = await loginCustomer(body);
+      if (response.body.cart) {
+        await copyInBasket(response.body.cart.version, response.body.cart.id);
+        await clearBasket();
+      }
+      goToIndexPage(response);
+    } catch (err) {
+      if (err instanceof Error) {
+        dispatch(setDialogText(err.message));
+        dispatch(toggleDialog(true));
+      }
+    }
   }
 
   function goToIndexPage(response: ClientResponse<CustomerSignInResult>) {

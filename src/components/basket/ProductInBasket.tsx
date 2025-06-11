@@ -3,6 +3,7 @@ import Minus from '@/assets/img/minus';
 import Plus from '@/assets/img/plus';
 import Trash from '@/assets/img/trash';
 import { SHOP } from '@/config/localStorageConfig';
+import { Path } from '@/config/routesConfig';
 import {
   AttributesName,
   IBasketUpdateActions,
@@ -10,16 +11,19 @@ import {
   TEXT_LANGUAGES,
 } from '@/interfaces/types';
 import { getBasket, updateBasket } from '@/services/basketController';
-import { setTotalItems } from '@/store/slices/basketSlice';
+import { changeTotalItems, setTotalItems } from '@/store/slices/basketSlice';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 import formatPrice from '@/utils/formatPrice';
 import type { Attribute, CartUpdateAction, LineItem } from '@commercetools/platform-sdk';
 import styles from '@pages/basket/basket.module.scss';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProductInBasket({ item }: { item: LineItem }) {
-  const basketId = localStorage.getItem(SHOP.client_cart_id || SHOP.anonymous_cart_id);
+  const basketId =
+    localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function getAttributeValue(name: string, attributes: Attribute[]) {
     return attributes.find(attribute => attribute.name === name);
@@ -68,7 +72,7 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
       actions.push({ action: IBasketUpdateActions.removeLineItem, lineItemId: item.id });
       if (basket) {
         await updateBasket(basket.body.version, actions, basketId);
-        dispatch(setTotalItems(0));
+        dispatch(changeTotalItems(-1));
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -105,11 +109,17 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
         style={{
           backgroundImage: `url("${item.variant.images && item.variant.images[0].url}")`,
         }}
+        onClick={() => navigate(`${Path.product.replace(':id', item.productId)}`)}
       ></div>
       <div className={styles.item_wrap}>
         <div className={styles.item_info_wrap}>
           <div className={styles.item_info}>
-            <h5 className={styles.item_title}>{item.name[TEXT_LANGUAGES.enGB]}</h5>
+            <h5
+              className={styles.item_title}
+              onClick={() => navigate(`${Path.product.replace(':id', item.productId)}`)}
+            >
+              {item.name[TEXT_LANGUAGES.enGB]}
+            </h5>
             {getAttributes()}
           </div>
           <div className={styles.item_controller}>

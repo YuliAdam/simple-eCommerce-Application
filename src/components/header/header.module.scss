@@ -81,9 +81,20 @@ $text-2xl: 1.6rem;
     margin-left: 1rem;
     color: $secondary-color;
     transition: color $transition-speed ease;
-
     &:hover {
       color: $hover-color;
+    }
+  }
+
+  .icon-basket {
+    height: 50px;
+    width: auto;
+    text {
+      font-size: 10px;
+      font-family: Poppins;
+      font-weight: 100;
+      stroke-width: 1;
+      letter-spacing: 1px;
     }
   }
 

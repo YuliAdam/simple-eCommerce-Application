@@ -10,6 +10,7 @@ import { getBasket, updateBasket } from '@/services/basketController';
 import { SHOP } from '@/config/localStorageConfig';
 import { useDispatch } from 'react-redux';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import { changeTotalItems } from '@/store/slices/basketSlice';
 
 type Thumbnail = {
   url: string;
@@ -96,10 +97,11 @@ function ProductDetailed({ product }: { product: Product }) {
       const id =
         localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
       const basket = await getBasket(id);
-      const actions: CartUpdateAction[] = [
-        { action: IBasketUpdateActions.addLineItem, productId: product.id, variantId: variantId },
-      ];
       if (basket) {
+        dispatch(changeTotalItems(+1));
+        const actions: CartUpdateAction[] = [
+          { action: IBasketUpdateActions.addLineItem, productId: product.id, variantId: variantId },
+        ];
         await updateBasket(basket.body.version, actions, id);
       }
     } catch (err) {
@@ -126,7 +128,6 @@ function ProductDetailed({ product }: { product: Product }) {
         newSize === variant.attributes?.find(attr => attr.name === 'size')?.value.key &&
         newColor === variant.attributes?.find(attr => attr.name === 'color')?.value.key,
     )?.id;
-    console.log(id);
     setVariantIdState(id);
   }
 
