@@ -11,7 +11,6 @@ import formatPrice from '@/utils/formatPrice';
 import EmptyBasket from '@/components/basket/EmptyBasket';
 
 const SHIPPING_AMOUNT = 4.99;
-const SHIPPING_VALUE = `${MONEY_SYMBOLS.euro} ${SHIPPING_AMOUNT}`;
 
 function Basket() {
   const [items, setItems] = useState<LineItem[]>([]);
@@ -106,7 +105,7 @@ function Basket() {
           )}
           <div className={styles.total}>
             <p>Shipping estimate</p>
-            <p>{SHIPPING_VALUE}</p>
+            <p>{`${MONEY_SYMBOLS.euro} ${SHIPPING_AMOUNT}`}</p>
           </div>
           <div className={`${styles.total}`}>
             <p className={styles.total_main}>Order total</p>

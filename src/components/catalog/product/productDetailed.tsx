@@ -18,7 +18,9 @@ type Thumbnail = {
 
 function ProductDetailed({ product }: { product: Product }) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [variantId, setVariantId] = useState(product.masterData.current.masterVariant.id);
+  const [variantId, setVariantIdState] = useState<number | undefined>(undefined);
+  const [color, setColorState] = useState('');
+  const [size, setSizeState] = useState('');
   const [modalImageIndex, setModalImageIndex] = useState<number>(0);
   const dispatch = useDispatch();
 
@@ -91,7 +93,6 @@ function ProductDetailed({ product }: { product: Product }) {
 
   async function addProductInBasket() {
     try {
-      setVariantId(product.masterData.current.masterVariant.id);
       const id =
         localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
       const basket = await getBasket(id);
@@ -107,6 +108,26 @@ function ProductDetailed({ product }: { product: Product }) {
         dispatch(toggleDialog(true));
       }
     }
+  }
+
+  function setSize(newSize: string) {
+    setSizeState(newSize);
+    setVariantId(newSize, color);
+  }
+
+  function setColor(newColor: string) {
+    setColorState(newColor);
+    setVariantId(size, newColor);
+  }
+
+  function setVariantId(newSize: string, newColor: string) {
+    const id = product.masterData.current.variants.find(
+      variant =>
+        newSize === variant.attributes?.find(attr => attr.name === 'size')?.value.key &&
+        newColor === variant.attributes?.find(attr => attr.name === 'color')?.value.key,
+    )?.id;
+    console.log(id);
+    setVariantIdState(id);
   }
 
   return (
@@ -184,8 +205,9 @@ function ProductDetailed({ product }: { product: Product }) {
               return (
                 <span
                   style={{ textTransform: 'uppercase', fontSize: '1.9rem', cursor: 'pointer' }}
-                  className={styles['product-description']}
+                  className={`${styles['product-description']} ${size === paragraph ? styles.active : ''}`}
                   key={index}
+                  onClick={() => setSize(paragraph)}
                 >
                   {paragraph}
                 </span>
@@ -209,22 +231,27 @@ function ProductDetailed({ product }: { product: Product }) {
           Color:
           {productColor ? (
             productColor.map((paragraph, index) => {
-              return <Dot stroke={paragraph} key={index} />;
+              return (
+                <div
+                  key={index}
+                  onClick={() => {
+                    setColor(paragraph);
+                  }}
+                >
+                  <Dot
+                    className={color === paragraph ? styles.active_color : ''}
+                    stroke={paragraph}
+                  />
+                </div>
+              );
             })
           ) : (
             <Spinner />
           )}
         </div>
         <button
-          style={{
-            border: 'transparent 1px solid',
-            borderRadius: '2px',
-            padding: '1rem',
-            marginTop: '1rem',
-            marginBottom: '1rem',
-            cursor: 'pointer',
-            fontFamily: 'Poppins',
-          }}
+          className={styles['product_add']}
+          disabled={!variantId}
           onClick={addProductInBasket}
         >
           Add to cart

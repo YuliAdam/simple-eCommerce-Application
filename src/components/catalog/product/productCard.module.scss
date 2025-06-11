@@ -28,12 +28,19 @@ $body-text-color: #4b5563;
   color: $primary-color;
 }
 
+.active_color {
+  border: 1px solid $primary-color !important;
+}
+
 .product-description {
   margin: 0;
   font-size: 1.4rem;
   font-weight: 400;
   line-height: 20px;
   color: $primary-color;
+  &.active {
+    border-bottom: 1px solid $primary-color !important;
+  }
 }
 
 .product-prices {
@@ -91,5 +98,18 @@ $body-text-color: #4b5563;
 
   @media (max-width: 780px) {
     flex-direction: column;
+  }
+}
+
+.product_add {
+  border: 'transparent 1px solid';
+  border-radius: '2px';
+  padding: '1rem';
+  margin-top: '1rem';
+  margin-bottom: '1rem';
+  cursor: 'pointer';
+  font-family: 'Poppins';
+  &:disabled {
+    opacity: 0.5;
   }
 }
