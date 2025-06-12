@@ -12,6 +12,11 @@ import { useDispatch } from 'react-redux';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 import { changeTotalItems } from '@/store/slices/basketSlice';
 
+enum VARIANTS {
+  brand = 'brand',
+  size = 'size',
+  color = 'color',
+}
 type Thumbnail = {
   url: string;
   label: string;
@@ -32,7 +37,6 @@ function ProductDetailed({ product }: { product: Product }) {
       .filter((key): key is string => key !== undefined);
     return [...new Set(values)];
   };
-
   const getAllVariantImages = (variants: ProductVariant[]): Thumbnail[] => {
     if (!variants?.length) return [];
     return variants.flatMap(variant =>
@@ -42,7 +46,6 @@ function ProductDetailed({ product }: { product: Product }) {
       })),
     );
   };
-
   const getLowestPrice = (variants: ProductVariant[]): { amount: number; currency: string } => {
     if (!variants?.length) return { amount: 0, currency: '' };
     const prices = variants.flatMap(variant =>
@@ -63,9 +66,9 @@ function ProductDetailed({ product }: { product: Product }) {
   const productVariants = rawVariants;
   const allVariants = [product.masterData.current.masterVariant, ...productVariants];
 
-  const productBrand = getAttributeValues(allVariants, 'brand');
-  const productSize = getAttributeValues(allVariants, 'size');
-  const productColor = getAttributeValues(allVariants, 'color');
+  const productBrand = getAttributeValues(allVariants, VARIANTS.brand);
+  const productSize = getAttributeValues(allVariants, VARIANTS.size);
+  const productColor = getAttributeValues(allVariants, VARIANTS.color);
 
   const { amount: productPrice, currency: productCurrency } = getLowestPrice(allVariants);
   const productDiscount =
