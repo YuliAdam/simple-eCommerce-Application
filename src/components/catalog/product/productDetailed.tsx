@@ -1,26 +1,28 @@
 import { Dot } from '@/assets/img/dot';
-import type { CartUpdateAction, Product, ProductVariant } from '@commercetools/platform-sdk';
+import { SHOP } from '@/config/localStorageConfig';
+import { IBasketUpdateActions } from '@/interfaces/types';
+import { getBasket, updateBasket } from '@/services/basketController';
+import { changeTotalItems } from '@/store/slices/basketSlice';
+import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import type { CartUpdateAction, Product } from '@commercetools/platform-sdk';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Spinner from '../spinner/spinner';
 import ImageModal from './components/modal/ImageModal';
 import CustomSlider from './components/slider/productImageSlider';
+import {
+  getAllVariantImages,
+  getAttributeValues,
+  getLowestPrice,
+  type Thumbnail,
+} from './getProductData';
 import styles from './productCard.module.scss';
-import { IBasketUpdateActions } from '@/interfaces/types';
-import { getBasket, updateBasket } from '@/services/basketController';
-import { SHOP } from '@/config/localStorageConfig';
-import { useDispatch } from 'react-redux';
-import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
-import { changeTotalItems } from '@/store/slices/basketSlice';
 
 enum VARIANTS {
   brand = 'brand',
   size = 'size',
   color = 'color',
 }
-type Thumbnail = {
-  url: string;
-  label: string;
-};
 
 function ProductDetailed({ product }: { product: Product }) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -29,35 +31,6 @@ function ProductDetailed({ product }: { product: Product }) {
   const [size, setSizeState] = useState('');
   const [modalImageIndex, setModalImageIndex] = useState<number>(0);
   const dispatch = useDispatch();
-
-  const getAttributeValues = (variants: ProductVariant[], name: string): string[] => {
-    if (!variants?.length) return [];
-    const values = variants
-      .map(variant => variant.attributes?.find(attribute => attribute.name === name)?.value?.key)
-      .filter((key): key is string => key !== undefined);
-    return [...new Set(values)];
-  };
-  const getAllVariantImages = (variants: ProductVariant[]): Thumbnail[] => {
-    if (!variants?.length) return [];
-    return variants.flatMap(variant =>
-      (variant.images ?? []).map(img => ({
-        url: img.url,
-        label: img.label || `product image`,
-      })),
-    );
-  };
-  const getLowestPrice = (variants: ProductVariant[]): { amount: number; currency: string } => {
-    if (!variants?.length) return { amount: 0, currency: '' };
-    const prices = variants.flatMap(variant =>
-      (variant.prices ?? []).map(product => product.value),
-    );
-    if (!prices.length) return { amount: 0, currency: '' };
-    const lowestPrice = prices.reduce(
-      (min, price) => (price.centAmount < min.centAmount ? price : min),
-      prices[0],
-    );
-    return { amount: lowestPrice.centAmount, currency: lowestPrice.currencyCode };
-  };
 
   const productName = product.masterData.current.name,
     productDescription = product.masterData.current.description,
