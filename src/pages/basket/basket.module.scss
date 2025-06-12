@@ -316,3 +316,27 @@ $secondary-color: #4b5563;
     }
   }
 }
+.code_wrap {
+  display: flex;
+  align-items: center;
+}
+.code_close {
+  width: 20px;
+  height: auto;
+  cursor: pointer;
+  margin: 5px;
+  path {
+    transition: all $transition-speed easy;
+  }
+  &:hover {
+    path {
+      stroke: $hover-color;
+    }
+  }
+  &_wrap{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   totalItems: 0,
+  totalPrice: 0,
 };
 
 const basketSlice = createSlice({
@@ -15,8 +16,11 @@ const basketSlice = createSlice({
     changeTotalItems(state, action: PayloadAction<number>) {
       state.totalItems += action.payload;
     },
+    setTotalPrice(state, action: PayloadAction<number>) {
+      state.totalPrice = action.payload;
+    },
   },
 });
 
-export const { setTotalItems, changeTotalItems } = basketSlice.actions;
+export const { setTotalItems, changeTotalItems, setTotalPrice } = basketSlice.actions;
 export default basketSlice.reducer;

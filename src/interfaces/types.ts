@@ -137,6 +137,7 @@ export enum IBasketUpdateActions {
   removeLineItem = 'removeLineItem',
   addDiscountCode = 'addDiscountCode',
   changeLineItemQuantity = 'changeLineItemQuantity',
+  removeDiscountCode = 'removeDiscountCode',
 }
 
 export enum TEXT_LANGUAGES {

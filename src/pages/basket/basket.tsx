@@ -1,30 +1,39 @@
 import { SHOP } from '@/config/localStorageConfig';
-import { clearBasket, getBasket } from '@/services/basketController';
+import { clearBasket, getBasket, getDiscountCode, updateBasket } from '@/services/basketController';
 import styles from './basket.module.scss';
 import { useEffect, useState } from 'react';
-import type { LineItem } from '@commercetools/platform-sdk';
+import type { CartUpdateAction, LineItem } from '@commercetools/platform-sdk';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import {
+  setCode,
+  setDialogText,
+  toggleCodeForm,
+  toggleDialog,
+  validationCode,
+} from '@/store/slices/dialogSlice';
 import ProductInBasket from '@/components/basket/ProductInBasket';
-import { MONEY_SYMBOLS } from '@/interfaces/types';
+import { IBasketUpdateActions, MONEY_SYMBOLS } from '@/interfaces/types';
 import formatPrice from '@/utils/formatPrice';
 import EmptyBasket from '@/components/basket/EmptyBasket';
-import { setTotalItems } from '@/store/slices/basketSlice';
+import { setTotalItems, setTotalPrice } from '@/store/slices/basketSlice';
 import type { RootState } from '@/store/store';
 import { Link } from 'react-router-dom';
 import { Path } from '@/config/routesConfig';
+import Plus from '@/assets/img/plus';
+import { CloseButton } from '@/assets/img/CloseButton';
 
 const SHIPPING_AMOUNT = 4.99;
+const CODE_MODAL_MESSAGE = 'Add a discount code';
 
 function Basket() {
   const [items, setItems] = useState<LineItem[]>([]);
-  const [totalPrice, setTotalPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [isConfirmMessage, isVisible] = useState(false);
   const id =
     localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
   const basket = useSelector((state: RootState) => state.basket);
   const auth = useSelector((state: RootState) => state.auth);
+  const dialog = useSelector((state: RootState) => state.dialog);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -33,9 +42,23 @@ function Basket() {
         .then(res => {
           if (res) {
             setItems(res.body.lineItems || []);
-            setTotalPrice(res.body.totalPrice.centAmount);
-
+            dispatch(setTotalPrice(res.body.totalPrice.centAmount));
             dispatch(setTotalItems(res.body.totalLineItemQuantity || 0));
+            setDiscount(0);
+            if (res.body.discountCodes.length !== 0) {
+              getDiscountCode(res.body.discountCodes[0].discountCode.id).then(resp => {
+                dispatch(setCode(resp.body.code));
+                dispatch(validationCode(true));
+                setDiscount(
+                  (res.body.discountOnTotalPrice &&
+                    res.body.discountOnTotalPrice.discountedAmount.centAmount) ||
+                    0,
+                );
+              });
+            } else {
+              dispatch(setCode(''));
+              dispatch(validationCode(false));
+            }
             let discountSum = res.body.lineItems.reduce(
               (sum, item) =>
                 item.price.discounted
@@ -51,7 +74,7 @@ function Basket() {
           dispatch(toggleDialog(true));
         });
     }
-  }, [basket.totalItems]);
+  }, [basket.totalItems, basket.totalPrice]);
 
   function getItems() {
     return (
@@ -64,7 +87,7 @@ function Basket() {
   }
 
   function getOrderTotal() {
-    return `${MONEY_SYMBOLS.euro} ${formatPrice(totalPrice + SHIPPING_AMOUNT * 100)}`;
+    return `${MONEY_SYMBOLS.euro} ${formatPrice(basket.totalPrice + SHIPPING_AMOUNT * 100)}`;
   }
 
   async function clearBasketByClick() {
@@ -88,6 +111,60 @@ function Basket() {
     );
   }
 
+  function openCodeModal() {
+    dispatch(setDialogText(CODE_MODAL_MESSAGE));
+    dispatch(setCode(''));
+    dispatch(toggleCodeForm(true));
+    dispatch(toggleDialog(true));
+  }
+
+  async function removeCode() {
+    const basketId = localStorage.getItem(SHOP.client_cart_id);
+    try {
+      const basket = await getBasket(basketId);
+      const actions: CartUpdateAction[] = [];
+      if (basket) {
+        actions.push({
+          action: IBasketUpdateActions.removeDiscountCode,
+          discountCode: {
+            typeId: 'discount-code',
+            id: basket.body.discountCodes[0].discountCode.id || '',
+          },
+        });
+        const response = await updateBasket(basket.body.version, actions, basketId);
+        response && dispatch(setTotalPrice(response.body.totalPrice.centAmount || 0));
+        dispatch(validationCode(false));
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        dispatch(setDialogText(err.message));
+        dispatch(toggleDialog(true));
+      }
+    }
+  }
+
+  function addDiscountCodeSection() {
+    return (
+      <div className={styles.total}>
+        <p>Add a discount code</p>
+        <div className={styles.code_wrap}>
+          {dialog.values.isOpen || !dialog.values.isValidCode ? (
+            <div className={styles.item_btn_wrap} onClick={openCodeModal}>
+              <Plus className={styles.item_btn}></Plus>
+            </div>
+          ) : (
+            <>
+              <p className={styles.code}>{dialog.values.codeValue}</p>
+              <div className={styles.code_close_wrap} onClick={removeCode}>
+                <CloseButton className={styles.code_close} />
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   function getOrdersSection() {
     return (
       <>
@@ -98,16 +175,16 @@ function Basket() {
             Clear basket
           </p>
         )}
-
         <div className={styles.basket_products}>{getItems()}</div>
         <div className={styles.basket_totals}>
+          {auth.isAuthorized ? addDiscountCodeSection() : ''}
           <div className={styles.total}>
             <p>Products</p>
             <p>{basket.totalItems}</p>
           </div>
           <div className={styles.total}>
             <p>Subtotal</p>
-            <p>{`${MONEY_SYMBOLS.euro} ${formatPrice(totalPrice)}`}</p>
+            <p>{`${MONEY_SYMBOLS.euro} ${formatPrice(basket.totalPrice)}`}</p>
           </div>
           {discount ? (
             <div className={styles.total}>

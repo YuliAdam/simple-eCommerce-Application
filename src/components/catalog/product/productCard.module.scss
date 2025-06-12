@@ -38,6 +38,7 @@ $body-text-color: #4b5563;
   font-weight: 400;
   line-height: 20px;
   color: $primary-color;
+  border-bottom: 1px solid transparent;
   &.active {
     border-bottom: 1px solid $primary-color !important;
   }

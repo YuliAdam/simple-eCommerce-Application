@@ -87,3 +87,7 @@ export async function clearBasket(id = localStorage.getItem(SHOP.anonymous_cart_
     return await updateBasket(basket.body.version, actions, id);
   }
 }
+
+export async function getDiscountCode(id: string) {
+  return await apiRoot.discountCodes().withId({ ID: id }).get().execute();
+}
