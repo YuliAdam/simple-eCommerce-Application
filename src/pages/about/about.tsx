@@ -7,7 +7,7 @@ function About() {
       role: 'Team Lead',
       description:
         'Konstantin leads the team with a clear vision and strong organizational skills.',
-      image: 'https://cdn.cosmos.so/e66aa4ae-7f4b-43e2-a359-dcaa7b7caec7?format=jpeg',
+      image: '/madsok.jpg',
       github: 'madsok',
     },
     {
@@ -15,7 +15,7 @@ function About() {
       role: 'Frontend Developer',
       description:
         'Yuliya builds and maintains the core functionality of our platform — handling everything from product inventory systems to API interactions.',
-      image: 'https://cdn.cosmos.so/e66aa4ae-7f4b-43e2-a359-dcaa7b7caec7?format=jpeg',
+      image: '/yuliadam.webp',
       github: 'YuliAdam',
     },
     {
@@ -23,7 +23,7 @@ function About() {
       role: 'UI/UX Designer & Frontend Developer',
       description:
         'Nikolai is responsible for crafting the look, feel, and usability of our website.',
-      image: 'https://cdn.cosmos.so/e66aa4ae-7f4b-43e2-a359-dcaa7b7caec7?format=jpeg',
+      image: '/wingedseraph.JPG',
       github: 'wingedseraph',
     },
   ];

@@ -89,12 +89,31 @@ $mobile-breakpoint: 768px;
 
 
 .memberImage {
-  width: 400px;
-  height: 400px;
+  max-width: 400px;
+  max-height: 400px;
+  width: 100%;
+  height: 100%;
   margin-bottom: 30px;
 
   object-fit: cover;
   border-radius: 5px;
+  filter: grayscale(1);
+
+
+  @media(max-width: 1200px) {
+    max-height: 210px;
+  }
+
+  @media(max-width: $mobile-breakpoint) {
+    max-width: unset;
+    max-height: 600px;
+  }
+
+  @media(max-width: 450px) {
+    max-width: 390px;
+    max-height: 390px;
+  }
+
 }
 
 .memberContainer {
@@ -147,6 +166,7 @@ $mobile-breakpoint: 768px;
 
   @media(max-width: $mobile-breakpoint) {
     flex-direction: column;
+    align-items: left;
   }
 }
 
@@ -166,15 +186,18 @@ $mobile-breakpoint: 768px;
 }
 
 .schoolImage {
-  width: 600px;
+  max-width: 600px;
+  width: 30vw;
   height: 100%;
   object-fit: cover;
   filter: invert(1);
+
+  @media(max-width: $mobile-breakpoint) {
+    width: 100%;
+  }
 }
 
 @media (max-width: 768px) {
-
-
   .heroTitle {
     font-size: 3rem;
   }
