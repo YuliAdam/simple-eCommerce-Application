@@ -3,6 +3,8 @@ import { Path } from '@/config/routesConfig';
 import { Link } from 'react-router-dom';
 import type I_ProductCardData from '@/interfaces/catalog/productCard';
 import ProductDetails from '@/components/catalog/product/components/productDetails/productDetails';
+import { AddToCart } from '@/assets/img/catalog/add-to-cart';
+import { useState } from 'react';
 
 interface I_Attributes {
   name: string;
@@ -43,6 +45,8 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
 
   const currencySymbol = '€';
 
+  const [addToCartButton, setAddToCartButton] = useState<boolean>(false);
+
   function getAttributes(name: string, attributes?: I_Attributes[]): Set<string> {
     const set = new Set<string>();
     if (attributes) {
@@ -59,48 +63,63 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
     return (price / 100).toFixed(fractionDigits);
   }
 
+  function handleAddToCartButton(event: React.MouseEvent) {
+    const target = event.target;
+
+    if (target) {
+      setAddToCartButton(state => !state);
+    }
+  }
+
   return (
-    <Link to={`${Path.product.replace(':id', productId)}`} className={styles.link}>
-      <li className={styles.product}>
-        <div className={styles['img-wrapper']}>
-          <img
-            src={imagesArray ? imagesArray?.[0].url : ''}
-            alt={imagesArray ? imagesArray?.[0].label : ''}
-            className={styles['product-img']}
-          />
+    <li className={styles.product}>
+      <div className={styles['img-wrapper']}>
+        <img
+          src={imagesArray ? imagesArray?.[0].url : ''}
+          alt={imagesArray ? imagesArray?.[0].label : ''}
+          className={styles['product-img']}
+        />
+      </div>
+      <div className={styles['product-info']}>
+        <div className={styles['product-text-wrapper']}>
+          <p className={styles['product-name']}>{productName || ''}</p>
+          <p className={styles['product-description']}>{productDescription || ''}</p>
+          <ProductDetails name="Brand" attributes={brands} />
+          <ProductDetails name="Colors" attributes={colors} />
+          <ProductDetails name="Sizes" attributes={sizes} />
         </div>
-        <div className={styles['product-info']}>
-          <div className={styles['product-text-wrapper']}>
-            <p className={styles['product-name']}>{productName || ''}</p>
-            <p className={styles['product-description']}>{productDescription || ''}</p>
-            <ProductDetails name="Brand" attributes={brands} />
-            <ProductDetails name="Colors" attributes={colors} />
-            <ProductDetails name="Sizes" attributes={sizes} />
-          </div>
-          <div className={styles['product-prices']}>
-            {discountedValue ? (
-              <>
-                <p className={`${styles['product-discountPrice']} ${styles['product-main-price']}`}>
-                  <span>{currencySymbol}</span>{' '}
-                  {discountedValue
-                    ? formatPrice(discountedValue.centAmount, discountedValue.fractionDigits)
-                    : ''}
-                </p>
-                <p className={`${styles['product-price']} ${styles['product-price-old']}`}>
-                  <span>{currencySymbol}</span>{' '}
-                  {priceValue ? formatPrice(priceValue.centAmount, priceValue.fractionDigits) : ''}
-                </p>
-              </>
-            ) : (
-              <p className={`${styles['product-price']} ${styles['product-main-price']}`}>
+        <div className={styles['product-prices']}>
+          {discountedValue ? (
+            <>
+              <p className={`${styles['product-discountPrice']} ${styles['product-main-price']}`}>
+                <span>{currencySymbol}</span>{' '}
+                {discountedValue
+                  ? formatPrice(discountedValue.centAmount, discountedValue.fractionDigits)
+                  : ''}
+              </p>
+              <p className={`${styles['product-price']} ${styles['product-price-old']}`}>
                 <span>{currencySymbol}</span>{' '}
                 {priceValue ? formatPrice(priceValue.centAmount, priceValue.fractionDigits) : ''}
               </p>
-            )}
-          </div>
+            </>
+          ) : (
+            <p className={`${styles['product-price']} ${styles['product-main-price']}`}>
+              <span>{currencySymbol}</span>{' '}
+              {priceValue ? formatPrice(priceValue.centAmount, priceValue.fractionDigits) : ''}
+            </p>
+          )}
         </div>
-      </li>
-    </Link>
+      </div>
+      <Link to={`${Path.product.replace(':id', productId)}`} className={styles.link}>
+        View more
+      </Link>
+      <button
+        onClick={handleAddToCartButton}
+        className={`${styles['add-button']} ${addToCartButton ? styles['add-button-active'] : ''}`}
+      >
+        <AddToCart className={styles.cart} />
+      </button>
+    </li>
   );
 }
 
