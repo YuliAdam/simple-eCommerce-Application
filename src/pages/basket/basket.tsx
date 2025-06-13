@@ -37,6 +37,7 @@ function Basket() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    setDiscount(0);
     if (id) {
       getBasket(id)
         .then(res => {
@@ -44,28 +45,24 @@ function Basket() {
             setItems(res.body.lineItems || []);
             dispatch(setTotalPrice(res.body.totalPrice.centAmount));
             dispatch(setTotalItems(res.body.totalLineItemQuantity || 0));
-            setDiscount(0);
             if (res.body.discountCodes.length !== 0) {
               getDiscountCode(res.body.discountCodes[0].discountCode.id).then(resp => {
                 dispatch(setCode(resp.body.code));
                 dispatch(validationCode(true));
-                setDiscount(
-                  (res.body.discountOnTotalPrice &&
-                    res.body.discountOnTotalPrice.discountedAmount.centAmount) ||
-                    0,
-                );
+                if (res.body.discountOnTotalPrice) {
+                  setDiscount(res.body.discountOnTotalPrice.discountedAmount.centAmount);
+                }
               });
             } else {
               dispatch(setCode(''));
               dispatch(validationCode(false));
             }
-            let discountSum = res.body.lineItems.reduce(
-              (sum, item) =>
-                item.price.discounted
-                  ? sum + (item.price.value.centAmount * item.quantity - item.totalPrice.centAmount)
-                  : sum,
-              0,
-            );
+            let discountSum = res.body.lineItems.reduce((sum, item) => {
+              const notDiscountPrice = item.price.value.centAmount * item.quantity;
+              return notDiscountPrice !== item.totalPrice.centAmount
+                ? sum + (notDiscountPrice - item.totalPrice.centAmount)
+                : sum;
+            }, 0);
             setDiscount(discountSum);
           }
         })

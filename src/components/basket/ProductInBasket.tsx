@@ -51,12 +51,13 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
   }
 
   function getPrices() {
+    const notDiscountPrice = item.price.value.centAmount * item.quantity;
     return (
       <div className={styles.item_price}>
         <h5
           className={styles.item_price_actual}
         >{`${MONEY_SYMBOLS.euro} ${formatPrice(item.totalPrice.centAmount)}`}</h5>
-        {item.price.discounted && (
+        {notDiscountPrice !== item.totalPrice.centAmount && (
           <p
             className={styles.item_price_old}
           >{`${MONEY_SYMBOLS.euro} ${formatPrice(item.price.value.centAmount * item.quantity)}`}</p>
