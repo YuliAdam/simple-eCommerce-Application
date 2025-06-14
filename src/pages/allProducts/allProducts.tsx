@@ -540,7 +540,7 @@ function AllProducts() {
             </ul>
             {!isOverload ? (
               <button onClick={handleLoadMoreButton} className={styles['load-more']}>
-                Show more
+                More products
               </button>
             ) : null}
           </div>

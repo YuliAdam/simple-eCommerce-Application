@@ -2,10 +2,15 @@ $primary-color: #111827;
 $body-text-color: #4b5563;
 $vibrant-color: #0ea5e9;
 $background-color: #fff;
+$default-color: #ffffff;
 
 .product {
   position: relative;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .product-img {
@@ -83,11 +88,18 @@ $background-color: #fff;
 .link {
   display: block;
   max-height: fit-content;
+  padding: 10px;
+  width: 100%;
+  font-family: Poppins;
   font-size: 1.4rem;
   font-weight: 400;
-  line-height: 20px;
   text-align: center;
-  color: $primary-color;
+  color: $default-color;
+  white-space: nowrap;
+  background: $primary-color;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
   transition:
     opacity 1s ease;
 

@@ -111,7 +111,7 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
         </div>
       </div>
       <Link to={`${Path.product.replace(':id', productId)}`} className={styles.link}>
-        View more
+        Product info
       </Link>
       <button
         onClick={handleAddToCartButton}
