@@ -26,6 +26,7 @@ export async function createAnonymousBasket(body: MyCartDraft) {
 
   localStorage.setItem(SHOP.anonymous_cart_id, response.body.id);
   localStorage.setItem(SHOP.anonymous_id, response.body.anonymousId || '');
+  return response;
 }
 
 export async function createBasket(body: MyCartDraft, login: string, password: string) {

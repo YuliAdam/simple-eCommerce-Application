@@ -15,7 +15,7 @@ import ProductInBasket from '@/components/basket/ProductInBasket';
 import { IBasketUpdateActions, MONEY_SYMBOLS } from '@/interfaces/types';
 import formatPrice from '@/utils/formatPrice';
 import EmptyBasket from '@/components/basket/EmptyBasket';
-import { setTotalItems, setTotalPrice } from '@/store/slices/basketSlice';
+import { setItemsId, setTotalItems, setTotalPrice } from '@/store/slices/basketSlice';
 import type { RootState } from '@/store/store';
 import { Link } from 'react-router-dom';
 import { Path } from '@/config/routesConfig';
@@ -91,6 +91,8 @@ function Basket() {
     try {
       await clearBasket(id);
       dispatch(setTotalItems(0));
+      dispatch(setItemsId([]));
+      dispatch(setTotalPrice(0));
     } catch (err) {
       if (err instanceof Error) {
         dispatch(setDialogText(err.message));

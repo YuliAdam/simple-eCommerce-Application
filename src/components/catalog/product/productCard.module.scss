@@ -111,7 +111,6 @@ $body-text-color: #4b5563;
   cursor: pointer;
   font-family: Poppins;
   &:disabled {
-    opacity: 0.5;
     cursor: default;
   }
 }

@@ -2,11 +2,11 @@ import { Dot } from '@/assets/img/dot';
 import { SHOP } from '@/config/localStorageConfig';
 import { IBasketUpdateActions } from '@/interfaces/types';
 import { getBasket, updateBasket } from '@/services/basketController';
-import { changeTotalItems } from '@/store/slices/basketSlice';
+import { addItemsId, changeTotalItems } from '@/store/slices/basketSlice';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 import type { CartUpdateAction, Product } from '@commercetools/platform-sdk';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../spinner/spinner';
 import ImageModal from './components/modal/ImageModal';
 import CustomSlider from './components/slider/productImageSlider';
@@ -17,6 +17,7 @@ import {
   type Thumbnail,
 } from './getProductData';
 import styles from './productCard.module.scss';
+import type { RootState } from '@/store/store';
 
 enum VARIANTS {
   brand = 'brand',
@@ -26,11 +27,21 @@ enum VARIANTS {
 
 function ProductDetailed({ product }: { product: Product }) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isInBasket, setIsInBasket] = useState<boolean>(false);
   const [variantId, setVariantIdState] = useState<number | undefined>(undefined);
   const [color, setColorState] = useState('');
   const [size, setSizeState] = useState('');
   const [modalImageIndex, setModalImageIndex] = useState<number>(0);
   const dispatch = useDispatch();
+  const basket = useSelector((state: RootState) => state.basket);
+
+  useEffect(() => {
+    console.log(product.id);
+    console.log(variantId);
+    setIsInBasket(
+      !!basket.itemsId.find(item => item.id === product.id && item.variantId === variantId),
+    );
+  }, [variantId]);
 
   const productName = product.masterData.current.name,
     productDescription = product.masterData.current.description,
@@ -69,21 +80,31 @@ function ProductDetailed({ product }: { product: Product }) {
   };
 
   async function addProductInBasket() {
-    try {
-      const id =
-        localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
-      const basket = await getBasket(id);
-      if (basket) {
-        dispatch(changeTotalItems(+1));
-        const actions: CartUpdateAction[] = [
-          { action: IBasketUpdateActions.addLineItem, productId: product.id, variantId: variantId },
-        ];
-        await updateBasket(basket.body.version, actions, id);
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        dispatch(setDialogText(err.message));
-        dispatch(toggleDialog(true));
+    if (!isInBasket) {
+      try {
+        const id =
+          localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
+        const basket = await getBasket(id);
+        if (basket) {
+          dispatch(changeTotalItems(+1));
+          const actions: CartUpdateAction[] = [
+            {
+              action: IBasketUpdateActions.addLineItem,
+              productId: product.id,
+              variantId: variantId,
+            },
+          ];
+          await updateBasket(basket.body.version, actions, id);
+          setIsInBasket(true);
+          if (variantId) {
+            dispatch(addItemsId({ id: product.id, variantId: variantId }));
+          }
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          dispatch(setDialogText(err.message));
+          dispatch(toggleDialog(true));
+        }
       }
     }
   }
@@ -105,6 +126,13 @@ function ProductDetailed({ product }: { product: Product }) {
         newColor === variant.attributes?.find(attr => attr.name === 'color')?.value.key,
     )?.id;
     setVariantIdState(id);
+  }
+
+  function getButtonText() {
+    if (!size || !color) {
+      return 'Choose variant';
+    }
+    return !variantId ? 'not available' : 'Add to cart';
   }
 
   return (
@@ -231,7 +259,7 @@ function ProductDetailed({ product }: { product: Product }) {
           disabled={!variantId}
           onClick={addProductInBasket}
         >
-          Add to cart
+          {isInBasket ? 'Just added in cart' : getButtonText()}
         </button>
         <p style={{ fontSize: '1.9rem' }} className={styles['product-description']}>
           {productDescription && productName ? productDescription['en-GB'] : ''}

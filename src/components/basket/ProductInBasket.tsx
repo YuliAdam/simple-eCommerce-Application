@@ -11,7 +11,7 @@ import {
   TEXT_LANGUAGES,
 } from '@/interfaces/types';
 import { getBasket, updateBasket } from '@/services/basketController';
-import { changeTotalItems, setTotalItems } from '@/store/slices/basketSlice';
+import { changeTotalItems, removeItemId, setTotalItems } from '@/store/slices/basketSlice';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 import formatPrice from '@/utils/formatPrice';
 import type { Attribute, CartUpdateAction, LineItem } from '@commercetools/platform-sdk';
@@ -74,6 +74,7 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
       if (basket) {
         await updateBasket(basket.body.version, actions, basketId);
         dispatch(changeTotalItems(-1));
+        dispatch(removeItemId({ id: item.productId, variantId: item.variant.id }));
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -94,6 +95,9 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
       if (basket) {
         const response = await updateBasket(basket.body.version, actions, basketId);
         dispatch(setTotalItems(response?.body.totalLineItemQuantity || 0));
+        if (item.quantity + num === 0) {
+          dispatch(removeItemId({ id: item.id, variantId: item.variant.id }));
+        }
       }
     } catch (err) {
       if (err instanceof Error) {

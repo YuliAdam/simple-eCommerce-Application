@@ -153,3 +153,8 @@ export enum AttributesName {
   size = 'size',
   color = 'color',
 }
+
+export interface ItemsIdObject {
+  id: string;
+  variantId: number;
+}
