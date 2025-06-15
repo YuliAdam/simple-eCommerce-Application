@@ -5,6 +5,9 @@ export interface DialogState {
   values: {
     isOpen: boolean;
     value: string;
+    isCodeDialog: boolean;
+    codeValue: string;
+    isValidCode: boolean;
   };
 }
 
@@ -12,6 +15,9 @@ const initialState: DialogState = {
   values: {
     isOpen: false,
     value: 'error',
+    isCodeDialog: false,
+    codeValue: '',
+    isValidCode: false,
   },
 };
 
@@ -25,9 +31,19 @@ export const errorSlice = createSlice({
     setDialogText(state, action: PayloadAction<string>) {
       state.values.value = action.payload;
     },
+    setCode(state, action: PayloadAction<string>) {
+      state.values.codeValue = action.payload;
+    },
+    toggleCodeForm(state, action: PayloadAction<boolean>) {
+      if (state.values.isCodeDialog !== action.payload) state.values.isCodeDialog = action.payload;
+    },
+    validationCode(state, action: PayloadAction<boolean>) {
+      if (state.values.isValidCode !== action.payload) state.values.isValidCode = action.payload;
+    },
   },
 });
 
-export const { toggleDialog, setDialogText } = errorSlice.actions;
+export const { toggleDialog, setDialogText, setCode, toggleCodeForm, validationCode } =
+  errorSlice.actions;
 
 export default errorSlice.reducer;

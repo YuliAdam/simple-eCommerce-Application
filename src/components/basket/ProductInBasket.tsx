@@ -1,0 +1,149 @@
+import { Dot } from '@/assets/img/dot';
+import Minus from '@/assets/img/minus';
+import Plus from '@/assets/img/plus';
+import Trash from '@/assets/img/trash';
+import { SHOP } from '@/config/localStorageConfig';
+import { Path } from '@/config/routesConfig';
+import {
+  AttributesName,
+  IBasketUpdateActions,
+  MONEY_SYMBOLS,
+  TEXT_LANGUAGES,
+} from '@/interfaces/types';
+import { getBasket, updateBasket } from '@/services/basketController';
+import { changeTotalItems, removeItemId, setTotalItems } from '@/store/slices/basketSlice';
+import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import formatPrice from '@/utils/formatPrice';
+import type { Attribute, CartUpdateAction, LineItem } from '@commercetools/platform-sdk';
+import styles from '@pages/basket/basket.module.scss';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+export default function ProductInBasket({ item }: { item: LineItem }) {
+  const basketId =
+    localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  function getAttributeValue(name: string, attributes: Attribute[]) {
+    return attributes.find(attribute => attribute.name === name);
+  }
+
+  function getAttributes() {
+    return item.variant.attributes ? (
+      <>
+        <p className={styles.item_brand}>
+          {getAttributeValue(AttributesName.brand, item.variant.attributes)?.value.label}
+        </p>
+        <p className={styles.item_size}>
+          {`Size: ${getAttributeValue(AttributesName.size, item.variant.attributes)?.value.key.toUpperCase()}`}
+        </p>
+        <div className={styles.item_color}>
+          <p>Color</p>
+          <Dot
+            stroke={getAttributeValue(AttributesName.color, item.variant.attributes)?.value.key}
+          />
+        </div>
+      </>
+    ) : (
+      ''
+    );
+  }
+
+  function getPrices() {
+    const notDiscountPrice = item.price.value.centAmount * item.quantity;
+    return (
+      <div className={styles.item_price}>
+        <h2
+          className={styles.item_price_actual}
+        >{`${MONEY_SYMBOLS.euro} ${formatPrice(item.totalPrice.centAmount)}`}</h2>
+        {notDiscountPrice !== item.totalPrice.centAmount && (
+          <p
+            className={styles.item_price_old}
+          >{`${MONEY_SYMBOLS.euro} ${formatPrice(item.price.value.centAmount * item.quantity)}`}</p>
+        )}
+      </div>
+    );
+  }
+
+  async function deleteProduct() {
+    try {
+      const basket = await getBasket(basketId);
+      const actions: CartUpdateAction[] = [];
+      actions.push({ action: IBasketUpdateActions.removeLineItem, lineItemId: item.id });
+      if (basket) {
+        await updateBasket(basket.body.version, actions, basketId);
+        dispatch(changeTotalItems(-1));
+        dispatch(removeItemId({ id: item.productId, variantId: item.variant.id }));
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        dispatch(setDialogText(err.message));
+        dispatch(toggleDialog(true));
+      }
+    }
+  }
+  async function changeProductQuantity(num: number) {
+    try {
+      const basket = await getBasket(basketId);
+      const actions: CartUpdateAction[] = [];
+      actions.push({
+        action: IBasketUpdateActions.changeLineItemQuantity,
+        lineItemId: item.id,
+        quantity: item.quantity + num,
+      });
+      if (basket) {
+        const response = await updateBasket(basket.body.version, actions, basketId);
+        dispatch(setTotalItems(response?.body.totalLineItemQuantity || 0));
+        if (item.quantity + num === 0) {
+          dispatch(removeItemId({ id: item.id, variantId: item.variant.id }));
+        }
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        dispatch(setDialogText(err.message));
+        dispatch(toggleDialog(true));
+      }
+    }
+  }
+
+  return (
+    <div className={styles.basket_item}>
+      <div
+        className={styles.img_wrap}
+        style={{
+          backgroundImage: `url("${item.variant.images && item.variant.images[0].url}")`,
+        }}
+        onClick={() => navigate(`${Path.product.replace(':id', item.productId)}`)}
+      ></div>
+      <div className={styles.item_wrap}>
+        <div className={styles.item_info_wrap}>
+          <div className={styles.item_info}>
+            <h1
+              className={styles.item_title}
+              onClick={() => navigate(`${Path.product.replace(':id', item.productId)}`)}
+            >
+              {item.name[TEXT_LANGUAGES.enGB]}
+            </h1>
+            {getAttributes()}
+          </div>
+          <div className={styles.item_controller}>
+            <div className={styles.item_quantity_wrap}>
+              <div className={styles.item_btn_wrap} onClick={() => changeProductQuantity(-1)}>
+                <Minus className={styles.item_btn} />
+              </div>
+              <p>{item.quantity}</p>
+              <div className={styles.item_btn_wrap} onClick={() => changeProductQuantity(+1)}>
+                <Plus className={styles.item_btn} />
+              </div>
+            </div>
+            <div onClick={deleteProduct}>
+              <Trash className={styles.item_trash} />
+            </div>
+          </div>
+        </div>
+        {getPrices()}
+      </div>
+    </div>
+  );
+}
