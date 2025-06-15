@@ -2,6 +2,11 @@ import { Link } from 'react-router-dom';
 import styles from './hero.module.scss';
 import { Path } from '@/config/routesConfig';
 
+enum PROMOCODES {
+  SAVE20 = 'SAVE20',
+  RSSCHOOL10 = 'RSSCHOOL10',
+}
+
 export default function Hero() {
   return (
     <section className={styles.hero}>
@@ -16,9 +21,8 @@ export default function Hero() {
         </Link>
         <div className={styles.promocodesContainer}>
           <h2>promocodes:</h2>
-          <p className={styles.promocodes}>*** *** ***</p>
-          <p className={styles.promocodes}>*** *** ***</p>
-          <p className={styles.promocodes}>*** *** ***</p>
+          <p className={styles.promocodes}>{PROMOCODES.SAVE20}</p>
+          <p className={styles.promocodes}>{PROMOCODES.RSSCHOOL10}</p>
         </div>
       </div>
       <div className={styles.imageContainer}>
