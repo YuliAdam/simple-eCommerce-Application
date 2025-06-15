@@ -119,12 +119,12 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
       <div className={styles.item_wrap}>
         <div className={styles.item_info_wrap}>
           <div className={styles.item_info}>
-            <h5
+            <h1
               className={styles.item_title}
               onClick={() => navigate(`${Path.product.replace(':id', item.productId)}`)}
             >
               {item.name[TEXT_LANGUAGES.enGB]}
-            </h5>
+            </h1>
             {getAttributes()}
           </div>
           <div className={styles.item_controller}>

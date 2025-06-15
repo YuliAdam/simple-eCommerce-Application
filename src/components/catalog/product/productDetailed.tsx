@@ -132,7 +132,7 @@ function ProductDetailed({ product }: { product: Product }) {
     if (!size || !color) {
       return 'Choose variant';
     }
-    return !variantId ? 'not available' : 'Add to cart';
+    return !variantId ? 'Not available' : 'Add to cart';
   }
 
   return (
@@ -246,7 +246,7 @@ function ProductDetailed({ product }: { product: Product }) {
           )}
         </div>
         <button
-          className={styles['product_add']}
+          className={`${styles.product_add} ${isInBasket ? styles.animation : ''}`}
           disabled={!variantId}
           onClick={addProductInBasket}
         >
