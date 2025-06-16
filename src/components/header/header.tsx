@@ -18,6 +18,7 @@ import type { ItemsIdObject } from '@/interfaces/types';
 
 export function Header() {
   const basket = useSelector((state: RootState) => state.basket);
+  const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const isAuthorized = useSelector((state: RootState) => state.auth.isAuthorized);
   const navigate = useNavigate();
@@ -35,6 +36,9 @@ export function Header() {
     if (authToken) {
       dispatch(login(authToken));
     }
+  }, ['']);
+
+  useEffect(() => {
     getBasket(id).then(res => {
       if (res) {
         dispatch(setTotalItems(res.body.totalLineItemQuantity || 0));
@@ -44,7 +48,7 @@ export function Header() {
         dispatch(setItemsId(itemsIdObjectArr));
       }
     });
-  }, ['']);
+  }, [auth.isAuthorized]);
 
   function handleLogout() {
     localStorage.removeItem(SHOP.client_token);
