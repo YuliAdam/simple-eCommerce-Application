@@ -2,7 +2,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import type {
   AddressType,
-  IAdditionalAddres,
+  IAdditionalAddress,
   IRegistrationFieldState,
   IRegistrationState,
   AddressInputName,
@@ -22,7 +22,7 @@ function setFieldValid(field: IRegistrationFieldState) {
   field.infoIsActive = false;
 }
 
-function invalidateAddressFieldIfEmpty(field: IRegistrationState | IAdditionalAddres) {
+function invalidateAddressFieldIfEmpty(field: IRegistrationState | IAdditionalAddress) {
   if (field.postalCode.value === '') {
     setFieldInvalid(field.postalCode);
   }
@@ -32,7 +32,7 @@ function invalidateAddressFieldIfEmpty(field: IRegistrationState | IAdditionalAd
 }
 
 function setValueIfIsCountryOrPostalCode(
-  field: IRegistrationState | IAdditionalAddres,
+  field: IRegistrationState | IAdditionalAddress,
   name: InputName | AddressInputName,
   value: string,
 ) {

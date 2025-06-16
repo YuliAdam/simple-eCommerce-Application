@@ -1,50 +1,47 @@
 import { Dot } from '@/assets/img/dot';
-import type { Product, ProductVariant } from '@commercetools/platform-sdk';
-import { useState } from 'react';
+import { SHOP } from '@/config/localStorageConfig';
+import { IBasketUpdateActions } from '@/interfaces/types';
+import { getBasket, updateBasket } from '@/services/basketController';
+import { addItemsId, changeTotalItems } from '@/store/slices/basketSlice';
+import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import type { CartUpdateAction, Product } from '@commercetools/platform-sdk';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../spinner/spinner';
 import ImageModal from './components/modal/ImageModal';
 import CustomSlider from './components/slider/productImageSlider';
+import {
+  getAllVariantImages,
+  getAttributeValues,
+  getLowestPrice,
+  type Thumbnail,
+} from './getProductData';
 import styles from './productCard.module.scss';
+import type { RootState } from '@/store/store';
 
-type Thumbnail = {
-  url: string;
-  label: string;
-};
+enum VARIANTS {
+  brand = 'brand',
+  size = 'size',
+  color = 'color',
+}
 
 function ProductDetailed({ product }: { product: Product }) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isInBasket, setIsInBasket] = useState<boolean>(false);
+  const [variantId, setVariantIdState] = useState<number | undefined>(undefined);
+  const [color, setColorState] = useState('');
+  const [size, setSizeState] = useState('');
   const [modalImageIndex, setModalImageIndex] = useState<number>(0);
+  const dispatch = useDispatch();
+  const basket = useSelector((state: RootState) => state.basket);
 
-  const getAttributeValues = (variants: ProductVariant[], name: string): string[] => {
-    if (!variants?.length) return [];
-    const values = variants
-      .map(variant => variant.attributes?.find(attribute => attribute.name === name)?.value?.key)
-      .filter((key): key is string => key !== undefined);
-    return [...new Set(values)];
-  };
-
-  const getAllVariantImages = (variants: ProductVariant[]): Thumbnail[] => {
-    if (!variants?.length) return [];
-    return variants.flatMap(variant =>
-      (variant.images ?? []).map(img => ({
-        url: img.url,
-        label: img.label || `product image`,
-      })),
+  useEffect(() => {
+    console.log(product.id);
+    console.log(variantId);
+    setIsInBasket(
+      !!basket.itemsId.find(item => item.id === product.id && item.variantId === variantId),
     );
-  };
-
-  const getLowestPrice = (variants: ProductVariant[]): { amount: number; currency: string } => {
-    if (!variants?.length) return { amount: 0, currency: '' };
-    const prices = variants.flatMap(variant =>
-      (variant.prices ?? []).map(product => product.value),
-    );
-    if (!prices.length) return { amount: 0, currency: '' };
-    const lowestPrice = prices.reduce(
-      (min, price) => (price.centAmount < min.centAmount ? price : min),
-      prices[0],
-    );
-    return { amount: lowestPrice.centAmount, currency: lowestPrice.currencyCode };
-  };
+  }, [variantId]);
 
   const productName = product.masterData.current.name,
     productDescription = product.masterData.current.description,
@@ -53,9 +50,9 @@ function ProductDetailed({ product }: { product: Product }) {
   const productVariants = rawVariants;
   const allVariants = [product.masterData.current.masterVariant, ...productVariants];
 
-  const productBrand = getAttributeValues(allVariants, 'brand');
-  const productSize = getAttributeValues(allVariants, 'size');
-  const productColor = getAttributeValues(allVariants, 'color');
+  const productBrand = getAttributeValues(allVariants, VARIANTS.brand);
+  const productSize = getAttributeValues(allVariants, VARIANTS.size);
+  const productColor = getAttributeValues(allVariants, VARIANTS.color);
 
   const { amount: productPrice, currency: productCurrency } = getLowestPrice(allVariants);
   const productDiscount =
@@ -81,6 +78,63 @@ function ProductDetailed({ product }: { product: Product }) {
       prevIndex => (prevIndex - 1 + combinedImages.length) % combinedImages.length,
     );
   };
+
+  async function addProductInBasket() {
+    if (!isInBasket) {
+      try {
+        const id =
+          localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
+        const basket = await getBasket(id);
+        if (basket) {
+          dispatch(changeTotalItems(+1));
+          const actions: CartUpdateAction[] = [
+            {
+              action: IBasketUpdateActions.addLineItem,
+              productId: product.id,
+              variantId: variantId,
+            },
+          ];
+          await updateBasket(basket.body.version, actions, id);
+          setIsInBasket(true);
+          if (variantId) {
+            dispatch(addItemsId({ id: product.id, variantId: variantId }));
+          }
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          dispatch(setDialogText(err.message));
+          dispatch(toggleDialog(true));
+        }
+      }
+    }
+  }
+
+  function setSize(newSize: string) {
+    setSizeState(newSize);
+    setVariantId(newSize, color);
+  }
+
+  function setColor(newColor: string) {
+    setColorState(newColor);
+    setVariantId(size, newColor);
+  }
+
+  function setVariantId(newSize: string, newColor: string) {
+    const id = product.masterData.current.variants.find(
+      variant =>
+        newSize === variant.attributes?.find(attr => attr.name === 'size')?.value.key &&
+        newColor === variant.attributes?.find(attr => attr.name === 'color')?.value.key,
+    )?.id;
+    setVariantIdState(id);
+  }
+
+  function getButtonText() {
+    if (!size || !color) {
+      return 'Choose variant';
+    }
+    return !variantId ? 'Not available' : 'Add to cart';
+  }
+
   return (
     <div className={styles['productDetailedContainer']}>
       <div className={styles['sliderContainer']}>
@@ -148,8 +202,9 @@ function ProductDetailed({ product }: { product: Product }) {
               return (
                 <span
                   style={{ textTransform: 'uppercase', fontSize: '1.9rem', cursor: 'pointer' }}
-                  className={styles['product-description']}
+                  className={`${styles['product-description']} ${size === paragraph ? styles.active : ''}`}
                   key={index}
+                  onClick={() => setSize(paragraph)}
                 >
                   {paragraph}
                 </span>
@@ -173,13 +228,31 @@ function ProductDetailed({ product }: { product: Product }) {
           Color:
           {productColor ? (
             productColor.map((paragraph, index) => {
-              return <Dot stroke={paragraph} key={index} />;
+              return (
+                <div
+                  key={index}
+                  onClick={() => {
+                    setColor(paragraph);
+                  }}
+                >
+                  <Dot
+                    className={color === paragraph ? styles.active_color : ''}
+                    stroke={paragraph}
+                  />
+                </div>
+              );
             })
           ) : (
             <Spinner />
           )}
         </div>
-        <button className={styles['product-button']}>Add to cart</button>
+        <button
+          className={`${styles.product_add} ${isInBasket ? styles.animation : ''}`}
+          disabled={!variantId}
+          onClick={addProductInBasket}
+        >
+          {isInBasket ? 'Just added in cart' : getButtonText()}
+        </button>
         <p style={{ fontSize: '1.9rem' }} className={styles['product-description']}>
           {productDescription && productName ? productDescription['en-GB'] : ''}
         </p>

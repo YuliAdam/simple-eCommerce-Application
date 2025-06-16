@@ -20,7 +20,7 @@ import {
 import { CloseButton } from '@/assets/img/CloseButton';
 import { Save } from '@/assets/img/save';
 import { RegistrationInput } from '../registration/RegistrationInput';
-import { InputName, InputTypes, IUpdateActions } from '@/interfaces/types';
+import { InputName, InputTypes, ICustomerUpdateActions } from '@/interfaces/types';
 import type { ChangeEvent } from 'react';
 import { resetState, setInvalid, setValid, setValue } from '@/store/slices/registrationSlice';
 import { PATTERNS, userDataIsValid } from '@/utils/validation/registrationValidation';
@@ -126,25 +126,25 @@ export function UserState() {
     if (id) {
       if (user.userParams.login.newValue.trim() !== user.userParams.login.value) {
         actions.push({
-          action: IUpdateActions.changeEmail,
+          action: ICustomerUpdateActions.changeEmail,
           email: user.userParams.login.newValue.trim(),
         });
       }
       if (user.userParams.firstName.newValue.trim() !== user.userParams.firstName.value) {
         actions.push({
-          action: IUpdateActions.setFirstName,
+          action: ICustomerUpdateActions.setFirstName,
           firstName: user.userParams.firstName.newValue.trim(),
         });
       }
       if (user.userParams.lastName.newValue.trim() !== user.userParams.lastName.value) {
         actions.push({
-          action: IUpdateActions.setLastName,
+          action: ICustomerUpdateActions.setLastName,
           lastName: user.userParams.lastName.newValue.trim(),
         });
       }
       if (user.userParams.birthDay.newValue.trim() !== user.userParams.birthDay.value) {
         actions.push({
-          action: IUpdateActions.setDateOfBirth,
+          action: ICustomerUpdateActions.setDateOfBirth,
           dateOfBirth: user.userParams.birthDay.newValue.trim(),
         });
       }

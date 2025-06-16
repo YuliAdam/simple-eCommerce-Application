@@ -1,8 +1,16 @@
 $primary-color: #111827;
 $body-text-color: #4b5563;
+$vibrant-color: #0ea5e9;
+$background-color: #fff;
+$default-color: #ffffff;
 
 .product {
+  position: relative;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .product-img {
@@ -28,6 +36,10 @@ $body-text-color: #4b5563;
   color: $primary-color;
 }
 
+.active_color {
+  border: 1px solid $primary-color !important;
+}
+
 .product-button {
   max-width: 250px;
   padding: 1rem;
@@ -46,6 +58,10 @@ $body-text-color: #4b5563;
   font-weight: 400;
   line-height: 20px;
   color: $primary-color;
+  border-bottom: 1px solid transparent;
+  &.active {
+    border-bottom: 1px solid $primary-color !important;
+  }
 }
 
 .product-prices {
@@ -78,10 +94,21 @@ $body-text-color: #4b5563;
 }
 
 .link {
+  display: block;
   max-height: fit-content;
-  max-width: 320px;
+  padding: 10px;
+  width: 100%;
+  font-family: Poppins;
+  font-size: 1.4rem;
+  font-weight: 400;
+  text-align: center;
+  color: $default-color;
+  white-space: nowrap;
+  background: $primary-color;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
   transition:
-    transform 1s ease,
     opacity 1s ease;
 
   @media (max-width: 780px) {
@@ -90,8 +117,6 @@ $body-text-color: #4b5563;
 
   &:hover {
     opacity: 0.5;
-    max-width: 320px;
-    transform: scale(1.03);
   }
 }
 
@@ -106,6 +131,36 @@ $body-text-color: #4b5563;
   }
 }
 
+.product_add {
+  border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  font-family: Poppins;
+  &:disabled {
+    cursor: default;
+  }
+  &.animation {
+    animation: myAnim 2s ease 0s 1 normal forwards;
+  }
+
+  @keyframes myAnim {
+    0% {
+      transform: scale(1);
+    }
+
+    80% {
+      transform: scale(1.05);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+}
+
 .sliderContainer {
   display: flex;
   flex-direction: column;
@@ -115,7 +170,6 @@ $body-text-color: #4b5563;
   @media (max-width: 768px) {
     max-width: 100%;
   }
-
 }
 
 .detailsContainer {
@@ -126,8 +180,36 @@ $body-text-color: #4b5563;
   @media (max-width: 768px) {
     width: auto;
   }
+}
 
   @media (max-width: 390px) {
     margin: 0 auto;
   }
+
+.add-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 10px;
+  width: 36px;
+  height: 36px;
+  font-family: inherit;
+  font-size: 1.4rem;
+  background: transparent;
+  background-color: $background-color;
+  border: 1px solid $primary-color;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 1s ease;
+}
+
+.add-button-active {
+  background-color: $vibrant-color;
+}
+
+.cart {
+  position: absolute;
+  top: 9px;
+  right: 50%;
+  transform: translateX(50%);
 }

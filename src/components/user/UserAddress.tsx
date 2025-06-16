@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/store';
 import styles from '@pages/user/user.module.scss';
 import { Pencil } from '@/assets/img/pencil';
-import { AddressType, InputName, InputTypes, IUpdateActions } from '@/interfaces/types';
+import { AddressType, InputName, InputTypes, ICustomerUpdateActions } from '@/interfaces/types';
 import Trash from '@/assets/img/trash';
 import {
   backOldAddressValue,
@@ -296,7 +296,7 @@ export function UserAddress() {
         changedAddress.streetName.value !== changedAddress.streetName.newValue.trim()
       ) {
         actions.push({
-          action: IUpdateActions.changeAddress,
+          action: ICustomerUpdateActions.changeAddress,
           addressId: changedAddress.id,
           address: {
             id: changedAddress.id,
@@ -312,17 +312,17 @@ export function UserAddress() {
         user.shippingDefault.value !== changedAddress.id
       ) {
         actions.push({
-          action: IUpdateActions.setDefaultShippingAddress,
+          action: ICustomerUpdateActions.setDefaultShippingAddress,
           addressId: changedAddress.id,
         });
       }
       if (!user.shippingDefault.newValue && user.shippingDefault.value === changedAddress.id) {
         actions.push({
-          action: IUpdateActions.removeShippingAddressId,
+          action: ICustomerUpdateActions.removeShippingAddressId,
           addressId: changedAddress.id,
         });
         actions.push({
-          action: IUpdateActions.addShippingAddressId,
+          action: ICustomerUpdateActions.addShippingAddressId,
           addressId: changedAddress.id,
         });
       }
@@ -331,17 +331,17 @@ export function UserAddress() {
         user.billingDefault.value !== changedAddress.id
       ) {
         actions.push({
-          action: IUpdateActions.setDefaultBillingAddress,
+          action: ICustomerUpdateActions.setDefaultBillingAddress,
           addressId: changedAddress.id,
         });
       }
       if (!user.billingDefault.newValue && user.billingDefault.value === changedAddress.id) {
         actions.push({
-          action: IUpdateActions.removeBillingAddressId,
+          action: ICustomerUpdateActions.removeBillingAddressId,
           addressId: changedAddress.id,
         });
         actions.push({
-          action: IUpdateActions.addBillingAddressId,
+          action: ICustomerUpdateActions.addBillingAddressId,
           addressId: changedAddress.id,
         });
       }
@@ -350,7 +350,7 @@ export function UserAddress() {
         !user.billingArr.values.find(value => value === changedAddress.id)
       ) {
         actions.push({
-          action: IUpdateActions.addBillingAddressId,
+          action: ICustomerUpdateActions.addBillingAddressId,
           addressId: changedAddress.id,
         });
       }
@@ -359,7 +359,7 @@ export function UserAddress() {
         user.billingArr.values.find(value => value === changedAddress.id)
       ) {
         actions.push({
-          action: IUpdateActions.removeBillingAddressId,
+          action: ICustomerUpdateActions.removeBillingAddressId,
           addressId: changedAddress.id,
         });
       }
@@ -368,7 +368,7 @@ export function UserAddress() {
         !user.shippingArr.values.find(value => value === changedAddress.id)
       ) {
         actions.push({
-          action: IUpdateActions.addShippingAddressId,
+          action: ICustomerUpdateActions.addShippingAddressId,
           addressId: changedAddress.id,
         });
       }
@@ -377,7 +377,7 @@ export function UserAddress() {
         user.shippingArr.values.find(value => value === changedAddress.id)
       ) {
         actions.push({
-          action: IUpdateActions.removeShippingAddressId,
+          action: ICustomerUpdateActions.removeShippingAddressId,
           addressId: changedAddress.id,
         });
       }
@@ -408,7 +408,7 @@ export function UserAddress() {
     if (id) {
       const actions: CustomerUpdateAction[] = [
         {
-          action: IUpdateActions.removeAddress,
+          action: ICustomerUpdateActions.removeAddress,
           addressId: user.userAddresses[i].id,
         },
       ];
@@ -518,7 +518,7 @@ export function UserAddress() {
     let actions: CustomerUpdateAction[] = [];
     if (newAddressIsValid() && id) {
       actions.push({
-        action: IUpdateActions.addAddress,
+        action: ICustomerUpdateActions.addAddress,
         address: {
           city: registration.city.value.trim(),
           country: getCodeByCountry(registration.country.value.trim()),
@@ -536,25 +536,25 @@ export function UserAddress() {
           actions = [];
           if (user.shippingDefault.newValue) {
             actions.push({
-              action: IUpdateActions.setDefaultShippingAddress,
+              action: ICustomerUpdateActions.setDefaultShippingAddress,
               addressId: newAddressId,
             });
           }
           if (user.billingDefault.newValue) {
             actions.push({
-              action: IUpdateActions.setDefaultBillingAddress,
+              action: ICustomerUpdateActions.setDefaultBillingAddress,
               addressId: newAddressId,
             });
           }
           if (user.addressType === AddressType.billing) {
             actions.push({
-              action: IUpdateActions.addBillingAddressId,
+              action: ICustomerUpdateActions.addBillingAddressId,
               addressId: newAddressId,
             });
           }
           if (user.addressType === AddressType.shipping) {
             actions.push({
-              action: IUpdateActions.addShippingAddressId,
+              action: ICustomerUpdateActions.addShippingAddressId,
               addressId: newAddressId,
             });
           }

@@ -8,12 +8,16 @@ $default-color: #ffffff;
   width: 100%;
   display: grid;
   gap: 20px;
+  justify-content: space-between;
   grid-template-columns: repeat(auto-fit, minmax(310px, auto));
+  @media (max-width: 944px) {
+    justify-content: center;
+  }
 }
 
 .search-content {
   margin-bottom: 20px;
-  padding: 20px;
+  padding: 4rem;
 }
 
 .search-wrapper {
@@ -52,7 +56,7 @@ $default-color: #ffffff;
 }
 
 .catalog-wrapper {
-  // padding: 20px;
+  padding: 4rem;
   width: 100%;
   display: flex;
   gap: 20px;
@@ -142,7 +146,7 @@ $default-color: #ffffff;
 
 .reset-button {
   padding: 10px;
-  width: 80px;
+  width: 100%;
   font-family: Poppins;
   font-size: 1.4rem;
   font-weight: 400;
@@ -152,11 +156,38 @@ $default-color: #ffffff;
   border: none;
   border-radius: 25px;
   cursor: pointer;
+
   transition:
     transform 1s ease,
     opacity 1s ease;
 
   &:hover {
+    opacity: 0.3;
+  }
+}
+
+
+.products-wrapper {
+  width: 100%;
+}
+
+.load-more {
+  display: block;
+  margin: 0 auto;
+  margin-top: 60px;
+  padding: 10px;
+  width: 100%;
+  font-family: Poppins;
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: $default-color;
+  white-space: nowrap;
+  background: $primary-color;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: opacity 1s ease;
+    &:hover {
     opacity: 0.3;
   }
 }
