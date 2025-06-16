@@ -9,12 +9,13 @@ import { getBasket, updateBasket } from '@/services/basketController';
 import { SHOP } from '@/config/localStorageConfig';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/store';
+import type { ItemsIdObject } from '@/interfaces/types';
 import { IBasketUpdateActions } from '@/interfaces/types';
 import { MONEY_SYMBOLS } from '@/interfaces/types';
 import {
   addItemsId,
   changeTotalItems,
-  removeItemId,
+  setItemsId,
   setTotalItems,
 } from '@/store/slices/basketSlice';
 
@@ -129,8 +130,11 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
               );
               if (response) {
                 dispatch(setTotalItems(response.body.lineItems.length || 0));
+                const itemsIdObjectArr: ItemsIdObject[] = response.body.lineItems.map(item => {
+                  return { id: item.productId, variantId: item.variant.id };
+                });
+                dispatch(setItemsId(itemsIdObjectArr));
               }
-              dispatch(removeItemId({ id: productInCart.id, variantId: 1 }));
               setAddToCartButton(false);
 
               console.log('Product has removed from cart', response);
