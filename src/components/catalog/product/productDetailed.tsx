@@ -114,14 +114,15 @@ function ProductDetailed({ product }: { product: Product }) {
   function setVariantId(newSize: string, newColor: string) {
     let id = product.masterData.current.variants.find(
       variant =>
-        newSize === variant.attributes?.find(attr => attr.name === 'size')?.value.key &&
-        newColor === variant.attributes?.find(attr => attr.name === 'color')?.value.key,
+        newSize === variant.attributes?.find(attr => attr.name === VARIANTS.size)?.value.key &&
+        newColor === variant.attributes?.find(attr => attr.name === VARIANTS.color)?.value.key,
     )?.id;
     const isMaster =
-      product.masterData.current.masterVariant.attributes?.find(attr => attr.name === 'size')?.value
-        .key === newSize &&
-      product.masterData.current.masterVariant.attributes?.find(attr => attr.name === 'color')
-        ?.value.key === newColor;
+      product.masterData.current.masterVariant.attributes?.find(attr => attr.name === VARIANTS.size)
+        ?.value.key === newSize &&
+      product.masterData.current.masterVariant.attributes?.find(
+        attr => attr.name === VARIANTS.color,
+      )?.value.key === newColor;
     if (isMaster) {
       id = product.masterData.current.masterVariant.id;
     }
