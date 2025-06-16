@@ -116,7 +116,7 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
               console.log('Product has removed from cart', response);
             } else {
               const response = await updateBasket(
-                cart.version,
+                cartVersion,
                 [
                   {
                     action: IBasketUpdateActions.addLineItem,
