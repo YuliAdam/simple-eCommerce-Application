@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import type I_ProductCardData from '@/interfaces/catalog/productCard';
 import ProductDetails from '@/components/catalog/product/components/productDetails/productDetails';
 import { AddToCart } from '@/assets/img/catalog/add-to-cart';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getBasket, updateBasket } from '@/services/basketController';
 import { SHOP } from '@/config/localStorageConfig';
 import { useSelector } from 'react-redux';
@@ -149,6 +149,22 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
       }
     }
   }
+
+  useEffect(() => {
+    async function setAddToCartButtonActive() {
+      const cart = await checkCart();
+
+      if (cart) {
+        const productInCart = cart.lineItems.find(item => item.productId === productId);
+
+        if (productInCart) {
+          setAddToCartButton(true);
+        }
+      }
+    }
+
+    setAddToCartButtonActive();
+  }, []);
 
   return (
     <li className={styles.product}>
