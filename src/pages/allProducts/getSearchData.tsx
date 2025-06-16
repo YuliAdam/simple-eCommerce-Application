@@ -5,9 +5,13 @@ import type I_SortedProduct from '@/interfaces/catalog/sortedProduct';
 export default async function getSearchData({
   text,
   setProducts,
+  productsLimit,
+  setIsOverload,
 }: {
   text: string;
   setProducts: React.Dispatch<React.SetStateAction<I_Product[] | I_SortedProduct[]>>;
+  productsLimit: number;
+  setIsOverload: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   try {
     const response = await getProductsBySearch(text);
@@ -22,8 +26,15 @@ export default async function getSearchData({
         const searchedProducts = products.filter(el =>
           productsNames.includes(el.masterData.current.name['en-GB']),
         );
-        setProducts(searchedProducts);
-        console.log('Searched products: ', productsNames);
+
+        const limitedProducts = searchedProducts.slice(0, productsLimit);
+
+        if (productsLimit >= searchedProducts.length) {
+          setIsOverload(true);
+        }
+
+        setProducts(limitedProducts);
+        console.log('Searched products: ', response, productsNames);
       }
     }
   } catch (err) {

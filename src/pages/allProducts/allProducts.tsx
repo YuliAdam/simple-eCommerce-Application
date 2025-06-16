@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ProductCard from '@/components/catalog/product/productCard';
 import type I_Product from '@/interfaces/catalog/product';
 import type I_Category from '@/interfaces/catalog/category';
@@ -25,18 +25,39 @@ function AllProducts() {
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [checkboxFilters, setCheckboxFilters] = useState<{ name: string; value: string[] }[]>([]);
   const [checkedFilters, setCheckedFilters] = useState<{ [key: string]: boolean }>({});
+  const offset = 3;
+  const [productsLimit, setProductsLimit] = useState<number>(offset);
+  const [isOverload, setIsOverload] = useState<boolean>(false);
+  const [isSearchRequest, setIsSearchRequest] = useState(false);
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
-    getSortedProductsData({
-      activeCategoryButton,
-      sortPrice,
-      sortName,
-      setProducts,
-      minPrice,
-      maxPrice,
-      checkboxFilters,
-    });
-  }, [activeCategoryButton, sortPrice, sortName, minPrice, maxPrice, checkboxFilters]);
+    if (isSearchRequest) {
+      getSearchData({ text: searchText, setProducts, productsLimit, setIsOverload });
+    } else {
+      getSortedProductsData({
+        activeCategoryButton,
+        sortPrice,
+        sortName,
+        setProducts,
+        minPrice,
+        maxPrice,
+        checkboxFilters,
+        productsLimit,
+        setIsOverload,
+      });
+    }
+  }, [
+    isSearchRequest,
+    searchText,
+    activeCategoryButton,
+    sortPrice,
+    sortName,
+    minPrice,
+    maxPrice,
+    checkboxFilters,
+    productsLimit,
+  ]);
 
   useEffect(() => {
     getCategoriesData({ setCategories, setSubCategories });
@@ -54,6 +75,8 @@ function AllProducts() {
         const breadcrumbs = createBreadCrumbs(categories, subCategories, id);
 
         setBreadcrumbs(breadcrumbs);
+        setProductsLimit(offset);
+        setIsOverload(false);
         // temp
         window.history.pushState(
           {},
@@ -66,10 +89,14 @@ function AllProducts() {
 
   function handleSortPriceButton(event: React.ChangeEvent<HTMLInputElement>) {
     setSortPrice(event.target.value);
+    setProductsLimit(offset);
+    setIsOverload(false);
   }
 
   function handleSortNameButton(event: React.ChangeEvent<HTMLInputElement>) {
     setSortName(event.target.value);
+    setProductsLimit(offset);
+    setIsOverload(false);
   }
 
   function handleSearchInput(event: React.KeyboardEvent) {
@@ -77,14 +104,26 @@ function AllProducts() {
       return;
     }
 
+    setActiveCategoryButton(null);
+    setSortPrice(null);
+    setSortName(null);
+    setMinPrice(null);
+    setMaxPrice(null);
+    setCheckboxFilters([]);
+    setCheckedFilters({});
+    setBreadcrumbs([]);
+    setProductsLimit(offset);
+    setIsOverload(false);
+
     const target = event.target;
 
     if (target && target instanceof HTMLInputElement) {
       const text = target.value.trim();
-      if (text) {
-        getSearchData({ text, setProducts });
-        target.value = '';
-      }
+      if (!text) return;
+
+      setIsSearchRequest(true);
+      setSearchText(text);
+      target.value = '';
     }
   }
 
@@ -92,12 +131,16 @@ function AllProducts() {
     const price = parseFloat(event.target.value);
     console.log('Min price ' + price);
     setMinPrice(price);
+    setProductsLimit(offset);
+    setIsOverload(false);
   }
 
   function handleMaxPriceInput(event: React.ChangeEvent<HTMLInputElement>) {
     const price = parseFloat(event.target.value);
     console.log('Max price ' + price);
     setMaxPrice(price);
+    setProductsLimit(offset);
+    setIsOverload(false);
   }
 
   function handleCheckboxFilter(event: React.ChangeEvent<HTMLInputElement>) {
@@ -110,6 +153,9 @@ function AllProducts() {
         name: target.name,
         value: [target.value],
       };
+
+      setProductsLimit(offset);
+      setIsOverload(false);
 
       if (isChecked) {
         setCheckboxFilters(checkboxFilters => {
@@ -202,6 +248,12 @@ function AllProducts() {
     setCheckboxFilters([]);
     setCheckedFilters({});
     setBreadcrumbs([]);
+    setProductsLimit(offset);
+    setIsOverload(false);
+  }
+
+  function handleLoadMoreButton() {
+    setProductsLimit(state => state + offset);
   }
 
   return (
@@ -479,12 +531,19 @@ function AllProducts() {
               Reset
             </button>
           </div>
-          <ul className={styles.products}>
-            {products.map(product => {
-              const productData = createProductData(product);
-              return <ProductCard key={productData.id} product={productData} />;
-            })}
-          </ul>
+          <div className={styles['products-wrapper']}>
+            <ul className={styles.products}>
+              {products.map(product => {
+                const productData = createProductData(product);
+                return <ProductCard key={productData.id} product={productData} />;
+              })}
+            </ul>
+            {!isOverload ? (
+              <button onClick={handleLoadMoreButton} className={styles['load-more']}>
+                More products
+              </button>
+            ) : null}
+          </div>
         </div>
       </div>
     </section>
