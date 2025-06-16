@@ -7,10 +7,16 @@ import { AddToCart } from '@/assets/img/catalog/add-to-cart';
 import { useEffect, useState } from 'react';
 import { getBasket, updateBasket } from '@/services/basketController';
 import { SHOP } from '@/config/localStorageConfig';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/store';
 import { IBasketUpdateActions } from '@/interfaces/types';
 import { MONEY_SYMBOLS } from '@/interfaces/types';
+import {
+  addItemsId,
+  changeTotalItems,
+  removeItemId,
+  setTotalItems,
+} from '@/store/slices/basketSlice';
 
 interface I_Attributes {
   name: string;
@@ -37,6 +43,7 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
     variants,
   } = product;
 
+  const dispatch = useDispatch();
   const priceValue = productPricesArray?.[0]?.value;
   const discountedValue = productPricesArray?.[0]?.discounted?.value;
 
@@ -120,7 +127,10 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
                 ],
                 cartId,
               );
-
+              if (response) {
+                dispatch(setTotalItems(response.body.lineItems.length || 0));
+              }
+              dispatch(removeItemId({ id: productInCart.id, variantId: 1 }));
               setAddToCartButton(false);
 
               console.log('Product has removed from cart', response);
@@ -138,6 +148,8 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
                 cartId,
               );
 
+              dispatch(changeTotalItems(1));
+              dispatch(addItemsId({ id: productId, variantId: 1 }));
               setAddToCartButton(true);
 
               console.log('Product has added in cart', response);
