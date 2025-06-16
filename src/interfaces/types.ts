@@ -60,12 +60,13 @@ export interface IUserPageAddress {
   isEditMode: boolean;
 }
 
-export interface ICustomer {
+export interface ICustomerDraft {
   email: string;
   password: string;
   firstName: string;
   lastName: string;
   dateOfBirth: string;
+  anonymousCart: { id: string };
   addresses: [
     { key?: string; country: string; city: string; streetName: string; postalCode: string },
   ];
@@ -78,6 +79,9 @@ export interface ICustomer {
 export interface ILoginParams {
   email: string;
   password: string;
+  anonymousCartSignInMode: ' MergeWithExistingCustomerCart';
+  anonymousCart?: { id: string };
+  anonymousId?: string;
 }
 
 export interface IRegistrationState {
@@ -90,11 +94,11 @@ export interface IRegistrationState {
   city: IRegistrationFieldState;
   postalCode: IRegistrationFieldState;
   country: IRegistrationFieldState;
-  billing: IAdditionalAddres;
-  shipping: IAdditionalAddres;
+  billing: IAdditionalAddress;
+  shipping: IAdditionalAddress;
 }
 
-export interface IAdditionalAddres {
+export interface IAdditionalAddress {
   isCopy: boolean;
   isDefault: boolean;
   isPresent: boolean;
@@ -112,7 +116,7 @@ export interface IRegistrationFieldState {
   infoIsActive: boolean;
 }
 
-export enum IUpdateActions {
+export enum ICustomerUpdateActions {
   changeEmail = 'changeEmail',
   setFirstName = 'setFirstName',
   setLastName = 'setLastName',
@@ -126,4 +130,31 @@ export enum IUpdateActions {
   addBillingAddressId = 'addBillingAddressId',
   removeBillingAddressId = 'removeBillingAddressId',
   addAddress = 'addAddress',
+}
+export enum IBasketUpdateActions {
+  setCustomerEmail = 'setCustomerEmail',
+  addLineItem = 'addLineItem',
+  removeLineItem = 'removeLineItem',
+  addDiscountCode = 'addDiscountCode',
+  changeLineItemQuantity = 'changeLineItemQuantity',
+  removeDiscountCode = 'removeDiscountCode',
+}
+
+export enum TEXT_LANGUAGES {
+  enGB = 'en-GB',
+}
+
+export enum MONEY_SYMBOLS {
+  euro = '€',
+}
+
+export enum AttributesName {
+  brand = 'brand',
+  size = 'size',
+  color = 'color',
+}
+
+export interface ItemsIdObject {
+  id: string;
+  variantId: number;
 }

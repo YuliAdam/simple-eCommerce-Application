@@ -36,6 +36,10 @@ $default-color: #ffffff;
   color: $primary-color;
 }
 
+.active_color {
+  border: 1px solid $primary-color !important;
+}
+
 .product-button {
   max-width: 250px;
   padding: 1rem;
@@ -54,6 +58,10 @@ $default-color: #ffffff;
   font-weight: 400;
   line-height: 20px;
   color: $primary-color;
+  border-bottom: 1px solid transparent;
+  &.active {
+    border-bottom: 1px solid $primary-color !important;
+  }
 }
 
 .product-prices {
@@ -123,6 +131,36 @@ $default-color: #ffffff;
   }
 }
 
+.product_add {
+  border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  font-family: Poppins;
+  &:disabled {
+    cursor: default;
+  }
+  &.animation {
+    animation: myAnim 2s ease 0s 1 normal forwards;
+  }
+
+  @keyframes myAnim {
+    0% {
+      transform: scale(1);
+    }
+
+    80% {
+      transform: scale(1.05);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+}
+
 .sliderContainer {
   display: flex;
   flex-direction: column;
@@ -132,7 +170,6 @@ $default-color: #ffffff;
   @media (max-width: 768px) {
     max-width: 100%;
   }
-
 }
 
 .detailsContainer {

@@ -10,6 +10,7 @@ import { SHOP } from '@/config/localStorageConfig';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/store/store';
 import { IBasketUpdateActions } from '@/interfaces/types';
+import { MONEY_SYMBOLS } from '@/interfaces/types';
 
 interface I_Attributes {
   name: string;
@@ -47,8 +48,6 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
   const brands = getAttributes(attributeNames.brand, allAttributes);
   const colors = getAttributes(attributeNames.color, allAttributes);
   const sizes = getAttributes(attributeNames.size, allAttributes);
-
-  const currencySymbol = '€';
 
   const [addToCartButton, setAddToCartButton] = useState<boolean>(false);
 
@@ -155,8 +154,8 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
     <li className={styles.product}>
       <div className={styles['img-wrapper']}>
         <img
-          src={imagesArray ? imagesArray?.[0].url : ''}
-          alt={imagesArray ? imagesArray?.[0].label : ''}
+          src={imagesArray ? imagesArray[0].url : ''}
+          alt={imagesArray ? imagesArray[0].label : ''}
           className={styles['product-img']}
         />
       </div>
@@ -172,19 +171,17 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
           {discountedValue ? (
             <>
               <p className={`${styles['product-discountPrice']} ${styles['product-main-price']}`}>
-                <span>{currencySymbol}</span>{' '}
-                {discountedValue
-                  ? formatPrice(discountedValue.centAmount, discountedValue.fractionDigits)
-                  : ''}
+                <span>{MONEY_SYMBOLS.euro}</span>{' '}
+                {formatPrice(discountedValue.centAmount, discountedValue.fractionDigits)}
               </p>
               <p className={`${styles['product-price']} ${styles['product-price-old']}`}>
-                <span>{currencySymbol}</span>{' '}
+                <span>{MONEY_SYMBOLS.euro}</span>{' '}
                 {priceValue ? formatPrice(priceValue.centAmount, priceValue.fractionDigits) : ''}
               </p>
             </>
           ) : (
             <p className={`${styles['product-price']} ${styles['product-main-price']}`}>
-              <span>{currencySymbol}</span>{' '}
+              <span>{MONEY_SYMBOLS.euro}</span>{' '}
               {priceValue ? formatPrice(priceValue.centAmount, priceValue.fractionDigits) : ''}
             </p>
           )}

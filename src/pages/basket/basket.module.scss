@@ -1,0 +1,347 @@
+@font-face {
+  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  src: url('@assets/fonts/Poppins/Poppins-Regular.woff');
+}
+
+$hover-color: #333;
+$font: 'Poppins';
+$primary-color: #111827;
+$body-text-color: #4b5563;
+$vibrant-color: #0ea5e9;
+$border-color: #e5e7eb;
+$default-color: #ffffff;
+$gray-background: #f8f8f8;
+$red-border-color: red;
+$transition-speed: 0.3s;
+$breakpoint-mobile: 768px;
+$secondary-color: #4b5563;
+
+.basket {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 4rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: auto;
+  &_title {
+    width: 178px;
+    height: 40px;
+    margin-bottom: 0;
+
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 40px;
+    color: $primary-color;
+  }
+
+  &_products {
+    width: 100%;
+  }
+  &_item,
+  &_totals {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 24px 0px;
+
+    justify-content: space-between;
+    align-items: center;
+
+    border-top: 1px solid $border-color;
+  }
+  &_totals {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  &_clear {
+    width: 100%;
+    text-align: right;
+    margin-top: 0;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: $body-text-color;
+    cursor: pointer;
+    &:hover {
+      color: $hover-color;
+    }
+  }
+
+  &_confirm {
+    width: 100%;
+    text-align: right;
+    margin-top: 0;
+    margin-bottom: 14px;
+    span {
+      margin: 0 8px;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      color: $body-text-color;
+      cursor: pointer;
+      &:hover {
+        color: $hover-color;
+      }
+    }
+  }
+
+  &_empty {
+    width: 100%;
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    svg {
+      width: 250px;
+      height: 250px;
+      stroke: $border-color;
+    }
+    p,
+    a {
+      font-weight: 400;
+      font-size: 19px;
+      line-height: 20px;
+      margin: 12px;
+    }
+    p {
+      background-color: $primary-color;
+      color: $default-color;
+      padding: 8px;
+    }
+    a {
+      color: $secondary-color;
+      &:hover {
+        color: $primary-color;
+      }
+    }
+  }
+}
+
+.img_wrap {
+  width: 20%;
+  height: 130px;
+  max-height: 130px;
+  max-width: 130px;
+  min-width: 90px;
+  border-radius: 12px;
+  background-position: center;
+  background-size: contain;
+  background-color: $gray-background;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.item {
+  &_wrap {
+    height: 100%;
+    flex-grow: 1;
+    margin-left: 5%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-family: Poppins;
+    font-style: normal;
+  }
+  &_info_wrap {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  &_title {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    color: $primary-color;
+    margin: 0;
+    cursor: pointer;
+  }
+  &_brand {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: $body-text-color;
+    margin: 0;
+  }
+  &_size {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: $primary-color;
+    margin: 0;
+  }
+  &_color {
+    display: flex;
+    align-items: center;
+    p {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      color: $primary-color;
+      margin: 0;
+      margin-right: 10px;
+    }
+    svg {
+      cursor: default !important;
+    }
+  }
+  &_controller {
+    display: flex;
+    align-items: center;
+  }
+  &_quantity_wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 110px;
+    height: 40px;
+
+    padding: 8px 12px;
+    margin-top: 8px;
+    background: $gray-background;
+    border-radius: 9999px;
+
+    p {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      color: $primary-color;
+    }
+  }
+
+  &_btn_wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    width: 24px;
+    height: 24px;
+
+    background: $default-color;
+    opacity: 0.5;
+    border: 1px solid $border-color;
+    border-radius: 9999px;
+
+    cursor: pointer;
+    path {
+      fill: $primary-color;
+      &:hover {
+        fill: $hover-color;
+      }
+    }
+  }
+
+  &_btn {
+    margin: 0 auto;
+    width: 100%;
+    height: auto;
+  }
+
+  &_trash {
+    margin-top: 8px;
+    margin-left: 8px;
+    width: 25px;
+    height: auto;
+    cursor: pointer;
+    path {
+      transition: all $transition-speed easy;
+    }
+    &:hover {
+      path {
+        stroke: $hover-color;
+      }
+    }
+  }
+
+  &_price {
+    &_actual {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      color: $primary-color;
+      margin: 0;
+    }
+    &_old {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      text-decoration-line: line-through;
+      color: $body-text-color;
+      margin: 0;
+    }
+  }
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  p {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: $body-text-color;
+    margin: 8px;
+    &.total_main {
+      margin-top: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      color: $primary-color;
+    }
+    &.discount {
+      color: $vibrant-color;
+    }
+  }
+  &_confirm {
+    margin-top: 12px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: $default-color;
+    align-items: center;
+    padding: 12px;
+    background: $primary-color;
+    border-radius: 9999px;
+    border: 1px solid $primary-color;
+    transition: all 0.2s ease-in;
+    &:hover {
+      cursor: pointer;
+      color: $primary-color;
+      background: $default-color;
+    }
+  }
+}
+.code_wrap {
+  display: flex;
+  align-items: center;
+}
+.code_close {
+  width: 20px;
+  height: auto;
+  cursor: pointer;
+  margin: 5px;
+  path {
+    transition: all $transition-speed easy;
+  }
+  &:hover {
+    path {
+      stroke: $hover-color;
+    }
+  }
+  &_wrap {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

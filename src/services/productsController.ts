@@ -46,7 +46,7 @@ export const getSortedProducts = async ({
 } = {}) => {
   const filterByCategoryOption = `categories.id:"${categoryId}"`;
   const sortByPriceOptions = `price ${sortByPrice}`;
-  const sortByNameOptions = `name.en-GB ${sortByName}`;
+  const sortByNameOptions = `name.TEXT_LANGUAGES.enGB ${sortByName}`;
   const filterByMinPrice = Number.isFinite(minPrice) ? minPrice : 0;
   const filterByMaxPrice = Number.isFinite(maxPrice) ? maxPrice : 30;
 
@@ -111,7 +111,7 @@ export const getProductsBySearch = async (text: string) => {
       .suggest()
       .get({
         queryArgs: {
-          'searchKeywords.en-GB': text,
+          'searchKeywords.TEXT_LANGUAGES.enGB': text,
           fuzzy: true,
         },
       })
@@ -120,3 +120,7 @@ export const getProductsBySearch = async (text: string) => {
     console.log(err);
   }
 };
+
+export async function getProductById(id: string) {
+  return await apiRoot.products().withId({ ID: id }).get().execute();
+}

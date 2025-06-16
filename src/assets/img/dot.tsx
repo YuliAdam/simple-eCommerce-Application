@@ -1,4 +1,4 @@
-export function Dot({ stroke }: { stroke?: string[] | string }) {
+export function Dot({ stroke, className }: { stroke?: string[] | string; className?: string }) {
   function setStroke() {
     const baseColor = Array.isArray(stroke) ? (stroke[0] ?? '') : stroke;
     if (baseColor === 'white') return '#F2F2F2';
@@ -12,6 +12,7 @@ export function Dot({ stroke }: { stroke?: string[] | string }) {
         borderRadius: '100%',
         cursor: 'pointer',
       }}
+      className={className || ''}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"

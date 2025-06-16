@@ -17,7 +17,7 @@ export default async function getSearchData({
     const response = await getProductsBySearch(text);
 
     if (response && response.statusCode === 200) {
-      const productsNames = response.body['searchKeywords.en-GB'].map(el => el.text);
+      const productsNames = response.body['searchKeywords.TEXT_LANGUAGES.enGB'].map(el => el.text);
       const productsData = await getProducts();
 
       if (productsData && productsData.statusCode === 200) {
