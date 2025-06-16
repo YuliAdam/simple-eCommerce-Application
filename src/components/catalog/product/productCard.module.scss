@@ -51,9 +51,6 @@ $body-text-color: #4b5563;
   line-height: 20px;
   color: $primary-color;
   border-bottom: 1px solid transparent;
-  &.active {
-    border-bottom: 1px solid $primary-color !important;
-  }
 }
 
 .product-prices {
@@ -122,9 +119,11 @@ $body-text-color: #4b5563;
   margin-bottom: 1rem;
   cursor: pointer;
   font-family: Poppins;
+
   &:disabled {
     cursor: default;
   }
+
   &.animation {
     animation: myAnim 2s ease 0s 1 normal forwards;
   }
@@ -163,5 +162,29 @@ $body-text-color: #4b5563;
 
   @media (max-width: 768px) {
     width: auto;
+  }
+}
+
+.product-size {
+  width: 24px;
+  height: 24px;
+
+
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(204, 204, 204);
+
+  border-radius: 100%;
+  transition: all 0.2s ease-in-out;
+
+  &.active {
+    background-color: $primary-color;
+    color: white;
   }
 }
