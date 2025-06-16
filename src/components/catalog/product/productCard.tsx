@@ -75,12 +75,8 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
   async function checkCart() {
     const id =
       localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
-    try {
-      const cart = await getBasket(id);
-      if (cart) return cart.body;
-    } catch (err) {
-      console.log(err);
-    }
+    const cart = await getBasket(id);
+    if (cart) return cart.body;
   }
 
   async function handleAddToCartButton(event: React.MouseEvent) {
