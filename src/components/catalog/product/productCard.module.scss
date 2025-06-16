@@ -59,6 +59,7 @@ $default-color: #ffffff;
   line-height: 20px;
   color: $primary-color;
   border-bottom: 1px solid transparent;
+
   &.active {
     border-bottom: 1px solid $primary-color !important;
   }
@@ -139,9 +140,11 @@ $default-color: #ffffff;
   margin-bottom: 1rem;
   cursor: pointer;
   font-family: Poppins;
+
   &:disabled {
     cursor: default;
   }
+
   &.animation {
     animation: myAnim 2s ease 0s 1 normal forwards;
   }
@@ -180,11 +183,12 @@ $default-color: #ffffff;
   @media (max-width: 768px) {
     width: auto;
   }
-}
 
   @media (max-width: 390px) {
     margin: 0 auto;
   }
+}
+
 
 .add-button {
   position: absolute;

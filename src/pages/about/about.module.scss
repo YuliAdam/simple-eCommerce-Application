@@ -23,7 +23,8 @@ $mobile-breakpoint: 768px;
   color: $body-text-color;
   background-color: $default-bg;
   padding: 0;
-  margin: 0;
+  margin: auto;
+  max-width: 1400px;
 }
 
 .heroSection {
