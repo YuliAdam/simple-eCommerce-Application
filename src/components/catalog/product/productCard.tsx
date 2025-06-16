@@ -5,6 +5,11 @@ import type I_ProductCardData from '@/interfaces/catalog/productCard';
 import ProductDetails from '@/components/catalog/product/components/productDetails/productDetails';
 import { AddToCart } from '@/assets/img/catalog/add-to-cart';
 import { useState } from 'react';
+import { getBasket, updateBasket } from '@/services/basketController';
+import { SHOP } from '@/config/localStorageConfig';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/store/store';
+import { IBasketUpdateActions } from '@/interfaces/types';
 
 interface I_Attributes {
   name: string;
@@ -47,6 +52,11 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
 
   const [addToCartButton, setAddToCartButton] = useState<boolean>(false);
 
+  const isAuthorized = useSelector((state: RootState) => state.auth.isAuthorized);
+
+  const clientCartId = localStorage.getItem(SHOP.client_cart_id);
+  const anonymousCartId = localStorage.getItem(SHOP.anonymous_cart_id);
+
   function getAttributes(name: string, attributes?: I_Attributes[]): Set<string> {
     const set = new Set<string>();
     if (attributes) {
@@ -63,11 +73,81 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
     return (price / 100).toFixed(fractionDigits);
   }
 
-  function handleAddToCartButton(event: React.MouseEvent) {
+  async function checkCart() {
+    try {
+      if (isAuthorized && clientCartId) {
+        const cart = await getBasket(clientCartId);
+        if (cart) {
+          return cart.body;
+        }
+      }
+
+      if (!isAuthorized && anonymousCartId) {
+        const cart = await getBasket(anonymousCartId);
+        if (cart) {
+          return cart.body;
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function handleAddToCartButton(event: React.MouseEvent) {
     const target = event.target;
 
-    if (target) {
-      setAddToCartButton(state => !state);
+    if (target && (target instanceof HTMLElement || target instanceof SVGElement)) {
+      const button = target.closest('button');
+
+      if (button) {
+        const cart = await checkCart();
+
+        if (cart) {
+          const cartId = cart.id;
+          const cartVersion = cart.version;
+          console.log('Basket is exist: ', cart);
+
+          const productInCart = cart.lineItems.find(item => item.productId === productId);
+
+          try {
+            if (productInCart) {
+              const response = await updateBasket(
+                cartVersion,
+                [
+                  {
+                    action: IBasketUpdateActions.removeLineItem,
+                    lineItemId: productInCart.id,
+                  },
+                ],
+                cartId,
+              );
+
+              setAddToCartButton(false);
+
+              console.log('Product has removed from cart', response);
+            } else {
+              const response = await updateBasket(
+                cartVersion,
+                [
+                  {
+                    action: IBasketUpdateActions.addLineItem,
+                    productId: productId,
+                    variantId: 1,
+                    quantity: 1,
+                  },
+                ],
+                cartId,
+              );
+
+              setAddToCartButton(true);
+
+              console.log('Product has added in cart', response);
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      }
     }
   }
 
