@@ -31,7 +31,6 @@ function CustomSlider({ children, thumbnails, initialIndex = 0 }: SliderProps): 
       return value + 1;
     });
   };
-
   const slidePrev = (): void => {
     setActiveIndex(value => {
       if (value <= 0) {
@@ -47,14 +46,14 @@ function CustomSlider({ children, thumbnails, initialIndex = 0 }: SliderProps): 
         {React.Children.map(children, (child, index) => {
           return (
             <div
-              className={`${styles.sliderItem} ${styles[`sliderItemActive${activeIndex + 1}`]}`}
+              className={`${styles.sliderItem} }`}
+              style={{ transform: `translateX(-${activeIndex * 100}%)` }}
               key={index}
             >
               {child}
             </div>
           );
         })}
-
         <button
           className={styles['sliderButtonNext']}
           onClick={e => {
@@ -74,7 +73,6 @@ function CustomSlider({ children, thumbnails, initialIndex = 0 }: SliderProps): 
           <ArrowRight stroke="#4b5563" />
         </button>
       </div>
-
       <div className={styles['containerSliderLinks']}>
         {thumbnails
           ? thumbnails.map((thumbnail, index) => (
