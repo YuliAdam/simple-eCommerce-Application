@@ -106,7 +106,7 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
                 cartId,
               );
               if (response) {
-                dispatch(setTotalItems(response.body.lineItems.length || 0));
+                dispatch(setTotalItems(response.body.totalLineItemQuantity || 0));
                 const itemsIdObjectArr: ItemsIdObject[] = response.body.lineItems.map(item => {
                   return { id: item.productId, variantId: item.variant.id };
                 });
