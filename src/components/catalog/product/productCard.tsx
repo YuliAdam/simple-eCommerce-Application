@@ -125,7 +125,7 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
                     quantity: 1,
                   },
                 ],
-                cart.id,
+                cartId,
               );
 
               dispatch(changeTotalItems(1));
