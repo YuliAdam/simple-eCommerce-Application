@@ -158,3 +158,9 @@ export interface ItemsIdObject {
   id: string;
   variantId: number;
 }
+
+export enum VARIANTS {
+  brand = 'brand',
+  size = 'size',
+  color = 'color',
+}

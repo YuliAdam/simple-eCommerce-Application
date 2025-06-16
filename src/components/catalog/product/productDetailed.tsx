@@ -1,6 +1,6 @@
 import { Dot } from '@/assets/img/dot';
 import { SHOP } from '@/config/localStorageConfig';
-import { IBasketUpdateActions } from '@/interfaces/types';
+import { IBasketUpdateActions, VARIANTS } from '@/interfaces/types';
 import { getBasket, updateBasket } from '@/services/basketController';
 import { addItemsId, changeTotalItems } from '@/store/slices/basketSlice';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
@@ -19,12 +19,6 @@ import {
 import styles from './productCard.module.scss';
 import type { RootState } from '@/store/store';
 
-enum VARIANTS {
-  brand = 'brand',
-  size = 'size',
-  color = 'color',
-}
-
 function ProductDetailed({ product }: { product: Product }) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isInBasket, setIsInBasket] = useState<boolean>(false);
@@ -36,8 +30,6 @@ function ProductDetailed({ product }: { product: Product }) {
   const basket = useSelector((state: RootState) => state.basket);
 
   useEffect(() => {
-    console.log(product.id);
-    console.log(variantId);
     setIsInBasket(
       !!basket.itemsId.find(item => item.id === product.id && item.variantId === variantId),
     );
@@ -120,11 +112,19 @@ function ProductDetailed({ product }: { product: Product }) {
   }
 
   function setVariantId(newSize: string, newColor: string) {
-    const id = product.masterData.current.variants.find(
+    let id = product.masterData.current.variants.find(
       variant =>
         newSize === variant.attributes?.find(attr => attr.name === 'size')?.value.key &&
         newColor === variant.attributes?.find(attr => attr.name === 'color')?.value.key,
     )?.id;
+    const isMaster =
+      product.masterData.current.masterVariant.attributes?.find(attr => attr.name === 'size')?.value
+        .key === newSize &&
+      product.masterData.current.masterVariant.attributes?.find(attr => attr.name === 'color')
+        ?.value.key === newColor;
+    if (isMaster) {
+      id = product.masterData.current.masterVariant.id;
+    }
     setVariantIdState(id);
   }
 

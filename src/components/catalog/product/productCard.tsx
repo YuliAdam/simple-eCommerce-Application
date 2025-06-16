@@ -10,7 +10,7 @@ import { SHOP } from '@/config/localStorageConfig';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/store';
 import type { ItemsIdObject } from '@/interfaces/types';
-import { IBasketUpdateActions } from '@/interfaces/types';
+import { IBasketUpdateActions, VARIANTS } from '@/interfaces/types';
 import { MONEY_SYMBOLS } from '@/interfaces/types';
 import {
   addItemsId,
@@ -18,6 +18,7 @@ import {
   setItemsId,
   setTotalItems,
 } from '@/store/slices/basketSlice';
+import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 
 interface I_Attributes {
   name: string;
@@ -25,12 +26,6 @@ interface I_Attributes {
     key: string;
     label: string;
   };
-}
-
-enum attributeNames {
-  brand = 'brand',
-  color = 'color',
-  size = 'size',
 }
 
 function ProductCard({ product }: { product: I_ProductCardData }) {
@@ -45,6 +40,8 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
   } = product;
 
   const dispatch = useDispatch();
+  const basket = useSelector((state: RootState) => state.basket);
+
   const priceValue = productPricesArray?.[0]?.value;
   const discountedValue = productPricesArray?.[0]?.discounted?.value;
 
@@ -53,16 +50,11 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
   );
   const allAttributes = [...(attributes || []), ...variantAttributes];
 
-  const brands = getAttributes(attributeNames.brand, allAttributes);
-  const colors = getAttributes(attributeNames.color, allAttributes);
-  const sizes = getAttributes(attributeNames.size, allAttributes);
+  const brands = getAttributes(VARIANTS.brand, allAttributes);
+  const colors = getAttributes(VARIANTS.color, allAttributes);
+  const sizes = getAttributes(VARIANTS.size, allAttributes);
 
   const [addToCartButton, setAddToCartButton] = useState<boolean>(false);
-
-  const isAuthorized = useSelector((state: RootState) => state.auth.isAuthorized);
-
-  const clientCartId = localStorage.getItem(SHOP.client_cart_id);
-  const anonymousCartId = localStorage.getItem(SHOP.anonymous_cart_id);
 
   function getAttributes(name: string, attributes?: I_Attributes[]): Set<string> {
     const set = new Set<string>();
@@ -81,20 +73,11 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
   }
 
   async function checkCart() {
+    const id =
+      localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
     try {
-      if (isAuthorized && clientCartId) {
-        const cart = await getBasket(clientCartId);
-        if (cart) {
-          return cart.body;
-        }
-      }
-
-      if (!isAuthorized && anonymousCartId) {
-        const cart = await getBasket(anonymousCartId);
-        if (cart) {
-          return cart.body;
-        }
-      }
+      const cart = await getBasket(id);
+      if (cart) return cart.body;
     } catch (err) {
       console.log(err);
     }
@@ -107,25 +90,23 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
       const button = target.closest('button');
 
       if (button) {
-        const cart = await checkCart();
-
-        if (cart) {
-          const cartId = cart.id;
-          const cartVersion = cart.version;
-          console.log('Basket is exist: ', cart);
-
-          const productInCart = cart.lineItems.find(item => item.productId === productId);
-
-          try {
-            if (productInCart) {
+        try {
+          const cart = await checkCart();
+          if (cart) {
+            const cartId = cart.id;
+            const cartVersion = cart.version;
+            let productInCart = cart.lineItems.filter(item => item.productId === productId);
+            if (productInCart.length) {
               const response = await updateBasket(
                 cartVersion,
-                [
-                  {
-                    action: IBasketUpdateActions.removeLineItem,
-                    lineItemId: productInCart.id,
-                  },
-                ],
+                productInCart.map(item => {
+                  return {
+                    action: IBasketUpdateActions.changeLineItemQuantity,
+                    lineItemId: item.id,
+                    quantity: 0,
+                  };
+                }),
+
                 cartId,
               );
               if (response) {
@@ -134,13 +115,12 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
                   return { id: item.productId, variantId: item.variant.id };
                 });
                 dispatch(setItemsId(itemsIdObjectArr));
+                setAddToCartButton(false);
               }
-              setAddToCartButton(false);
-
               console.log('Product has removed from cart', response);
             } else {
               const response = await updateBasket(
-                cartVersion,
+                cart.version,
                 [
                   {
                     action: IBasketUpdateActions.addLineItem,
@@ -149,7 +129,7 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
                     quantity: 1,
                   },
                 ],
-                cartId,
+                cart.id,
               );
 
               dispatch(changeTotalItems(1));
@@ -158,8 +138,11 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
 
               console.log('Product has added in cart', response);
             }
-          } catch (err) {
-            console.log(err);
+          }
+        } catch (err) {
+          if (err instanceof Error) {
+            dispatch(setDialogText(err.message));
+            dispatch(toggleDialog(true));
           }
         }
       }
@@ -167,20 +150,13 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
   }
 
   useEffect(() => {
-    async function setAddToCartButtonActive() {
-      const cart = await checkCart();
-
-      if (cart) {
-        const productInCart = cart.lineItems.find(item => item.productId === productId);
-
-        if (productInCart) {
-          setAddToCartButton(true);
-        }
+    function setAddToCartButtonActive() {
+      if (!!basket.itemsId.find(item => item.id === productId)) {
+        setAddToCartButton(true);
       }
     }
-
     setAddToCartButtonActive();
-  }, []);
+  }, [basket.totalItems, basket.itemsId]);
 
   return (
     <li className={styles.product}>
