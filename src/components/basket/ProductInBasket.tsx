@@ -44,6 +44,18 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
             stroke={getAttributeValue(AttributesName.color, item.variant.attributes)?.value.key}
           />
         </div>
+        <div>
+          <span className={styles.item_size}>
+            {`Price: ${MONEY_SYMBOLS.euro} ${!item.price.discounted ? formatPrice(item.price.value.centAmount) : formatPrice(item.price.discounted.value.centAmount)} `}
+          </span>
+          {item.price.discounted ? (
+            <span className={styles.item_price_old}>
+              {formatPrice(item.price.value.centAmount)}
+            </span>
+          ) : (
+            ''
+          )}
+        </div>
       </>
     ) : (
       ''
