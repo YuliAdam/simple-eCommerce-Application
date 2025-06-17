@@ -33,27 +33,9 @@ const basketSlice = createSlice({
     addItemsId(state, action: PayloadAction<ItemsIdObject>) {
       state.itemsId.push(action.payload);
     },
-    removeItemId(state, action: PayloadAction<ItemsIdObject>) {
-      console.log(
-        state.itemsId.filter(
-          item => item.id !== action.payload.id && item.variantId !== action.payload.variantId,
-        ),
-      );
-      console.log(state.itemsId);
-      console.log(action.payload);
-      state.itemsId = state.itemsId.filter(
-        item => item.id !== action.payload.id && item.variantId !== action.payload.variantId,
-      );
-    },
   },
 });
 
-export const {
-  setTotalItems,
-  changeTotalItems,
-  setTotalPrice,
-  setItemsId,
-  addItemsId,
-  removeItemId,
-} = basketSlice.actions;
+export const { setTotalItems, changeTotalItems, setTotalPrice, setItemsId, addItemsId } =
+  basketSlice.actions;
 export default basketSlice.reducer;

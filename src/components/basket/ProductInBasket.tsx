@@ -12,7 +12,7 @@ import {
   TEXT_LANGUAGES,
 } from '@/interfaces/types';
 import { getBasket, updateBasket } from '@/services/basketController';
-import { removeItemId, setItemsId, setTotalItems } from '@/store/slices/basketSlice';
+import { changeTotalItems, setItemsId, setTotalItems } from '@/store/slices/basketSlice';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 import formatPrice from '@/utils/formatPrice';
 import type { Attribute, CartUpdateAction, LineItem } from '@commercetools/platform-sdk';
@@ -110,10 +110,14 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
         quantity: item.quantity + num,
       });
       if (basket) {
-        const response = await updateBasket(basket.body.version, actions, basketId);
-        dispatch(setTotalItems(response?.body.totalLineItemQuantity || 0));
+        const newBasket = await updateBasket(basket.body.version, actions, basketId);
+        dispatch(changeTotalItems(num));
         if (item.quantity + num === 0) {
-          dispatch(removeItemId({ id: item.id, variantId: item.variant.id }));
+          const itemsIdObjectArr: ItemsIdObject[] =
+            newBasket?.body.lineItems.map(item => {
+              return { id: item.productId, variantId: item.variant.id };
+            }) || [];
+          dispatch(setItemsId(itemsIdObjectArr));
         }
       }
     } catch (err) {
