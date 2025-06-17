@@ -37,7 +37,6 @@ function Basket() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setDiscount(0);
     if (id) {
       getBasket(id)
         .then(res => {

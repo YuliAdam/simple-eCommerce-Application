@@ -202,8 +202,7 @@ function ProductDetailed({ product }: { product: Product }) {
             productSize.map((paragraph, index) => {
               return (
                 <span
-                  style={{ textTransform: 'uppercase', fontSize: '1.9rem', cursor: 'pointer' }}
-                  className={`${styles['product-description']} ${size === paragraph ? styles.active : ''}`}
+                  className={`${styles['product-description']}  ${styles['product-size']} ${size === paragraph ? styles.active : ''}`}
                   key={index}
                   onClick={() => setSize(paragraph)}
                 >

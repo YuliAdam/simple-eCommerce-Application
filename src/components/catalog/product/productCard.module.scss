@@ -59,10 +59,6 @@ $default-color: #ffffff;
   line-height: 20px;
   color: $primary-color;
   border-bottom: 1px solid transparent;
-
-  &.active {
-    border-bottom: 1px solid $primary-color !important;
-  }
 }
 
 .product-prices {
@@ -218,4 +214,28 @@ $default-color: #ffffff;
   top: 9px;
   right: 50%;
   transform: translateX(50%);
+}
+
+.product-size {
+  width: 24px;
+  height: 24px;
+
+
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(204, 204, 204);
+
+  border-radius: 100%;
+  transition: all 0.2s ease-in-out;
+
+  &.active {
+    background-color: $primary-color;
+    color: white;
+  }
 }
