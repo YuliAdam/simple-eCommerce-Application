@@ -4,7 +4,6 @@ import Plus from '@/assets/img/plus';
 import Trash from '@/assets/img/trash';
 import { SHOP } from '@/config/localStorageConfig';
 import { Path } from '@/config/routesConfig';
-import type { ItemsIdObject } from '@/interfaces/types';
 import {
   AttributesName,
   IBasketUpdateActions,
@@ -14,6 +13,7 @@ import {
 import { getBasket, updateBasket } from '@/services/basketController';
 import { changeTotalItems, setItemsId, setTotalItems } from '@/store/slices/basketSlice';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import createItemsIdArr from '@/utils/createItemsIdArr';
 import formatPrice from '@/utils/formatPrice';
 import type { Attribute, CartUpdateAction, LineItem } from '@commercetools/platform-sdk';
 import styles from '@pages/basket/basket.module.scss';
@@ -87,11 +87,7 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
       if (basket) {
         const newBasket = await updateBasket(basket.body.version, actions, basketId);
         dispatch(setTotalItems(newBasket?.body.totalLineItemQuantity || 0));
-        const itemsIdObjectArr: ItemsIdObject[] =
-          newBasket?.body.lineItems.map(item => {
-            return { id: item.productId, variantId: item.variant.id };
-          }) || [];
-        dispatch(setItemsId(itemsIdObjectArr));
+        dispatch(setItemsId(createItemsIdArr(newBasket)));
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -113,11 +109,7 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
         const newBasket = await updateBasket(basket.body.version, actions, basketId);
         dispatch(changeTotalItems(num));
         if (item.quantity + num === 0) {
-          const itemsIdObjectArr: ItemsIdObject[] =
-            newBasket?.body.lineItems.map(item => {
-              return { id: item.productId, variantId: item.variant.id };
-            }) || [];
-          dispatch(setItemsId(itemsIdObjectArr));
+          dispatch(setItemsId(createItemsIdArr(newBasket)));
         }
       }
     } catch (err) {

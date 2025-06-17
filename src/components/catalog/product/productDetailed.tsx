@@ -1,6 +1,5 @@
 import { Dot } from '@/assets/img/dot';
 import { SHOP } from '@/config/localStorageConfig';
-import type { ItemsIdObject } from '@/interfaces/types';
 import { IBasketUpdateActions, VARIANTS } from '@/interfaces/types';
 import { getBasket, updateBasket } from '@/services/basketController';
 import {
@@ -24,6 +23,7 @@ import {
 } from './getProductData';
 import styles from './productCard.module.scss';
 import type { RootState } from '@/store/store';
+import createItemsIdArr from '@/utils/createItemsIdArr';
 
 function ProductDetailed({ product }: { product: Product }) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -98,10 +98,7 @@ function ProductDetailed({ product }: { product: Product }) {
             const response = await updateBasket(basket.body.version, actions, id);
             if (response) {
               dispatch(setTotalItems(response.body.totalLineItemQuantity || 0));
-              const itemsIdObjectArr: ItemsIdObject[] = response.body.lineItems.map(item => {
-                return { id: item.productId, variantId: item.variant.id };
-              });
-              dispatch(setItemsId(itemsIdObjectArr));
+              dispatch(setItemsId(createItemsIdArr(response)));
             }
             setIsInBasket(false);
           }

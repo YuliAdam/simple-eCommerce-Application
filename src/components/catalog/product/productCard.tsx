@@ -9,7 +9,6 @@ import { getBasket, updateBasket } from '@/services/basketController';
 import { SHOP } from '@/config/localStorageConfig';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/store';
-import type { ItemsIdObject } from '@/interfaces/types';
 import { IBasketUpdateActions, VARIANTS } from '@/interfaces/types';
 import { MONEY_SYMBOLS } from '@/interfaces/types';
 import {
@@ -19,6 +18,7 @@ import {
   setTotalItems,
 } from '@/store/slices/basketSlice';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import createItemsIdArr from '@/utils/createItemsIdArr';
 
 interface I_Attributes {
   name: string;
@@ -107,10 +107,7 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
               );
               if (response) {
                 dispatch(setTotalItems(response.body.totalLineItemQuantity || 0));
-                const itemsIdObjectArr: ItemsIdObject[] = response.body.lineItems.map(item => {
-                  return { id: item.productId, variantId: item.variant.id };
-                });
-                dispatch(setItemsId(itemsIdObjectArr));
+                dispatch(setItemsId(createItemsIdArr(response)));
                 setAddToCartButton(false);
               }
               console.log('Product has removed from cart', response);
