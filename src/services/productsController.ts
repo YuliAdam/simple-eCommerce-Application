@@ -34,6 +34,7 @@ export const getSortedProducts = async ({
   minPrice = 0,
   maxPrice = 30, // temp
   checkboxFilters,
+  productsLimit,
 }: {
   categoryId?: string | null;
   sortByPrice?: string | null;
@@ -41,6 +42,7 @@ export const getSortedProducts = async ({
   minPrice?: number;
   maxPrice?: number;
   checkboxFilters?: { name: string; value: string[] }[];
+  productsLimit?: number;
 } = {}) => {
   const filterByCategoryOption = `categories.id:"${categoryId}"`;
   const sortByPriceOptions = `price ${sortByPrice}`;
@@ -48,7 +50,7 @@ export const getSortedProducts = async ({
   const filterByMinPrice = Number.isFinite(minPrice) ? minPrice : 0;
   const filterByMaxPrice = Number.isFinite(maxPrice) ? maxPrice : 30;
 
-  const options: { [key: string]: string[] } = {};
+  const options: { [key: string]: string[] | number } = {};
 
   const filterOptions = [];
 
@@ -76,6 +78,7 @@ export const getSortedProducts = async ({
 
   const min = filterByMinPrice * 100;
   const max = filterByMaxPrice * 100;
+
   filterOptions.push(`variants.price.centAmount:range (${min} to ${max})`);
 
   if (sortOptions.length > 0) {
@@ -85,6 +88,8 @@ export const getSortedProducts = async ({
   if (filterOptions.length > 0) {
     options.filter = filterOptions;
   }
+
+  options.limit = productsLimit ?? 0;
 
   try {
     return await apiRoot

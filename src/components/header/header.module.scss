@@ -12,7 +12,7 @@ $text-2xl: 1.6rem;
 .header {
   width: 100%;
   max-width: 1400px;
-  margin: 0 auto;
+  margin: auto;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -85,6 +85,7 @@ $text-2xl: 1.6rem;
     margin-left: 1rem;
     color: $secondary-color;
     transition: color $transition-speed ease;
+
     &:hover {
       color: $hover-color;
     }
@@ -93,6 +94,7 @@ $text-2xl: 1.6rem;
   .icon-basket {
     height: 50px;
     width: auto;
+
     text {
       font-size: 10px;
       font-family: Poppins;
