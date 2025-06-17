@@ -1,8 +1,14 @@
 import { Dot } from '@/assets/img/dot';
 import { SHOP } from '@/config/localStorageConfig';
+import type { ItemsIdObject } from '@/interfaces/types';
 import { IBasketUpdateActions, VARIANTS } from '@/interfaces/types';
 import { getBasket, updateBasket } from '@/services/basketController';
-import { addItemsId, changeTotalItems } from '@/store/slices/basketSlice';
+import {
+  addItemsId,
+  changeTotalItems,
+  setItemsId,
+  setTotalItems,
+} from '@/store/slices/basketSlice';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 import type { CartUpdateAction, Product } from '@commercetools/platform-sdk';
 import { useEffect, useState } from 'react';
@@ -72,12 +78,34 @@ function ProductDetailed({ product }: { product: Product }) {
   };
 
   async function addProductInBasket() {
-    if (!isInBasket) {
-      try {
-        const id =
-          localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
-        const basket = await getBasket(id);
-        if (basket) {
+    const id =
+      localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
+    try {
+      const basket = await getBasket(id);
+      if (basket) {
+        if (isInBasket) {
+          let lineItem = basket.body.lineItems.find(
+            item => item.productId === product.id && item.variant.id === variantId,
+          );
+          if (lineItem) {
+            const actions: CartUpdateAction[] = [
+              {
+                action: IBasketUpdateActions.changeLineItemQuantity,
+                lineItemId: lineItem.id,
+                quantity: 0,
+              },
+            ];
+            const response = await updateBasket(basket.body.version, actions, id);
+            if (response) {
+              dispatch(setTotalItems(response.body.totalLineItemQuantity || 0));
+              const itemsIdObjectArr: ItemsIdObject[] = response.body.lineItems.map(item => {
+                return { id: item.productId, variantId: item.variant.id };
+              });
+              dispatch(setItemsId(itemsIdObjectArr));
+            }
+            setIsInBasket(false);
+          }
+        } else {
           dispatch(changeTotalItems(+1));
           const actions: CartUpdateAction[] = [
             {
@@ -92,11 +120,11 @@ function ProductDetailed({ product }: { product: Product }) {
             dispatch(addItemsId({ id: product.id, variantId: variantId }));
           }
         }
-      } catch (err) {
-        if (err instanceof Error) {
-          dispatch(setDialogText(err.message));
-          dispatch(toggleDialog(true));
-        }
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        dispatch(setDialogText(err.message));
+        dispatch(toggleDialog(true));
       }
     }
   }
@@ -251,7 +279,7 @@ function ProductDetailed({ product }: { product: Product }) {
           disabled={!variantId}
           onClick={addProductInBasket}
         >
-          {isInBasket ? 'Just added in cart' : getButtonText()}
+          {isInBasket ? 'Remove from cart' : getButtonText()}
         </button>
         <p style={{ fontSize: '1.9rem' }} className={styles['product-description']}>
           {productDescription && productName ? productDescription['en-GB'] : ''}
