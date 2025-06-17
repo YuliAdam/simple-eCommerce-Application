@@ -2,8 +2,8 @@ import type { RootState } from '@/store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './dialog.module.scss';
 import {
+  openDialogWithMessage,
   setCode,
-  setDialogText,
   toggleCodeForm,
   toggleDialog,
   validationCode,
@@ -66,11 +66,9 @@ export function Dialog() {
     } catch (err) {
       if (err instanceof Error) {
         if (err.message === `The discount code '${dialog.codeValue}' was not found.`) {
-          dispatch(setDialogText(CODE_NOT_FOUND_MESSAGE));
-          dispatch(toggleDialog(true));
+          dispatch(openDialogWithMessage(CODE_NOT_FOUND_MESSAGE));
         } else {
-          dispatch(setDialogText(err.message));
-          dispatch(toggleDialog(true));
+          dispatch(openDialogWithMessage(err.message));
         }
       }
     }

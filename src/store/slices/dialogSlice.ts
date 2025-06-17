@@ -31,6 +31,10 @@ export const errorSlice = createSlice({
     setDialogText(state, action: PayloadAction<string>) {
       state.values.value = action.payload;
     },
+    openDialogWithMessage(state, action: PayloadAction<string>) {
+      state.values.isOpen = true;
+      state.values.value = action.payload;
+    },
     setCode(state, action: PayloadAction<string>) {
       state.values.codeValue = action.payload;
     },
@@ -43,7 +47,13 @@ export const errorSlice = createSlice({
   },
 });
 
-export const { toggleDialog, setDialogText, setCode, toggleCodeForm, validationCode } =
-  errorSlice.actions;
+export const {
+  toggleDialog,
+  setDialogText,
+  openDialogWithMessage,
+  setCode,
+  toggleCodeForm,
+  validationCode,
+} = errorSlice.actions;
 
 export default errorSlice.reducer;

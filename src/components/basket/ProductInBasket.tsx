@@ -12,7 +12,7 @@ import {
 } from '@/interfaces/types';
 import { getBasket, updateBasket } from '@/services/basketController';
 import { changeTotalItems, setItemsId, setTotalItems } from '@/store/slices/basketSlice';
-import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import { openDialogWithMessage } from '@/store/slices/dialogSlice';
 import createItemsIdArr from '@/utils/createItemsIdArr';
 import formatPrice from '@/utils/formatPrice';
 import type { Attribute, CartUpdateAction, LineItem } from '@commercetools/platform-sdk';
@@ -27,22 +27,24 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
   const navigate = useNavigate();
 
   function getAttributeValue(name: string, attributes: Attribute[]) {
-    return attributes.find(attribute => attribute.name === name);
+    return (
+      attributes.find(attribute => attribute.name === name) || { value: { label: '', key: '' } }
+    );
   }
 
   function getAttributes() {
     return item.variant.attributes ? (
       <>
         <p className={styles.item_brand}>
-          {getAttributeValue(AttributesName.brand, item.variant.attributes)?.value.label}
+          {getAttributeValue(AttributesName.brand, item.variant.attributes).value.label}
         </p>
         <p className={styles.item_size}>
-          {`Size: ${getAttributeValue(AttributesName.size, item.variant.attributes)?.value.key.toUpperCase()}`}
+          {`Size: ${getAttributeValue(AttributesName.size, item.variant.attributes).value.key.toUpperCase()}`}
         </p>
         <div className={styles.item_color}>
           <p>Color</p>
           <Dot
-            stroke={getAttributeValue(AttributesName.color, item.variant.attributes)?.value.key}
+            stroke={getAttributeValue(AttributesName.color, item.variant.attributes).value.key}
           />
         </div>
         <div>
@@ -91,8 +93,7 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
       }
     } catch (err) {
       if (err instanceof Error) {
-        dispatch(setDialogText(err.message));
-        dispatch(toggleDialog(true));
+        dispatch(openDialogWithMessage(err.message));
       }
     }
   }
@@ -114,10 +115,13 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
       }
     } catch (err) {
       if (err instanceof Error) {
-        dispatch(setDialogText(err.message));
-        dispatch(toggleDialog(true));
+        dispatch(openDialogWithMessage(err.message));
       }
     }
+  }
+
+  function navigateToProductPage() {
+    navigate(`${Path.product.replace(':id', item.productId)}`);
   }
 
   return (
@@ -127,15 +131,12 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
         style={{
           backgroundImage: `url("${item.variant.images && item.variant.images[0].url}")`,
         }}
-        onClick={() => navigate(`${Path.product.replace(':id', item.productId)}`)}
+        onClick={navigateToProductPage}
       ></div>
       <div className={styles.item_wrap}>
         <div className={styles.item_info_wrap}>
           <div className={styles.item_info}>
-            <h1
-              className={styles.item_title}
-              onClick={() => navigate(`${Path.product.replace(':id', item.productId)}`)}
-            >
+            <h1 className={styles.item_title} onClick={navigateToProductPage}>
               {item.name[TEXT_LANGUAGES.enGB]}
             </h1>
             {getAttributes()}

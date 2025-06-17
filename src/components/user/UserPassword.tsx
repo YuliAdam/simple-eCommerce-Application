@@ -33,7 +33,7 @@ import {
   verifyCustomerPassword,
 } from '@/services/customersController';
 import { SHOP } from '@/config/localStorageConfig';
-import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import { openDialogWithMessage } from '@/store/slices/dialogSlice';
 import { Verify } from '@/assets/img/verify';
 import { Eye } from '@/assets/img/eye';
 import RegistrationInfo from '../registration/RegistrationInfo';
@@ -133,7 +133,7 @@ export function UserPassword() {
           user.userParams.password.newValue,
         );
         dispatch(setVersion(response.body.version));
-        showMessage(UPDATE_MESSAGE);
+        dispatch(openDialogWithMessage(UPDATE_MESSAGE));
         const newUser = await getCustomer(id);
         if (newUser && !(newUser instanceof Error)) {
           const body = newUser.body;
@@ -142,7 +142,7 @@ export function UserPassword() {
           dispatch(offRedactMood(IRedactMoods.password));
         }
       } catch (err) {
-        if (err instanceof Error) showMessage(err.message);
+        if (err instanceof Error) dispatch(openDialogWithMessage(err.message));
       }
     }
   }
@@ -161,14 +161,9 @@ export function UserPassword() {
           dispatch(setVersion(response.body.version));
         }
       } catch (err) {
-        if (err instanceof Error) showMessage(err.message);
+        if (err instanceof Error) dispatch(openDialogWithMessage(err.message));
       }
     }
-  }
-
-  function showMessage(value: string) {
-    dispatch(setDialogText(value));
-    dispatch(toggleDialog(true));
   }
 
   function getCurrentPasswordInput() {

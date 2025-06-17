@@ -26,7 +26,7 @@ import { resetState, setInvalid, setValid, setValue } from '@/store/slices/regis
 import { PATTERNS, userDataIsValid } from '@/utils/validation/registrationValidation';
 import { getCustomer, updateCustomer } from '@/services/customersController';
 import { SHOP } from '@/config/localStorageConfig';
-import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import { openDialogWithMessage } from '@/store/slices/dialogSlice';
 import type { CustomerUpdateAction } from '@commercetools/platform-sdk';
 
 const UPDATE_MESSAGE = 'Your personal data was updated successfully!';
@@ -106,11 +106,6 @@ export function UserState() {
     };
   }
 
-  function showMessage(value: string) {
-    dispatch(setDialogText(value));
-    dispatch(toggleDialog(true));
-  }
-
   function isValid() {
     return userDataIsValid(
       user.userParams.login.newValue.trim(),
@@ -152,7 +147,7 @@ export function UserState() {
         try {
           const response = await updateCustomer(user.version, actions, id);
           dispatch(setVersion(response.body.version));
-          showMessage(UPDATE_MESSAGE);
+          dispatch(openDialogWithMessage(UPDATE_MESSAGE));
           const newUser = await getCustomer(id);
           if (newUser && !(newUser instanceof Error)) {
             const body = newUser.body;
@@ -161,7 +156,7 @@ export function UserState() {
             dispatch(offRedactMood(IRedactMoods.userParams));
           }
         } catch (err) {
-          if (err instanceof Error) showMessage(err.message);
+          if (err instanceof Error) dispatch(openDialogWithMessage(err.message));
         }
       } else if (actions.length === 0) {
         offRedactMoodHandle();

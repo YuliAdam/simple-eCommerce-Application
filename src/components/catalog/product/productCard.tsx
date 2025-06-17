@@ -17,8 +17,9 @@ import {
   setItemsId,
   setTotalItems,
 } from '@/store/slices/basketSlice';
-import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import { openDialogWithMessage } from '@/store/slices/dialogSlice';
 import createItemsIdArr from '@/utils/createItemsIdArr';
+import formatPrice from '@/utils/formatPrice';
 
 interface I_Attributes {
   name: string;
@@ -66,10 +67,6 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
       });
     }
     return set;
-  }
-
-  function formatPrice(price: number, fractionDigits: number = 2) {
-    return (price / 100).toFixed(fractionDigits);
   }
 
   async function checkCart() {
@@ -134,8 +131,7 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
           }
         } catch (err) {
           if (err instanceof Error) {
-            dispatch(setDialogText(err.message));
-            dispatch(toggleDialog(true));
+            dispatch(openDialogWithMessage(err.message));
           }
         }
       }

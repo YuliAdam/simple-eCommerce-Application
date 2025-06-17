@@ -5,10 +5,9 @@ import { useEffect, useState } from 'react';
 import type { CartUpdateAction, LineItem } from '@commercetools/platform-sdk';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  openDialogWithMessage,
   setCode,
-  setDialogText,
   toggleCodeForm,
-  toggleDialog,
   validationCode,
 } from '@/store/slices/dialogSlice';
 import ProductInBasket from '@/components/basket/ProductInBasket';
@@ -67,8 +66,7 @@ function Basket() {
           }
         })
         .catch(err => {
-          dispatch(setDialogText(err.message));
-          dispatch(toggleDialog(true));
+          dispatch(openDialogWithMessage(err.message));
         });
     }
   }, [basket.totalItems, basket.totalPrice]);
@@ -95,8 +93,7 @@ function Basket() {
       dispatch(setTotalPrice(0));
     } catch (err) {
       if (err instanceof Error) {
-        dispatch(setDialogText(err.message));
-        dispatch(toggleDialog(true));
+        dispatch(openDialogWithMessage(err.message));
       }
     }
   }
@@ -111,10 +108,9 @@ function Basket() {
   }
 
   function openCodeModal() {
-    dispatch(setDialogText(CODE_MODAL_MESSAGE));
     dispatch(setCode(''));
     dispatch(toggleCodeForm(true));
-    dispatch(toggleDialog(true));
+    dispatch(openDialogWithMessage(CODE_MODAL_MESSAGE));
   }
 
   async function removeCode() {
@@ -136,8 +132,7 @@ function Basket() {
       }
     } catch (err) {
       if (err instanceof Error) {
-        dispatch(setDialogText(err.message));
-        dispatch(toggleDialog(true));
+        dispatch(openDialogWithMessage(err.message));
       }
     }
   }
