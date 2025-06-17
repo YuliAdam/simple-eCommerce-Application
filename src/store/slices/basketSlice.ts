@@ -34,6 +34,13 @@ const basketSlice = createSlice({
       state.itemsId.push(action.payload);
     },
     removeItemId(state, action: PayloadAction<ItemsIdObject>) {
+      console.log(
+        state.itemsId.filter(
+          item => item.id !== action.payload.id && item.variantId !== action.payload.variantId,
+        ),
+      );
+      console.log(state.itemsId);
+      console.log(action.payload);
       state.itemsId = state.itemsId.filter(
         item => item.id !== action.payload.id && item.variantId !== action.payload.variantId,
       );

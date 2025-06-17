@@ -4,6 +4,7 @@ import Plus from '@/assets/img/plus';
 import Trash from '@/assets/img/trash';
 import { SHOP } from '@/config/localStorageConfig';
 import { Path } from '@/config/routesConfig';
+import type { ItemsIdObject } from '@/interfaces/types';
 import {
   AttributesName,
   IBasketUpdateActions,
@@ -11,7 +12,7 @@ import {
   TEXT_LANGUAGES,
 } from '@/interfaces/types';
 import { getBasket, updateBasket } from '@/services/basketController';
-import { changeTotalItems, removeItemId, setTotalItems } from '@/store/slices/basketSlice';
+import { removeItemId, setItemsId, setTotalItems } from '@/store/slices/basketSlice';
 import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
 import formatPrice from '@/utils/formatPrice';
 import type { Attribute, CartUpdateAction, LineItem } from '@commercetools/platform-sdk';
@@ -84,9 +85,13 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
       const actions: CartUpdateAction[] = [];
       actions.push({ action: IBasketUpdateActions.removeLineItem, lineItemId: item.id });
       if (basket) {
-        await updateBasket(basket.body.version, actions, basketId);
-        dispatch(changeTotalItems(-1));
-        dispatch(removeItemId({ id: item.productId, variantId: item.variant.id }));
+        const newBasket = await updateBasket(basket.body.version, actions, basketId);
+        dispatch(setTotalItems(newBasket?.body.totalLineItemQuantity || 0));
+        const itemsIdObjectArr: ItemsIdObject[] =
+          newBasket?.body.lineItems.map(item => {
+            return { id: item.productId, variantId: item.variant.id };
+          }) || [];
+        dispatch(setItemsId(itemsIdObjectArr));
       }
     } catch (err) {
       if (err instanceof Error) {
