@@ -1,6 +1,5 @@
 import { Dot } from '@/assets/img/dot';
 import { SHOP } from '@/config/localStorageConfig';
-import type { ItemsIdObject } from '@/interfaces/types';
 import { IBasketUpdateActions, VARIANTS } from '@/interfaces/types';
 import { getBasket, updateBasket } from '@/services/basketController';
 import {
@@ -9,7 +8,7 @@ import {
   setItemsId,
   setTotalItems,
 } from '@/store/slices/basketSlice';
-import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import { openDialogWithMessage } from '@/store/slices/dialogSlice';
 import type { CartUpdateAction, Product } from '@commercetools/platform-sdk';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,6 +23,8 @@ import {
 } from './getProductData';
 import styles from './productCard.module.scss';
 import type { RootState } from '@/store/store';
+import createItemsIdArr from '@/utils/createItemsIdArr';
+import formatPrice from '@/utils/formatPrice';
 
 function ProductDetailed({ product }: { product: Product }) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -77,7 +78,7 @@ function ProductDetailed({ product }: { product: Product }) {
     );
   };
 
-  async function addProductInBasket() {
+  async function toggleProductInBasket() {
     const id =
       localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
     try {
@@ -98,10 +99,7 @@ function ProductDetailed({ product }: { product: Product }) {
             const response = await updateBasket(basket.body.version, actions, id);
             if (response) {
               dispatch(setTotalItems(response.body.totalLineItemQuantity || 0));
-              const itemsIdObjectArr: ItemsIdObject[] = response.body.lineItems.map(item => {
-                return { id: item.productId, variantId: item.variant.id };
-              });
-              dispatch(setItemsId(itemsIdObjectArr));
+              dispatch(setItemsId(createItemsIdArr(response)));
             }
             setIsInBasket(false);
           }
@@ -123,8 +121,7 @@ function ProductDetailed({ product }: { product: Product }) {
       }
     } catch (err) {
       if (err instanceof Error) {
-        dispatch(setDialogText(err.message));
-        dispatch(toggleDialog(true));
+        dispatch(openDialogWithMessage(err.message));
       }
     }
   }
@@ -200,25 +197,21 @@ function ProductDetailed({ product }: { product: Product }) {
           style={{ textTransform: 'capitalize', fontSize: '1.9rem', color: 'gray' }}
           className={styles['product-description']}
         >
-          {productBrand ? productBrand : ''}
+          {productBrand || ''}
         </p>
         <div style={{ display: 'flex', gap: '10px' }}>
-          {!productDiscount ? (
-            <p style={{ fontSize: '1.9rem' }} className={styles['product-description']}>
-              {`${productPrice / 100} ${productCurrency}`}
+          <p style={{ fontSize: '1.9rem' }} className={styles['product-description']}>
+            {productDiscount
+              ? `${formatPrice(productDiscount)} ${productCurrency}`
+              : `${formatPrice(productPrice)} ${productCurrency}`}
+          </p>
+          {productDiscount && (
+            <p
+              className={styles['product-description']}
+              style={{ color: 'gray', textDecoration: 'line-through', fontSize: '1.9rem' }}
+            >
+              {`${formatPrice(productPrice)} ${productCurrency}`}
             </p>
-          ) : (
-            <>
-              <p style={{ fontSize: '1.9rem' }} className={styles['product-description']}>
-                {productDiscount ? `${productDiscount / 100} ${productCurrency}` : ''}
-              </p>
-              <p
-                className={styles['product-description']}
-                style={{ color: 'gray', textDecoration: 'line-through', fontSize: '1.9rem' }}
-              >
-                {`${productPrice / 100} ${productCurrency}`}
-              </p>
-            </>
           )}
         </div>
         <div
@@ -277,7 +270,7 @@ function ProductDetailed({ product }: { product: Product }) {
         <button
           className={`${styles.product_add} ${isInBasket ? styles.animation : ''}`}
           disabled={!variantId}
-          onClick={addProductInBasket}
+          onClick={toggleProductInBasket}
         >
           {isInBasket ? 'Remove from cart' : getButtonText()}
         </button>

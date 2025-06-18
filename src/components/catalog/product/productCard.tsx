@@ -9,7 +9,6 @@ import { getBasket, updateBasket } from '@/services/basketController';
 import { SHOP } from '@/config/localStorageConfig';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/store';
-import type { ItemsIdObject } from '@/interfaces/types';
 import { IBasketUpdateActions, VARIANTS } from '@/interfaces/types';
 import { MONEY_SYMBOLS } from '@/interfaces/types';
 import {
@@ -18,7 +17,9 @@ import {
   setItemsId,
   setTotalItems,
 } from '@/store/slices/basketSlice';
-import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import { openDialogWithMessage } from '@/store/slices/dialogSlice';
+import createItemsIdArr from '@/utils/createItemsIdArr';
+import formatPrice from '@/utils/formatPrice';
 
 interface I_Attributes {
   name: string;
@@ -68,10 +69,6 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
     return set;
   }
 
-  function formatPrice(price: number, fractionDigits: number = 2) {
-    return (price / 100).toFixed(fractionDigits);
-  }
-
   async function checkCart() {
     const id =
       localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
@@ -107,10 +104,7 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
               );
               if (response) {
                 dispatch(setTotalItems(response.body.totalLineItemQuantity || 0));
-                const itemsIdObjectArr: ItemsIdObject[] = response.body.lineItems.map(item => {
-                  return { id: item.productId, variantId: item.variant.id };
-                });
-                dispatch(setItemsId(itemsIdObjectArr));
+                dispatch(setItemsId(createItemsIdArr(response)));
                 setAddToCartButton(false);
               }
               console.log('Product has removed from cart', response);
@@ -137,8 +131,7 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
           }
         } catch (err) {
           if (err instanceof Error) {
-            dispatch(setDialogText(err.message));
-            dispatch(toggleDialog(true));
+            dispatch(openDialogWithMessage(err.message));
           }
         }
       }

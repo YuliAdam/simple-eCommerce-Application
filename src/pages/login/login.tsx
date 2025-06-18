@@ -11,7 +11,7 @@ import { Eye } from '@/assets/img/eye';
 import { EyeOff } from '@/assets/img/eyeoff';
 import type { ILoginParams } from '@/interfaces/types';
 import { loginCustomer } from '@/services/customersController';
-import { clearBasket, copyInBasket } from '@/services/basketController';
+import { clearBasket, copyInBasket, createBasket } from '@/services/basketController';
 import { setTotalItems } from '@/store/slices/basketSlice';
 
 /** TODO: LIST
@@ -93,6 +93,18 @@ export function LoginForm(): JSX.Element {
                   0,
               ),
             );
+        } else {
+          const cart = await createBasket(
+            {
+              currency: 'EUR',
+              country: 'GB',
+              customerEmail: response?.body.customer.email,
+            },
+            body.email,
+            body.password,
+          );
+          localStorage.setItem(SHOP.client_cart_id, cart.body.id);
+          dispatch(setTotalItems(0));
         }
         dispatch(login(response.body.customer.id));
         await clearBasket();

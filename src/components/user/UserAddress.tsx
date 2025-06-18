@@ -31,7 +31,7 @@ import { Input } from './Input';
 import { SHOP } from '@/config/localStorageConfig';
 import type { CustomerUpdateAction } from '@commercetools/platform-sdk';
 import { getCustomer, updateCustomer } from '@/services/customersController';
-import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import { openDialogWithMessage } from '@/store/slices/dialogSlice';
 import Add from '@/assets/img/add';
 
 const UPDATE_MESSAGE = 'Your address was updated successfully!';
@@ -279,11 +279,6 @@ export function UserAddress() {
     );
   }
 
-  function showMessage(value: string) {
-    dispatch(setDialogText(value));
-    dispatch(toggleDialog(true));
-  }
-
   async function sendForm(i: number) {
     const id = localStorage.getItem(SHOP.client_id);
     const actions: CustomerUpdateAction[] = [];
@@ -386,7 +381,7 @@ export function UserAddress() {
         try {
           const response = await updateCustomer(user.version, actions, id);
           dispatch(setVersion(response.body.version));
-          showMessage(UPDATE_MESSAGE);
+          dispatch(openDialogWithMessage(UPDATE_MESSAGE));
           const newUser = await getCustomer(id);
           if (newUser && !(newUser instanceof Error)) {
             const body = newUser.body;
@@ -395,7 +390,7 @@ export function UserAddress() {
             dispatch(setAddresses(body));
           }
         } catch (err) {
-          if (err instanceof Error) showMessage(err.message);
+          if (err instanceof Error) dispatch(openDialogWithMessage(err.message));
         }
       } else if (actions.length === 0) {
         offRedactMoodHandle(i);
@@ -418,7 +413,7 @@ export function UserAddress() {
         }
         const response = await updateCustomer(user.version, actions, id);
         dispatch(setVersion(response.body.version));
-        showMessage(DELETE_MESSAGE);
+        dispatch(openDialogWithMessage(DELETE_MESSAGE));
         const newUser = await getCustomer(id);
         if (newUser && !(newUser instanceof Error)) {
           const body = newUser.body;
@@ -426,7 +421,7 @@ export function UserAddress() {
           dispatch(setAddresses(body));
         }
       } catch (err) {
-        if (err instanceof Error) showMessage(err.message);
+        if (err instanceof Error) dispatch(openDialogWithMessage(err.message));
       }
     }
   }
@@ -560,7 +555,7 @@ export function UserAddress() {
           }
           const response = await updateCustomer(user.version + 1, actions, id);
           dispatch(setVersion(response.body.version));
-          showMessage(ADD_MESSAGE);
+          dispatch(openDialogWithMessage(ADD_MESSAGE));
           const newFinalUser = await getCustomer(id);
           if (newFinalUser && !(newFinalUser instanceof Error)) {
             const body = newFinalUser.body;
@@ -570,7 +565,7 @@ export function UserAddress() {
           }
         }
       } catch (err) {
-        if (err instanceof Error) showMessage(err.message);
+        if (err instanceof Error) dispatch(openDialogWithMessage(err.message));
       }
     }
   }

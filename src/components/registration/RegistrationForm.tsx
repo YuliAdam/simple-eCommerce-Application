@@ -4,7 +4,7 @@ import type { IAddress, ICustomerDraft, ILoginParams } from '@/interfaces/types'
 import { AddressType, InputName, InputTypes } from '@/interfaces/types';
 import { createCustomer, loginCustomer } from '@/services/customersController';
 import { login } from '@/store/slices/authSlice';
-import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import { openDialogWithMessage, setDialogText } from '@/store/slices/dialogSlice';
 import {
   resetState,
   setInvalid,
@@ -178,8 +178,7 @@ export function RegistrationForm(): JSX.Element {
       try {
         const response = await createCustomer(body);
         window.scrollTo(0, 0);
-        dispatch(setDialogText(REGISTER_MESSAGE));
-        dispatch(toggleDialog(true));
+        dispatch(openDialogWithMessage(REGISTER_MESSAGE));
         while (dialog.isOpen) {
           setTimeout(() => {}, 3000);
         }
@@ -198,8 +197,7 @@ export function RegistrationForm(): JSX.Element {
           if (err.message === 'There is already an existing customer with the provided email.') {
             showRegistrationErrorMessage(err.message);
           } else {
-            dispatch(setDialogText(err.message));
-            dispatch(toggleDialog(true));
+            dispatch(openDialogWithMessage(err.message));
           }
         }
       }
@@ -226,8 +224,7 @@ export function RegistrationForm(): JSX.Element {
       goToIndexPage(response);
     } catch (err) {
       if (err instanceof Error) {
-        dispatch(setDialogText(err.message));
-        dispatch(toggleDialog(true));
+        dispatch(openDialogWithMessage(err.message));
       }
     }
   }
