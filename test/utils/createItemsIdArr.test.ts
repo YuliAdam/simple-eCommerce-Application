@@ -79,5 +79,6 @@ const itemsIdArr = [
 describe('create itemsIdArr', () => {
   it('should return itemsIdArr', () => {
     expect(createItemsIdArr(cart)).toStrictEqual(itemsIdArr);
+    expect(createItemsIdArr(undefined)).toStrictEqual([]);
   });
 });

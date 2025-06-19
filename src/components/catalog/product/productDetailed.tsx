@@ -17,8 +17,10 @@ import ImageModal from './components/modal/ImageModal';
 import CustomSlider from './components/slider/productImageSlider';
 import {
   getAllVariantImages,
+  getAttributeValue,
   getAttributeValues,
   getLowestPrice,
+  getVariantIdByAttributes,
   type Thumbnail,
 } from './getProductData';
 import styles from './productCard.module.scss';
@@ -137,19 +139,16 @@ function ProductDetailed({ product }: { product: Product }) {
   }
 
   function setVariantId(newSize: string, newColor: string) {
-    let id = product.masterData.current.variants.find(
-      variant =>
-        newSize === variant.attributes?.find(attr => attr.name === VARIANTS.size)?.value.key &&
-        newColor === variant.attributes?.find(attr => attr.name === VARIANTS.color)?.value.key,
-    )?.id;
-    const isMaster =
-      product.masterData.current.masterVariant.attributes?.find(attr => attr.name === VARIANTS.size)
-        ?.value.key === newSize &&
-      product.masterData.current.masterVariant.attributes?.find(
-        attr => attr.name === VARIANTS.color,
-      )?.value.key === newColor;
-    if (isMaster) {
-      id = product.masterData.current.masterVariant.id;
+    let id = getVariantIdByAttributes(product.masterData.current.variants, {
+      size: newSize,
+      color: newColor,
+    });
+    if (!id) {
+      id =
+        getAttributeValue(product.masterData.current.masterVariant, VARIANTS.size) === newSize &&
+        getAttributeValue(product.masterData.current.masterVariant, VARIANTS.color) === newColor
+          ? product.masterData.current.masterVariant.id
+          : undefined;
     }
     setVariantIdState(id);
   }

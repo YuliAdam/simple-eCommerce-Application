@@ -21,7 +21,7 @@ import { openDialogWithMessage } from '@/store/slices/dialogSlice';
 import createItemsIdArr from '@/utils/createItemsIdArr';
 import formatPrice from '@/utils/formatPrice';
 
-interface I_Attributes {
+export interface I_Attributes {
   name: string;
   value: {
     key: string;

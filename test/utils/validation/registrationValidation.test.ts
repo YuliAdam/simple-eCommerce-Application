@@ -51,6 +51,22 @@ describe('validation', () => {
         '2025/04/22',
       ),
     ).toBeFalsy();
+     expect(
+      userDataIsValid(
+        validUserData.login,
+        validUserData.firstName,
+        validUserData.lastName,
+        '2012/06/19',
+      ),
+    ).toBeTruthy();
+     expect(
+      userDataIsValid(
+        validUserData.login,
+        validUserData.firstName,
+        validUserData.lastName,
+        '1000/04/22',
+      ),
+    ).toBeFalsy();
     expect(passwordIsValid(validPassword)).toBeTruthy();
     expect(passwordIsValid('111111aa')).toBeFalsy();
     expect(passwordIsValid('11111Aa')).toBeFalsy();

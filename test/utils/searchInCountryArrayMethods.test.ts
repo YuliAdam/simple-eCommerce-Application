@@ -12,5 +12,10 @@ describe('search in countries json', () => {
     expect(getCountryByCode('DE')).toBe('Germany');
     expect(getCountryByPostalCode('16477')).toBe('Germany');
     expect(getPostalCodeByCountry('Germany')).toBe('16477');
+
+    expect(getCodeByCountry('G')).toBe('');
+    expect(getCountryByCode('D')).toBe('');
+    expect(getCountryByPostalCode('')).toBe('');
+    expect(getPostalCodeByCountry('lk')).toBe('');
   });
 });

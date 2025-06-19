@@ -1,4 +1,6 @@
 import type { ProductVariant } from '@commercetools/platform-sdk';
+import type { I_Attributes } from './productCard';
+import { VARIANTS } from '@/interfaces/types';
 
 export type Thumbnail = {
   url: string;
@@ -12,6 +14,24 @@ export function getAttributeValues(variants: ProductVariant[], name: string): st
     .filter((key): key is string => key !== undefined);
   return [...new Set(values)];
 }
+
+export function getAttributeValue(variant: ProductVariant, name: string) {
+  if (variant) {
+    return variant.attributes?.find((attr: I_Attributes) => attr.name === name)?.value.key;
+  }
+}
+
+export function getVariantIdByAttributes(
+  variants: ProductVariant[],
+  attributes: { size: string; color: string },
+) {
+  return variants.find(
+    variant =>
+      attributes.size === getAttributeValue(variant, VARIANTS.size) &&
+      attributes.color === getAttributeValue(variant, VARIANTS.color),
+  )?.id;
+}
+
 export function getAllVariantImages(variants: ProductVariant[]): Thumbnail[] {
   if (!variants?.length) return [];
   return variants.flatMap(variant =>
