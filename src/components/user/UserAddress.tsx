@@ -26,7 +26,7 @@ import type { ChangeEvent } from 'react';
 import { addressIsValid, PATTERNS } from '@/utils/validation/registrationValidation';
 import { Datalist } from '../registration/Datalist';
 import { getCodeByCountry } from '@/utils/searchInCountryArrayMethods';
-import { Checkbox } from '../registration/CheckboxInput';
+import { Checkbox } from '../registration/CheckBoxInput';
 import { Input } from './Input';
 import { SHOP } from '@/config/localStorageConfig';
 import type { CustomerUpdateAction } from '@commercetools/platform-sdk';
