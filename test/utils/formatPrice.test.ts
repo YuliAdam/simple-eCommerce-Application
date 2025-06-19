@@ -1,5 +1,5 @@
 import { expect, it, describe } from 'vitest';
-import formatPrice from '../../src/utils/formatPrice';
+import formatPrice from '@utils/formatPrice';
 
 describe('formatPrice', () => {
   it('should return format price', () => {

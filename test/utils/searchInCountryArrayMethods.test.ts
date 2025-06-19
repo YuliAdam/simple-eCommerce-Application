@@ -4,7 +4,7 @@ import {
   getCountryByCode,
   getCountryByPostalCode,
   getPostalCodeByCountry,
-} from '../../src/utils/searchInCountryArrayMethods';
+} from '@utils/searchInCountryArrayMethods';
 
 describe('search in countries json', () => {
   it('should return code by country', () => {

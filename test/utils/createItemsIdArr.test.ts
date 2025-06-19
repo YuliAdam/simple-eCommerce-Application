@@ -1,5 +1,5 @@
 import { expect, it, describe } from 'vitest';
-import createItemsIdArr from '../../src/utils/createItemsIdArr';
+import createItemsIdArr from '@utils/createItemsIdArr';
 import { Cart, ClientResponse } from '@commercetools/platform-sdk';
 
 const cart: ClientResponse<Cart> = {

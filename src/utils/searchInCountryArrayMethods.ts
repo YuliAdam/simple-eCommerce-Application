@@ -1,4 +1,4 @@
-import countries from '../assets/countriesList/countries.json';
+import countries from '@assets/countriesList/countries.json';
 
 export function getCodeByCountry(name: string): string {
   const result = countries.find(item => item.name === name);

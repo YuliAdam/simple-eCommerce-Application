@@ -3,7 +3,7 @@ import {
   userDataIsValid,
   passwordIsValid,
   addressIsValid,
-} from '../../../src/utils/validation/registrationValidation';
+} from '@utils/validation/registrationValidation';
 
 const validUserData = {
   login: '1@1.1',
