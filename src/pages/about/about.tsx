@@ -4,6 +4,7 @@ const teamMembers = [
   {
     name: 'Konstantin Tarasov',
     role: 'Team Lead',
+    bio: 'Loves board games, taking pictures.',
     description: 'Konstantin leads the team with a clear vision and strong organizational skills.',
     image: '/madsok.jpg',
     github: 'madsok',
@@ -11,6 +12,7 @@ const teamMembers = [
   {
     name: 'Yuliya Adamovich',
     role: 'Frontend Developer',
+    bio: 'Loves Italy and engineering.',
     description:
       'Yuliya builds and maintains the core functionality of our platform — handling everything from product inventory systems to API interactions.',
     image: '/yuliadam.webp',
@@ -19,6 +21,7 @@ const teamMembers = [
   {
     name: 'Nikolai Tabunov',
     role: 'UI/UX Designer & Frontend Developer',
+    bio: 'Loves to talk a lot and tinker with UI design.',
     description:
       'Nikolai is responsible for crafting the look, feel, and usability of our website.',
     image: '/wingedseraph.JPG',
@@ -66,6 +69,7 @@ function About() {
                 </div>
                 <p className={styles.memberRole}>{member.role}</p>
                 <p className={styles.memberDescription}>{member.description}</p>
+                <p className={styles.memberDescription}>{member.bio}</p>
               </div>
             ))}
           </div>
@@ -88,7 +92,9 @@ function About() {
             treatise on the theory of ethics, very popular during the Renaissance. The first line of
             Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
           </p>
-          <img src="/RSSchoolLogo.png" alt="our school logo" className={styles.schoolImage} />
+          <a target="_blank" rel="noopener noreferrer" href={`https://rs.school/`}>
+            <img src="/RSSchoolLogo.png" alt="our school logo" className={styles.schoolImage} />
+          </a>
         </div>
       </section>
     </div>
