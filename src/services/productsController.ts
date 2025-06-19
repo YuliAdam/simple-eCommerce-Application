@@ -46,7 +46,7 @@ export const getSortedProducts = async ({
 } = {}) => {
   const filterByCategoryOption = `categories.id:"${categoryId}"`;
   const sortByPriceOptions = `price ${sortByPrice}`;
-  const sortByNameOptions = `name.TEXT_LANGUAGES.enGB ${sortByName}`;
+  const sortByNameOptions = `name.en-GB ${sortByName}`;
   const filterByMinPrice = Number.isFinite(minPrice) ? minPrice : 0;
   const filterByMaxPrice = Number.isFinite(maxPrice) ? maxPrice : 30;
 
@@ -111,7 +111,7 @@ export const getProductsBySearch = async (text: string) => {
       .suggest()
       .get({
         queryArgs: {
-          'searchKeywords.TEXT_LANGUAGES.enGB': text,
+          'searchKeywords.en-GB': text,
           fuzzy: true,
         },
       })
