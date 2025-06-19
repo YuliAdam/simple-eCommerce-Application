@@ -13,8 +13,6 @@ enum SortMode {
   DESC = 'desc',
 }
 
-//className={`${styles['checkbox-label']} ${checkedFilters['brand:gucci'] ? styles['checkbox-label-active'] : ''}`}
-
 function Sort({ handleSortPriceButton, sortPrice, handleSortNameButton, sortName }: I_SortProps) {
   return (
     <div className={styles.sort}>
