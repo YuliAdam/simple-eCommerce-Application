@@ -15,7 +15,7 @@ import {
 import type { ChangeEvent } from 'react';
 import { useCallback } from 'react';
 import { PATTERNS } from '@/utils/validation/registrationValidation';
-import { Checkbox } from './CheckboxInput';
+import { Checkbox } from './CheckBoxInput';
 
 const addressLabelMap: Record<AddressType, string> = {
   [AddressType.billing]: 'Billing',

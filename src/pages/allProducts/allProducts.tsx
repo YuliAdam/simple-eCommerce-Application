@@ -236,6 +236,7 @@ function AllProducts() {
       ...state,
       [key]: e.target.checked,
     }));
+
     handleCheckboxFilter(e);
   }
 
@@ -317,7 +318,7 @@ function AllProducts() {
               <h2 className={styles.header}>Filters</h2>
               <h3 className={styles['sub-header']}>Price range</h3>
               <ul>
-                <li>
+                <li className={styles['price-filter-item']}>
                   <label className={styles.label} htmlFor="min-price">
                     Minimum Price
                   </label>
@@ -331,7 +332,7 @@ function AllProducts() {
                     placeholder="Min: 0"
                   ></input>
                 </li>
-                <li>
+                <li className={styles['price-filter-item']}>
                   <label className={styles.label} htmlFor="max-price">
                     Maximum Price
                   </label>
@@ -350,8 +351,11 @@ function AllProducts() {
             <div className={styles['attributes-filter']}>
               <h3 className={styles['sub-header']}>Brand</h3>
               <ul>
-                <li>
-                  <label className={styles.label} htmlFor="gucci">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['brand:gucci'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="gucci"
+                  >
                     Gucci
                   </label>
                   <input
@@ -361,10 +365,14 @@ function AllProducts() {
                     id="gucci"
                     name="brand"
                     value="gucci"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="prada">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['brand:prada'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="prada"
+                  >
                     Prada
                   </label>
                   <input
@@ -374,10 +382,14 @@ function AllProducts() {
                     id="prada"
                     name="brand"
                     value="prada"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="carden">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['brand:carden'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="carden"
+                  >
                     Carden
                   </label>
                   <input
@@ -387,13 +399,17 @@ function AllProducts() {
                     id="carden"
                     name="brand"
                     value="carden"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
               </ul>
               <h3 className={styles['sub-header']}>Color</h3>
               <ul>
-                <li>
-                  <label className={styles.label} htmlFor="black">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['color:black'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="black"
+                  >
                     Black
                   </label>
                   <input
@@ -403,10 +419,14 @@ function AllProducts() {
                     id="black"
                     name="color"
                     value="black"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="white">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['color:white'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="white"
+                  >
                     White
                   </label>
                   <input
@@ -416,13 +436,17 @@ function AllProducts() {
                     id="white"
                     name="color"
                     value="white"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
               </ul>
               <h3 className={styles['sub-header']}>Size</h3>
               <ul>
-                <li>
-                  <label className={styles.label} htmlFor="s">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:s'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="s"
+                  >
                     Small
                   </label>
                   <input
@@ -432,10 +456,14 @@ function AllProducts() {
                     id="s"
                     name="size"
                     value="s"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="m">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:m'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="m"
+                  >
                     Medium
                   </label>
                   <input
@@ -445,10 +473,14 @@ function AllProducts() {
                     id="m"
                     name="size"
                     value="m"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="l">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:l'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="l"
+                  >
                     Large
                   </label>
                   <input
@@ -458,10 +490,14 @@ function AllProducts() {
                     id="l"
                     name="size"
                     value="l"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="xl">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:xl'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="xl"
+                  >
                     Extra large
                   </label>
                   <input
@@ -471,10 +507,14 @@ function AllProducts() {
                     id="xl"
                     name="size"
                     value="xl"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="xxl">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:xxl'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="xxl"
+                  >
                     Extra extra large
                   </label>
                   <input
@@ -484,10 +524,14 @@ function AllProducts() {
                     id="xxl"
                     name="size"
                     value="xxl"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="38">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:38'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="38"
+                  >
                     38
                   </label>
                   <input
@@ -497,10 +541,14 @@ function AllProducts() {
                     id="38"
                     name="size"
                     value="38"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="39">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:39'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="39"
+                  >
                     39
                   </label>
                   <input
@@ -510,10 +558,14 @@ function AllProducts() {
                     id="39"
                     name="size"
                     value="39"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="40">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:40'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="40"
+                  >
                     40
                   </label>
                   <input
@@ -523,6 +575,7 @@ function AllProducts() {
                     id="40"
                     name="size"
                     value="40"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
               </ul>

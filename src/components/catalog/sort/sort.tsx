@@ -30,7 +30,7 @@ function Sort({ handleSortPriceButton, sortPrice, handleSortNameButton, sortName
                 id="sort-price-max"
                 name="price"
                 value={SortMode.DESC}
-                labelClassName={styles['sort-list-button-label']}
+                labelClassName={`${styles['sort-list-button-label']} ${sortPrice === SortMode.DESC ? styles['sort-list-button-label-active'] : ''}`}
                 text="Price: High to Low"
               />
               <RadioSortInput
@@ -41,7 +41,7 @@ function Sort({ handleSortPriceButton, sortPrice, handleSortNameButton, sortName
                 id="sort-price-min"
                 name="price"
                 value={SortMode.ASC}
-                labelClassName={styles['sort-list-button-label']}
+                labelClassName={`${styles['sort-list-button-label']} ${sortPrice === SortMode.ASC ? styles['sort-list-button-label-active'] : ''}`}
                 text="Price: Low to High"
               />
             </li>
@@ -59,7 +59,7 @@ function Sort({ handleSortPriceButton, sortPrice, handleSortNameButton, sortName
                 id="sort-name-az"
                 name="name"
                 value={SortMode.ASC}
-                labelClassName={styles['sort-list-button-label']}
+                labelClassName={`${styles['sort-list-button-label']} ${sortName === SortMode.ASC ? styles['sort-list-button-label-active'] : ''}`}
                 text="A-Z"
               />
               <RadioSortInput
@@ -70,7 +70,7 @@ function Sort({ handleSortPriceButton, sortPrice, handleSortNameButton, sortName
                 id="sort-name-za"
                 name="name"
                 value={SortMode.DESC}
-                labelClassName={styles['sort-list-button-label']}
+                labelClassName={`${styles['sort-list-button-label']} ${sortName === SortMode.DESC ? styles['sort-list-button-label-active'] : ''}`}
                 text="Z-A"
               />
             </li>
