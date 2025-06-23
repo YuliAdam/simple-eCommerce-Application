@@ -5,22 +5,14 @@ import type I_ProductCardData from '@/interfaces/catalog/productCard';
 import ProductDetails from '@/components/catalog/product/components/productDetails/productDetails';
 import { AddToCart } from '@/assets/img/catalog/add-to-cart';
 import { useEffect, useState } from 'react';
-import { getBasket, updateBasket } from '@/services/basketController';
-import { SHOP } from '@/config/localStorageConfig';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { RootState } from '@/store/store';
-import { IBasketUpdateActions, VARIANTS } from '@/interfaces/types';
 import { MONEY_SYMBOLS } from '@/interfaces/types';
-import {
-  addItemsId,
-  changeTotalItems,
-  setItemsId,
-  setTotalItems,
-} from '@/store/slices/basketSlice';
-import { openDialogWithMessage } from '@/store/slices/dialogSlice';
-import createItemsIdArr from '@/utils/createItemsIdArr';
 import formatPrice from '@/utils/formatPrice';
 import catalogPlaceholderImg from '@/assets/img/catalog-placeholder.png';
+import { VARIANTS } from '@/interfaces/types';
+import handleProductInCart from '@/components/catalog/product/handleCart';
+import { useDispatch } from 'react-redux';
 
 interface I_Attributes {
   name: string;
@@ -41,7 +33,6 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
     variants,
   } = product;
 
-  const dispatch = useDispatch();
   const basket = useSelector((state: RootState) => state.basket);
 
   const priceValue = productPricesArray?.[0]?.value;
@@ -70,12 +61,7 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
     return set;
   }
 
-  async function checkCart() {
-    const id =
-      localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
-    const cart = await getBasket(id);
-    if (cart) return cart.body;
-  }
+  const dispatch = useDispatch();
 
   async function handleAddToCartButton(event: React.MouseEvent) {
     const target = event.target;
@@ -84,57 +70,9 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
       const button = target.closest('button');
 
       if (button) {
-        try {
-          const cart = await checkCart();
-          if (cart) {
-            const cartId = cart.id;
-            const cartVersion = cart.version;
-            let productInCart = cart.lineItems.filter(item => item.productId === productId);
-            if (productInCart.length) {
-              const response = await updateBasket(
-                cartVersion,
-                productInCart.map(item => {
-                  return {
-                    action: IBasketUpdateActions.changeLineItemQuantity,
-                    lineItemId: item.id,
-                    quantity: 0,
-                  };
-                }),
+        setAddToCartButton(state => !state);
 
-                cartId,
-              );
-              if (response) {
-                dispatch(setTotalItems(response.body.totalLineItemQuantity || 0));
-                dispatch(setItemsId(createItemsIdArr(response)));
-                setAddToCartButton(false);
-              }
-              console.log('Product has removed from cart', response);
-            } else {
-              const response = await updateBasket(
-                cartVersion,
-                [
-                  {
-                    action: IBasketUpdateActions.addLineItem,
-                    productId: productId,
-                    variantId: 1,
-                    quantity: 1,
-                  },
-                ],
-                cartId,
-              );
-
-              dispatch(changeTotalItems(1));
-              dispatch(addItemsId({ id: productId, variantId: 1 }));
-              setAddToCartButton(true);
-
-              console.log('Product has added in cart', response);
-            }
-          }
-        } catch (err) {
-          if (err instanceof Error) {
-            dispatch(openDialogWithMessage(err.message));
-          }
-        }
+        await handleProductInCart(productId, dispatch);
       }
     }
   }
