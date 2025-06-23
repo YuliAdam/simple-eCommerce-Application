@@ -33,35 +33,33 @@ export default function ProductInBasket({ item }: { item: LineItem }) {
   }
 
   function getAttributes() {
-    return item.variant.attributes ? (
-      <>
-        <p className={styles.item_brand}>
-          {getAttributeValue(AttributesName.brand, item.variant.attributes).value.label}
-        </p>
-        <p className={styles.item_size}>
-          {`Size: ${getAttributeValue(AttributesName.size, item.variant.attributes).value.key.toUpperCase()}`}
-        </p>
-        <div className={styles.item_color}>
-          <p>Color</p>
-          <Dot
-            stroke={getAttributeValue(AttributesName.color, item.variant.attributes).value.key}
-          />
-        </div>
-        <div>
-          <span className={styles.item_size}>
-            {`Price: ${MONEY_SYMBOLS.euro} ${!item.price.discounted ? formatPrice(item.price.value.centAmount) : formatPrice(item.price.discounted.value.centAmount)} `}
-          </span>
-          {item.price.discounted ? (
-            <span className={styles.item_price_old}>
-              {formatPrice(item.price.value.centAmount)}
+    return (
+      item.variant.attributes && (
+        <>
+          <p className={styles.item_brand}>
+            {getAttributeValue(AttributesName.brand, item.variant.attributes).value.label}
+          </p>
+          <p className={styles.item_size}>
+            {`Size: ${getAttributeValue(AttributesName.size, item.variant.attributes).value.key.toUpperCase()}`}
+          </p>
+          <div className={styles.item_color}>
+            <p>Color</p>
+            <Dot
+              stroke={getAttributeValue(AttributesName.color, item.variant.attributes).value.key}
+            />
+          </div>
+          <div>
+            <span className={styles.item_size}>
+              {`Price: ${MONEY_SYMBOLS.euro} ${!item.price.discounted ? formatPrice(item.price.value.centAmount) : formatPrice(item.price.discounted.value.centAmount)} `}
             </span>
-          ) : (
-            ''
-          )}
-        </div>
-      </>
-    ) : (
-      ''
+            {item.price.discounted && (
+              <span className={styles.item_price_old}>
+                {formatPrice(item.price.value.centAmount)}
+              </span>
+            )}
+          </div>
+        </>
+      )
     );
   }
 
