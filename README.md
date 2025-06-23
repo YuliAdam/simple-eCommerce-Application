@@ -11,13 +11,13 @@ The main goal is to improve front-end development skills gained during the RSS c
 
 Members:
 
-- [Konstantin Tarasov] (https://github.com/madsok) — Team Lead
-- [Yuliya Adamovich] (https://github.com/yuliadam)
-- [Nikolai Tabunov] (https://github.com/wingedseraph)
+- [Konstantin Tarasov](https://github.com/madsok) — Team Lead
+- [Yuliya Adamovich](https://github.com/yuliadam)
+- [Nikolai Tabunov](https://github.com/wingedseraph)
 
 Mentors:
-- [Nadezhda Tkachuk] (https://github.com/nadyavalin)
-- [Yuliya Karimova] (https://github.com/yuliya-karimova)
+- [Nadezhda Tkachuk](https://github.com/nadyavalin)
+- [Yuliya Karimova](https://github.com/yuliya-karimova)
 
 # 🛠️ Stack
 
@@ -58,11 +58,15 @@ Create project build:
 
 Run ESLint:
 
-``npm run lint``
+``npm run lint`` - lint .ts, .tsx files in 'src' folder
 
 Run Prettier:
 
-``npm run format``
+``npm run format`` - format .ts, .tsx files in 'src' folder
+
+``npm run format:all`` - format all files in project
+
+``npm run ci:format`` - check all files in project
 
 Initialize Husky:
 
@@ -70,4 +74,8 @@ Initialize Husky:
 
 Run Vitest tests:
 
-``npm run test``
+``npm run pre-push-test`` - perform a single run without watch mode
+
+``npm run test`` - test with coverage
+
+``npm run ui`` - start the tests with UI

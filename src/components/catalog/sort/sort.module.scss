@@ -1,6 +1,7 @@
 $gray-background: #f8f8f8;
 $body-text-color: #4b5563;
 $primary-color: #111827;
+$gray-color: #94A3B8;
 
 .header {
   margin: 0;
@@ -20,8 +21,46 @@ $primary-color: #111827;
   color: $primary-color;
 }
 
+.sort-list-button-wrapper {
+  margin-bottom: 8px;
+}
+
+.sort-list-button {
+  display: none;
+}
+
 .sort-list-button-label {
+  position: relative;
+  padding-left: 32px;
   font-size: 1.4rem;
   font-weight: 400;
   color: $primary-color;
+  &::before {
+    position: absolute;
+    left: 0;
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    border: 1px solid $gray-color;
+    border-radius: 25px;
+  }
+  &::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: '';
+  display: none;
+  width: 10px;
+  height: 10px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: $body-text-color;
+  border-radius: 25px;
+  transform: translateX(50%) translateY(50%);
+  }
+    &-active::after {
+    display: block;
+  }
 }
