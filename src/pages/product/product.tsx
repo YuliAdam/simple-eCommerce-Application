@@ -64,26 +64,21 @@ function Product() {
     try {
       const basket = await getBasket(id);
       if (basket) {
-        const isInBasket = basket.body.lineItems.find(
-          lineItem => lineItem.productId === productId && lineItem.variant.id === variantId,
+        let lineItem = basket.body.lineItems.find(
+          item => item.productId === productId && item.variant.id === variantId,
         );
-        if (isInBasket) {
-          let lineItem = basket.body.lineItems.find(
-            item => item.productId === productId && item.variant.id === variantId,
-          );
-          if (lineItem) {
-            const actions: CartUpdateAction[] = [
-              {
-                action: IBasketUpdateActions.changeLineItemQuantity,
-                lineItemId: lineItem.id,
-                quantity: 0,
-              },
-            ];
-            const response = await updateBasket(basket.body.version, actions, id);
-            if (response) {
-              dispatch(setTotalItems(response.body.totalLineItemQuantity || 0));
-              dispatch(setItemsId(createItemsIdArr(response)));
-            }
+        if (lineItem) {
+          const actions: CartUpdateAction[] = [
+            {
+              action: IBasketUpdateActions.changeLineItemQuantity,
+              lineItemId: lineItem.id,
+              quantity: 0,
+            },
+          ];
+          const response = await updateBasket(basket.body.version, actions, id);
+          if (response) {
+            dispatch(setTotalItems(response.body.totalLineItemQuantity || 0));
+            dispatch(setItemsId(createItemsIdArr(response)));
           }
         } else {
           dispatch(changeTotalItems(1));
