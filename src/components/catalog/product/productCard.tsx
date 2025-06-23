@@ -20,6 +20,7 @@ import {
 import { openDialogWithMessage } from '@/store/slices/dialogSlice';
 import createItemsIdArr from '@/utils/createItemsIdArr';
 import formatPrice from '@/utils/formatPrice';
+import catalogPlaceholderImg from '@/assets/img/catalog-placeholder.png';
 
 interface I_Attributes {
   name: string;
@@ -151,8 +152,8 @@ function ProductCard({ product }: { product: I_ProductCardData }) {
     <li className={styles.product}>
       <div className={styles['img-wrapper']}>
         <img
-          src={imagesArray ? imagesArray[0].url : ''}
-          alt={imagesArray ? imagesArray[0].label : ''}
+          src={imagesArray ? imagesArray[0].url : catalogPlaceholderImg}
+          alt={imagesArray ? imagesArray[0].label : 'Image not found'}
           className={styles['product-img']}
         />
       </div>
