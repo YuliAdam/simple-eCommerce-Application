@@ -13,8 +13,9 @@
     "preview": "vite preview",
     "prepare": "husky install",
     "pre-push-test": "vitest run",
-    "test": "vitest --coverage",
-    "ui": "vitest --ui"
+    "test": "vitest --run",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@commercetools/platform-sdk": "^8.9.0",
