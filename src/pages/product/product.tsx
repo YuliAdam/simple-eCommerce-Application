@@ -1,6 +1,6 @@
 import ProductDetailed from '@/components/catalog/product/productDetailed';
 import Spinner from '@/components/catalog/spinner/spinner';
-import { getProducts } from '@/services/productsController';
+import { getProductById } from '@/services/productsController';
 import type { CartUpdateAction, Product } from '@commercetools/platform-sdk';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -29,20 +29,15 @@ function Product() {
     async function fetchProducts() {
       try {
         setIsLoading(true);
-        const response = await getProducts();
-
-        if (response && response.statusCode === 200) {
-          const productsData = response.body.results;
-          const productId = params.id;
-          const foundProduct = productsData.find(product => product.id === productId);
-
-          if (foundProduct) {
-            setCurrentProduct(foundProduct);
-            setTitle(foundProduct?.masterData?.current?.name?.['en-GB'] ?? '');
-          }
+        const foundProduct = params.id && (await getProductById(params.id));
+        if (foundProduct) {
+          setCurrentProduct(foundProduct.body);
+          setTitle(foundProduct.body.masterData.current.name?.['en-GB'] ?? '');
         }
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        if (err instanceof Error) {
+          dispatch(openDialogWithMessage(err.message));
+        }
       } finally {
         setIsLoading(false);
       }
