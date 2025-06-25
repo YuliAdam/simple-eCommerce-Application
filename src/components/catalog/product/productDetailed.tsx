@@ -1,17 +1,8 @@
 import { Dot } from '@/assets/img/dot';
-import { SHOP } from '@/config/localStorageConfig';
-import { IBasketUpdateActions, VARIANTS } from '@/interfaces/types';
-import { getBasket, updateBasket } from '@/services/basketController';
-import {
-  addItemsId,
-  changeTotalItems,
-  setItemsId,
-  setTotalItems,
-} from '@/store/slices/basketSlice';
-import { openDialogWithMessage } from '@/store/slices/dialogSlice';
-import type { CartUpdateAction, Product } from '@commercetools/platform-sdk';
+import { VARIANTS } from '@/interfaces/types';
+import type { Product } from '@commercetools/platform-sdk';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Spinner from '../spinner/spinner';
 import ImageModal from './components/modal/ImageModal';
 import CustomSlider from './components/slider/productImageSlider';
@@ -23,24 +14,28 @@ import {
 } from './getProductData';
 import styles from './productCard.module.scss';
 import type { RootState } from '@/store/store';
-import createItemsIdArr from '@/utils/createItemsIdArr';
 import formatPrice from '@/utils/formatPrice';
 
-function ProductDetailed({ product }: { product: Product }) {
+function ProductDetailed({
+  product,
+  toggleInBasketEvent,
+}: {
+  product: Product;
+  toggleInBasketEvent: (variantId: number | undefined) => {};
+}) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isInBasket, setIsInBasket] = useState<boolean>(false);
   const [variantId, setVariantIdState] = useState<number | undefined>(undefined);
   const [color, setColorState] = useState('');
   const [size, setSizeState] = useState('');
   const [modalImageIndex, setModalImageIndex] = useState<number>(0);
-  const dispatch = useDispatch();
   const basket = useSelector((state: RootState) => state.basket);
 
   useEffect(() => {
     setIsInBasket(
       !!basket.itemsId.find(item => item.id === product.id && item.variantId === variantId),
     );
-  }, [variantId]);
+  }, [variantId, basket.itemsId]);
 
   const productName = product.masterData.current.name,
     productDescription = product.masterData.current.description,
@@ -78,54 +73,6 @@ function ProductDetailed({ product }: { product: Product }) {
     );
   };
 
-  async function toggleProductInBasket() {
-    const id =
-      localStorage.getItem(SHOP.client_cart_id) || localStorage.getItem(SHOP.anonymous_cart_id);
-    try {
-      const basket = await getBasket(id);
-      if (basket) {
-        if (isInBasket) {
-          let lineItem = basket.body.lineItems.find(
-            item => item.productId === product.id && item.variant.id === variantId,
-          );
-          if (lineItem) {
-            const actions: CartUpdateAction[] = [
-              {
-                action: IBasketUpdateActions.changeLineItemQuantity,
-                lineItemId: lineItem.id,
-                quantity: 0,
-              },
-            ];
-            const response = await updateBasket(basket.body.version, actions, id);
-            if (response) {
-              dispatch(setTotalItems(response.body.totalLineItemQuantity || 0));
-              dispatch(setItemsId(createItemsIdArr(response)));
-            }
-            setIsInBasket(false);
-          }
-        } else {
-          dispatch(changeTotalItems(+1));
-          const actions: CartUpdateAction[] = [
-            {
-              action: IBasketUpdateActions.addLineItem,
-              productId: product.id,
-              variantId: variantId,
-            },
-          ];
-          await updateBasket(basket.body.version, actions, id);
-          setIsInBasket(true);
-          if (variantId) {
-            dispatch(addItemsId({ id: product.id, variantId: variantId }));
-          }
-        }
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        dispatch(openDialogWithMessage(err.message));
-      }
-    }
-  }
-
   function setSize(newSize: string) {
     setSizeState(newSize);
     setVariantId(newSize, color);
@@ -158,7 +105,7 @@ function ProductDetailed({ product }: { product: Product }) {
     if (!size || !color) {
       return 'Choose variant';
     }
-    return !variantId ? 'Not available' : 'Add to cart';
+    return !variantId ? 'Not available' : isInBasket ? 'Remove from cart' : 'Add to cart';
   }
 
   return (
@@ -270,9 +217,9 @@ function ProductDetailed({ product }: { product: Product }) {
         <button
           className={`${styles.product_add} ${isInBasket ? styles.animation : ''}`}
           disabled={!variantId}
-          onClick={toggleProductInBasket}
+          onClick={() => toggleInBasketEvent(variantId)}
         >
-          {isInBasket ? 'Remove from cart' : getButtonText()}
+          {getButtonText()}
         </button>
         <p style={{ fontSize: '1.9rem' }} className={styles['product-description']}>
           {productDescription && productName ? productDescription['en-GB'] : ''}
