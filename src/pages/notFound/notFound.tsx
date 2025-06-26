@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import styles from './notFound.module.scss';
 import { Path } from '@/config/routesConfig';
-export function NotFound({ error }: { error: string }) {
+export function NotFound({ error }: { error: string }): React.ReactNode {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Page not found</h1>

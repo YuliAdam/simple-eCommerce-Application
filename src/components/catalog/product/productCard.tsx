@@ -14,7 +14,7 @@ import { VARIANTS } from '@/interfaces/types';
 import handleProductInCart from '@/components/catalog/product/handleCart';
 import { useDispatch } from 'react-redux';
 
-interface I_Attributes {
+export interface I_Attributes {
   name: string;
   value: {
     key: string;
