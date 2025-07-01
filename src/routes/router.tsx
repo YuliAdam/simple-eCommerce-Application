@@ -8,10 +8,12 @@ import User from '@pages/user/user';
 
 const LoginForm = lazy(() => import('@pages/login/login'));
 const RegisterForm = lazy(() => import('@pages/registration/registration'));
+const PAGE_NOT_FOUND_ERROR = '404';
+
 export const router = createBrowserRouter([
   {
     element: <Layout />,
-    errorElement: <NotFound error={'404'} />,
+    errorElement: <NotFound error={PAGE_NOT_FOUND_ERROR} />,
     children: [
       {
         path: Path.empty,

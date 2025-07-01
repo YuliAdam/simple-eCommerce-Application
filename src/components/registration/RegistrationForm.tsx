@@ -1,10 +1,10 @@
 import { SHOP } from '@/config/localStorageConfig';
 import { Path } from '@/config/routesConfig';
-import type { IAddress, ICustomer, ILoginParams } from '@/interfaces/types';
+import type { IAddress, ICustomerDraft, ILoginParams } from '@/interfaces/types';
 import { AddressType, InputName, InputTypes } from '@/interfaces/types';
 import { createCustomer, loginCustomer } from '@/services/customersController';
 import { login } from '@/store/slices/authSlice';
-import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import { openDialogWithMessage, setDialogText } from '@/store/slices/dialogSlice';
 import {
   resetState,
   setInvalid,
@@ -22,11 +22,7 @@ import {
   PATTERNS,
   userDataIsValid,
 } from '@/utils/validation/registrationValidation';
-import type {
-  ClientResponse,
-  CustomerDraft,
-  CustomerSignInResult,
-} from '@commercetools/platform-sdk';
+import type { ClientResponse, CustomerSignInResult } from '@commercetools/platform-sdk';
 import styles from '@pages/registration/registration.module.scss';
 import type { ChangeEvent } from 'react';
 import { type FormEvent, type JSX } from 'react';
@@ -35,13 +31,14 @@ import { useNavigate } from 'react-router-dom';
 import { Datalist } from './Datalist';
 import RegistrationAdditionalAddress from './RegistrationAdditionalAddress';
 import { RegistrationInput } from './RegistrationInput';
+import { clearBasket, copyInBasket, createBasket } from '@/services/basketController';
 
 export function RegistrationForm(): JSX.Element {
   const registration = useSelector((state: RootState) => state.registration.values);
   const dialog = useSelector((state: RootState) => state.dialog.values);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const REGISTRATED_MESSAGE = 'Congratulations, your account has been successfully created!';
+  const REGISTER_MESSAGE = 'Congratulations, your account has been successfully created!';
   function onClickToggleAdditionalAddress(addressType: AddressType) {
     return () => dispatch(toggleAdditionalAddress(addressType));
   }
@@ -64,7 +61,7 @@ export function RegistrationForm(): JSX.Element {
   function addAdditionalAddressByTypeIfPresent(
     address: IAddress,
     type: AddressType,
-    customerDraft: CustomerDraft,
+    customerDraft: ICustomerDraft,
     isPresent: boolean,
   ) {
     if (isPresent && customerDraft.addresses) {
@@ -98,12 +95,13 @@ export function RegistrationForm(): JSX.Element {
       streetName: registration.shipping.street.value.trim(),
       postalCode: registration.shipping.postalCode.value,
     };
-    const customerDraft: ICustomer = {
+    const customerDraft: ICustomerDraft = {
       email: registration.login.value.toLowerCase().trim(),
       password: registration.password.value.trim(),
       firstName: registration.firstName.value.trim(),
       lastName: registration.lastName.value.trim(),
       dateOfBirth: registration.birthDay.value,
+      anonymousCart: { id: localStorage.getItem(SHOP.anonymous_cart_id) || '' },
       addresses: [
         {
           key: 'main',
@@ -177,22 +175,30 @@ export function RegistrationForm(): JSX.Element {
   async function submitForm() {
     if (isValidForm()) {
       const body = getData();
-      console.log(body);
-      const response = await createCustomer(body);
-      window.scrollTo(0, 0);
-      dispatch(setDialogText(REGISTRATED_MESSAGE));
-      dispatch(toggleDialog(true));
-      if (!(response instanceof Error)) {
+      try {
+        const response = await createCustomer(body);
+        window.scrollTo(0, 0);
+        dispatch(openDialogWithMessage(REGISTER_MESSAGE));
         while (dialog.isOpen) {
           setTimeout(() => {}, 3000);
         }
-        loginRequest(body.email, body.password);
-      } else {
-        if (response.message === 'There is already an existing customer with the provided email.') {
-          showRegistrationErrorMessage(response.message);
-        } else {
-          dispatch(setDialogText(response.message));
-          dispatch(toggleDialog(true));
+        await createBasket(
+          {
+            currency: 'EUR',
+            country: 'GB',
+            customerEmail: response?.body.customer.email,
+          },
+          body.email,
+          body.password,
+        );
+        await loginRequest(body.email, body.password);
+      } catch (err) {
+        if (err instanceof Error) {
+          if (err.message === 'There is already an existing customer with the provided email.') {
+            showRegistrationErrorMessage(err.message);
+          } else {
+            dispatch(openDialogWithMessage(err.message));
+          }
         }
       }
     }
@@ -204,17 +210,29 @@ export function RegistrationForm(): JSX.Element {
   }
 
   async function loginRequest(login: string, password: string) {
-    const body: ILoginParams = { email: login, password: password };
-    const response = await loginCustomer(body);
-    !(response instanceof Error) && response
-      ? goToIndexPage(response)
-      : response instanceof Error
-        ? console.log(response.message)
-        : console.log(response);
+    const body: ILoginParams = {
+      email: login,
+      password: password,
+      anonymousCartSignInMode: ' MergeWithExistingCustomerCart',
+    };
+    try {
+      const response = await loginCustomer(body);
+      if (response.body.cart) {
+        await copyInBasket(response.body.cart.version, response.body.cart.id);
+        await clearBasket();
+      }
+      goToIndexPage(response);
+    } catch (err) {
+      if (err instanceof Error) {
+        dispatch(openDialogWithMessage(err.message));
+      }
+    }
   }
 
   function goToIndexPage(response: ClientResponse<CustomerSignInResult>) {
     localStorage.setItem(SHOP.client_id, response.body.customer.id);
+    localStorage.setItem(SHOP.client_cart_id, response.body.cart?.id || '');
+    console.log(response.body.cart?.id);
     dispatch(login(response.body.customer.id));
     dispatch(resetState());
     navigate(Path.empty);

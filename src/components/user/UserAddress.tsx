@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/store';
 import styles from '@pages/user/user.module.scss';
 import { Pencil } from '@/assets/img/pencil';
-import { AddressType, InputName, InputTypes, IUpdateActions } from '@/interfaces/types';
+import { AddressType, InputName, InputTypes, ICustomerUpdateActions } from '@/interfaces/types';
 import Trash from '@/assets/img/trash';
 import {
   backOldAddressValue,
@@ -26,12 +26,12 @@ import type { ChangeEvent } from 'react';
 import { addressIsValid, PATTERNS } from '@/utils/validation/registrationValidation';
 import { Datalist } from '../registration/Datalist';
 import { getCodeByCountry } from '@/utils/searchInCountryArrayMethods';
-import { Checkbox } from '../registration/CheckboxInput';
+import { Checkbox } from '../registration/CheckBoxInput';
 import { Input } from './Input';
 import { SHOP } from '@/config/localStorageConfig';
 import type { CustomerUpdateAction } from '@commercetools/platform-sdk';
 import { getCustomer, updateCustomer } from '@/services/customersController';
-import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import { openDialogWithMessage } from '@/store/slices/dialogSlice';
 import Add from '@/assets/img/add';
 
 const UPDATE_MESSAGE = 'Your address was updated successfully!';
@@ -279,11 +279,6 @@ export function UserAddress() {
     );
   }
 
-  function showMessage(value: string) {
-    dispatch(setDialogText(value));
-    dispatch(toggleDialog(true));
-  }
-
   async function sendForm(i: number) {
     const id = localStorage.getItem(SHOP.client_id);
     const actions: CustomerUpdateAction[] = [];
@@ -296,7 +291,7 @@ export function UserAddress() {
         changedAddress.streetName.value !== changedAddress.streetName.newValue.trim()
       ) {
         actions.push({
-          action: IUpdateActions.changeAddress,
+          action: ICustomerUpdateActions.changeAddress,
           addressId: changedAddress.id,
           address: {
             id: changedAddress.id,
@@ -312,17 +307,17 @@ export function UserAddress() {
         user.shippingDefault.value !== changedAddress.id
       ) {
         actions.push({
-          action: IUpdateActions.setDefaultShippingAddress,
+          action: ICustomerUpdateActions.setDefaultShippingAddress,
           addressId: changedAddress.id,
         });
       }
       if (!user.shippingDefault.newValue && user.shippingDefault.value === changedAddress.id) {
         actions.push({
-          action: IUpdateActions.removeShippingAddressId,
+          action: ICustomerUpdateActions.removeShippingAddressId,
           addressId: changedAddress.id,
         });
         actions.push({
-          action: IUpdateActions.addShippingAddressId,
+          action: ICustomerUpdateActions.addShippingAddressId,
           addressId: changedAddress.id,
         });
       }
@@ -331,17 +326,17 @@ export function UserAddress() {
         user.billingDefault.value !== changedAddress.id
       ) {
         actions.push({
-          action: IUpdateActions.setDefaultBillingAddress,
+          action: ICustomerUpdateActions.setDefaultBillingAddress,
           addressId: changedAddress.id,
         });
       }
       if (!user.billingDefault.newValue && user.billingDefault.value === changedAddress.id) {
         actions.push({
-          action: IUpdateActions.removeBillingAddressId,
+          action: ICustomerUpdateActions.removeBillingAddressId,
           addressId: changedAddress.id,
         });
         actions.push({
-          action: IUpdateActions.addBillingAddressId,
+          action: ICustomerUpdateActions.addBillingAddressId,
           addressId: changedAddress.id,
         });
       }
@@ -350,7 +345,7 @@ export function UserAddress() {
         !user.billingArr.values.find(value => value === changedAddress.id)
       ) {
         actions.push({
-          action: IUpdateActions.addBillingAddressId,
+          action: ICustomerUpdateActions.addBillingAddressId,
           addressId: changedAddress.id,
         });
       }
@@ -359,7 +354,7 @@ export function UserAddress() {
         user.billingArr.values.find(value => value === changedAddress.id)
       ) {
         actions.push({
-          action: IUpdateActions.removeBillingAddressId,
+          action: ICustomerUpdateActions.removeBillingAddressId,
           addressId: changedAddress.id,
         });
       }
@@ -368,7 +363,7 @@ export function UserAddress() {
         !user.shippingArr.values.find(value => value === changedAddress.id)
       ) {
         actions.push({
-          action: IUpdateActions.addShippingAddressId,
+          action: ICustomerUpdateActions.addShippingAddressId,
           addressId: changedAddress.id,
         });
       }
@@ -377,7 +372,7 @@ export function UserAddress() {
         user.shippingArr.values.find(value => value === changedAddress.id)
       ) {
         actions.push({
-          action: IUpdateActions.removeShippingAddressId,
+          action: ICustomerUpdateActions.removeShippingAddressId,
           addressId: changedAddress.id,
         });
       }
@@ -386,7 +381,7 @@ export function UserAddress() {
         try {
           const response = await updateCustomer(user.version, actions, id);
           dispatch(setVersion(response.body.version));
-          showMessage(UPDATE_MESSAGE);
+          dispatch(openDialogWithMessage(UPDATE_MESSAGE));
           const newUser = await getCustomer(id);
           if (newUser && !(newUser instanceof Error)) {
             const body = newUser.body;
@@ -395,7 +390,7 @@ export function UserAddress() {
             dispatch(setAddresses(body));
           }
         } catch (err) {
-          if (err instanceof Error) showMessage(err.message);
+          if (err instanceof Error) dispatch(openDialogWithMessage(err.message));
         }
       } else if (actions.length === 0) {
         offRedactMoodHandle(i);
@@ -408,7 +403,7 @@ export function UserAddress() {
     if (id) {
       const actions: CustomerUpdateAction[] = [
         {
-          action: IUpdateActions.removeAddress,
+          action: ICustomerUpdateActions.removeAddress,
           addressId: user.userAddresses[i].id,
         },
       ];
@@ -418,7 +413,7 @@ export function UserAddress() {
         }
         const response = await updateCustomer(user.version, actions, id);
         dispatch(setVersion(response.body.version));
-        showMessage(DELETE_MESSAGE);
+        dispatch(openDialogWithMessage(DELETE_MESSAGE));
         const newUser = await getCustomer(id);
         if (newUser && !(newUser instanceof Error)) {
           const body = newUser.body;
@@ -426,7 +421,7 @@ export function UserAddress() {
           dispatch(setAddresses(body));
         }
       } catch (err) {
-        if (err instanceof Error) showMessage(err.message);
+        if (err instanceof Error) dispatch(openDialogWithMessage(err.message));
       }
     }
   }
@@ -518,7 +513,7 @@ export function UserAddress() {
     let actions: CustomerUpdateAction[] = [];
     if (newAddressIsValid() && id) {
       actions.push({
-        action: IUpdateActions.addAddress,
+        action: ICustomerUpdateActions.addAddress,
         address: {
           city: registration.city.value.trim(),
           country: getCodeByCountry(registration.country.value.trim()),
@@ -536,31 +531,31 @@ export function UserAddress() {
           actions = [];
           if (user.shippingDefault.newValue) {
             actions.push({
-              action: IUpdateActions.setDefaultShippingAddress,
+              action: ICustomerUpdateActions.setDefaultShippingAddress,
               addressId: newAddressId,
             });
           }
           if (user.billingDefault.newValue) {
             actions.push({
-              action: IUpdateActions.setDefaultBillingAddress,
+              action: ICustomerUpdateActions.setDefaultBillingAddress,
               addressId: newAddressId,
             });
           }
           if (user.addressType === AddressType.billing) {
             actions.push({
-              action: IUpdateActions.addBillingAddressId,
+              action: ICustomerUpdateActions.addBillingAddressId,
               addressId: newAddressId,
             });
           }
           if (user.addressType === AddressType.shipping) {
             actions.push({
-              action: IUpdateActions.addShippingAddressId,
+              action: ICustomerUpdateActions.addShippingAddressId,
               addressId: newAddressId,
             });
           }
           const response = await updateCustomer(user.version + 1, actions, id);
           dispatch(setVersion(response.body.version));
-          showMessage(ADD_MESSAGE);
+          dispatch(openDialogWithMessage(ADD_MESSAGE));
           const newFinalUser = await getCustomer(id);
           if (newFinalUser && !(newFinalUser instanceof Error)) {
             const body = newFinalUser.body;
@@ -570,7 +565,7 @@ export function UserAddress() {
           }
         }
       } catch (err) {
-        if (err instanceof Error) showMessage(err.message);
+        if (err instanceof Error) dispatch(openDialogWithMessage(err.message));
       }
     }
   }

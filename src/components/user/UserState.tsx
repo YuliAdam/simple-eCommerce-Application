@@ -20,13 +20,13 @@ import {
 import { CloseButton } from '@/assets/img/CloseButton';
 import { Save } from '@/assets/img/save';
 import { RegistrationInput } from '../registration/RegistrationInput';
-import { InputName, InputTypes, IUpdateActions } from '@/interfaces/types';
+import { InputName, InputTypes, ICustomerUpdateActions } from '@/interfaces/types';
 import type { ChangeEvent } from 'react';
 import { resetState, setInvalid, setValid, setValue } from '@/store/slices/registrationSlice';
 import { PATTERNS, userDataIsValid } from '@/utils/validation/registrationValidation';
 import { getCustomer, updateCustomer } from '@/services/customersController';
 import { SHOP } from '@/config/localStorageConfig';
-import { setDialogText, toggleDialog } from '@/store/slices/dialogSlice';
+import { openDialogWithMessage } from '@/store/slices/dialogSlice';
 import type { CustomerUpdateAction } from '@commercetools/platform-sdk';
 
 const UPDATE_MESSAGE = 'Your personal data was updated successfully!';
@@ -106,11 +106,6 @@ export function UserState() {
     };
   }
 
-  function showMessage(value: string) {
-    dispatch(setDialogText(value));
-    dispatch(toggleDialog(true));
-  }
-
   function isValid() {
     return userDataIsValid(
       user.userParams.login.newValue.trim(),
@@ -126,25 +121,25 @@ export function UserState() {
     if (id) {
       if (user.userParams.login.newValue.trim() !== user.userParams.login.value) {
         actions.push({
-          action: IUpdateActions.changeEmail,
+          action: ICustomerUpdateActions.changeEmail,
           email: user.userParams.login.newValue.trim(),
         });
       }
       if (user.userParams.firstName.newValue.trim() !== user.userParams.firstName.value) {
         actions.push({
-          action: IUpdateActions.setFirstName,
+          action: ICustomerUpdateActions.setFirstName,
           firstName: user.userParams.firstName.newValue.trim(),
         });
       }
       if (user.userParams.lastName.newValue.trim() !== user.userParams.lastName.value) {
         actions.push({
-          action: IUpdateActions.setLastName,
+          action: ICustomerUpdateActions.setLastName,
           lastName: user.userParams.lastName.newValue.trim(),
         });
       }
       if (user.userParams.birthDay.newValue.trim() !== user.userParams.birthDay.value) {
         actions.push({
-          action: IUpdateActions.setDateOfBirth,
+          action: ICustomerUpdateActions.setDateOfBirth,
           dateOfBirth: user.userParams.birthDay.newValue.trim(),
         });
       }
@@ -152,7 +147,7 @@ export function UserState() {
         try {
           const response = await updateCustomer(user.version, actions, id);
           dispatch(setVersion(response.body.version));
-          showMessage(UPDATE_MESSAGE);
+          dispatch(openDialogWithMessage(UPDATE_MESSAGE));
           const newUser = await getCustomer(id);
           if (newUser && !(newUser instanceof Error)) {
             const body = newUser.body;
@@ -161,7 +156,7 @@ export function UserState() {
             dispatch(offRedactMood(IRedactMoods.userParams));
           }
         } catch (err) {
-          if (err instanceof Error) showMessage(err.message);
+          if (err instanceof Error) dispatch(openDialogWithMessage(err.message));
         }
       } else if (actions.length === 0) {
         offRedactMoodHandle();

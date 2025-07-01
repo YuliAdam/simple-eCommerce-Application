@@ -12,7 +12,7 @@ $text-2xl: 1.6rem;
 .header {
   width: 100%;
   max-width: 1400px;
-  margin: 0 auto;
+  margin: auto;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -21,6 +21,10 @@ $text-2xl: 1.6rem;
   align-items: center;
   justify-content: space-between;
   background-color: $background-color;
+
+  @media (max-width: 768px) {
+    padding: 2rem;
+  }
 
   .logo {
     position: absolute;
@@ -87,6 +91,19 @@ $text-2xl: 1.6rem;
     }
   }
 
+  .icon-basket {
+    height: 50px;
+    width: auto;
+
+    text {
+      font-size: 10px;
+      font-family: Poppins;
+      font-weight: 100;
+      stroke-width: 1;
+      letter-spacing: 1px;
+    }
+  }
+
   .auth-links {
     margin-left: 1.5rem;
     display: flex;
@@ -106,6 +123,7 @@ $text-2xl: 1.6rem;
 }
 
 .mobile-menu-button {
+  padding: 0;
   display: none;
   background: none;
   border: none;

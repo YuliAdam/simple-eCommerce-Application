@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ProductCard from '@/components/catalog/product/productCard';
 import type I_Product from '@/interfaces/catalog/product';
 import type I_Category from '@/interfaces/catalog/category';
@@ -25,18 +25,39 @@ function AllProducts() {
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [checkboxFilters, setCheckboxFilters] = useState<{ name: string; value: string[] }[]>([]);
   const [checkedFilters, setCheckedFilters] = useState<{ [key: string]: boolean }>({});
+  const offset = 3;
+  const [productsLimit, setProductsLimit] = useState<number>(offset);
+  const [isOverload, setIsOverload] = useState<boolean>(false);
+  const [isSearchRequest, setIsSearchRequest] = useState(false);
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
-    getSortedProductsData({
-      activeCategoryButton,
-      sortPrice,
-      sortName,
-      setProducts,
-      minPrice,
-      maxPrice,
-      checkboxFilters,
-    });
-  }, [activeCategoryButton, sortPrice, sortName, minPrice, maxPrice, checkboxFilters]);
+    if (isSearchRequest) {
+      getSearchData({ text: searchText, setProducts, productsLimit, setIsOverload });
+    } else {
+      getSortedProductsData({
+        activeCategoryButton,
+        sortPrice,
+        sortName,
+        setProducts,
+        minPrice,
+        maxPrice,
+        checkboxFilters,
+        productsLimit,
+        setIsOverload,
+      });
+    }
+  }, [
+    isSearchRequest,
+    searchText,
+    activeCategoryButton,
+    sortPrice,
+    sortName,
+    minPrice,
+    maxPrice,
+    checkboxFilters,
+    productsLimit,
+  ]);
 
   useEffect(() => {
     getCategoriesData({ setCategories, setSubCategories });
@@ -54,6 +75,8 @@ function AllProducts() {
         const breadcrumbs = createBreadCrumbs(categories, subCategories, id);
 
         setBreadcrumbs(breadcrumbs);
+        setProductsLimit(offset);
+        setIsOverload(false);
         // temp
         window.history.pushState(
           {},
@@ -66,10 +89,14 @@ function AllProducts() {
 
   function handleSortPriceButton(event: React.ChangeEvent<HTMLInputElement>) {
     setSortPrice(event.target.value);
+    setProductsLimit(offset);
+    setIsOverload(false);
   }
 
   function handleSortNameButton(event: React.ChangeEvent<HTMLInputElement>) {
     setSortName(event.target.value);
+    setProductsLimit(offset);
+    setIsOverload(false);
   }
 
   function handleSearchInput(event: React.KeyboardEvent) {
@@ -77,14 +104,26 @@ function AllProducts() {
       return;
     }
 
+    setActiveCategoryButton(null);
+    setSortPrice(null);
+    setSortName(null);
+    setMinPrice(null);
+    setMaxPrice(null);
+    setCheckboxFilters([]);
+    setCheckedFilters({});
+    setBreadcrumbs([]);
+    setProductsLimit(offset);
+    setIsOverload(false);
+
     const target = event.target;
 
     if (target && target instanceof HTMLInputElement) {
       const text = target.value.trim();
-      if (text) {
-        getSearchData({ text, setProducts });
-        target.value = '';
-      }
+      if (!text) return;
+
+      setIsSearchRequest(true);
+      setSearchText(text);
+      target.value = '';
     }
   }
 
@@ -92,12 +131,16 @@ function AllProducts() {
     const price = parseFloat(event.target.value);
     console.log('Min price ' + price);
     setMinPrice(price);
+    setProductsLimit(offset);
+    setIsOverload(false);
   }
 
   function handleMaxPriceInput(event: React.ChangeEvent<HTMLInputElement>) {
     const price = parseFloat(event.target.value);
     console.log('Max price ' + price);
     setMaxPrice(price);
+    setProductsLimit(offset);
+    setIsOverload(false);
   }
 
   function handleCheckboxFilter(event: React.ChangeEvent<HTMLInputElement>) {
@@ -110,6 +153,9 @@ function AllProducts() {
         name: target.name,
         value: [target.value],
       };
+
+      setProductsLimit(offset);
+      setIsOverload(false);
 
       if (isChecked) {
         setCheckboxFilters(checkboxFilters => {
@@ -190,6 +236,7 @@ function AllProducts() {
       ...state,
       [key]: e.target.checked,
     }));
+
     handleCheckboxFilter(e);
   }
 
@@ -202,6 +249,12 @@ function AllProducts() {
     setCheckboxFilters([]);
     setCheckedFilters({});
     setBreadcrumbs([]);
+    setProductsLimit(offset);
+    setIsOverload(false);
+  }
+
+  function handleLoadMoreButton() {
+    setProductsLimit(state => state + offset);
   }
 
   return (
@@ -265,7 +318,7 @@ function AllProducts() {
               <h2 className={styles.header}>Filters</h2>
               <h3 className={styles['sub-header']}>Price range</h3>
               <ul>
-                <li>
+                <li className={styles['price-filter-item']}>
                   <label className={styles.label} htmlFor="min-price">
                     Minimum Price
                   </label>
@@ -279,7 +332,7 @@ function AllProducts() {
                     placeholder="Min: 0"
                   ></input>
                 </li>
-                <li>
+                <li className={styles['price-filter-item']}>
                   <label className={styles.label} htmlFor="max-price">
                     Maximum Price
                   </label>
@@ -298,8 +351,11 @@ function AllProducts() {
             <div className={styles['attributes-filter']}>
               <h3 className={styles['sub-header']}>Brand</h3>
               <ul>
-                <li>
-                  <label className={styles.label} htmlFor="gucci">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['brand:gucci'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="gucci"
+                  >
                     Gucci
                   </label>
                   <input
@@ -309,10 +365,14 @@ function AllProducts() {
                     id="gucci"
                     name="brand"
                     value="gucci"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="prada">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['brand:prada'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="prada"
+                  >
                     Prada
                   </label>
                   <input
@@ -322,10 +382,14 @@ function AllProducts() {
                     id="prada"
                     name="brand"
                     value="prada"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="carden">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['brand:carden'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="carden"
+                  >
                     Carden
                   </label>
                   <input
@@ -335,13 +399,17 @@ function AllProducts() {
                     id="carden"
                     name="brand"
                     value="carden"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
               </ul>
               <h3 className={styles['sub-header']}>Color</h3>
               <ul>
-                <li>
-                  <label className={styles.label} htmlFor="black">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['color:black'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="black"
+                  >
                     Black
                   </label>
                   <input
@@ -351,10 +419,14 @@ function AllProducts() {
                     id="black"
                     name="color"
                     value="black"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="white">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['color:white'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="white"
+                  >
                     White
                   </label>
                   <input
@@ -364,13 +436,17 @@ function AllProducts() {
                     id="white"
                     name="color"
                     value="white"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
               </ul>
               <h3 className={styles['sub-header']}>Size</h3>
               <ul>
-                <li>
-                  <label className={styles.label} htmlFor="s">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:s'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="s"
+                  >
                     Small
                   </label>
                   <input
@@ -380,10 +456,14 @@ function AllProducts() {
                     id="s"
                     name="size"
                     value="s"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="m">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:m'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="m"
+                  >
                     Medium
                   </label>
                   <input
@@ -393,10 +473,14 @@ function AllProducts() {
                     id="m"
                     name="size"
                     value="m"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="l">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:l'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="l"
+                  >
                     Large
                   </label>
                   <input
@@ -406,10 +490,14 @@ function AllProducts() {
                     id="l"
                     name="size"
                     value="l"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="xl">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:xl'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="xl"
+                  >
                     Extra large
                   </label>
                   <input
@@ -419,10 +507,14 @@ function AllProducts() {
                     id="xl"
                     name="size"
                     value="xl"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="xxl">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:xxl'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="xxl"
+                  >
                     Extra extra large
                   </label>
                   <input
@@ -432,10 +524,14 @@ function AllProducts() {
                     id="xxl"
                     name="size"
                     value="xxl"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="38">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:38'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="38"
+                  >
                     38
                   </label>
                   <input
@@ -445,10 +541,14 @@ function AllProducts() {
                     id="38"
                     name="size"
                     value="38"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="39">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:39'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="39"
+                  >
                     39
                   </label>
                   <input
@@ -458,10 +558,14 @@ function AllProducts() {
                     id="39"
                     name="size"
                     value="39"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
-                <li>
-                  <label className={styles.label} htmlFor="40">
+                <li className={styles['checkbox-item']}>
+                  <label
+                    className={`${styles['checkbox-label']} ${checkedFilters['size:40'] ? styles['checkbox-label-active'] : ''}`}
+                    htmlFor="40"
+                  >
                     40
                   </label>
                   <input
@@ -471,6 +575,7 @@ function AllProducts() {
                     id="40"
                     name="size"
                     value="40"
+                    className={styles['checkbox-input']}
                   ></input>
                 </li>
               </ul>
@@ -479,12 +584,19 @@ function AllProducts() {
               Reset
             </button>
           </div>
-          <ul className={styles.products}>
-            {products.map(product => {
-              const productData = createProductData(product);
-              return <ProductCard key={productData.id} product={productData} />;
-            })}
-          </ul>
+          <div className={styles['products-wrapper']}>
+            <ul className={styles.products}>
+              {products.map(product => {
+                const productData = createProductData(product);
+                return <ProductCard key={productData.id} product={productData} />;
+              })}
+            </ul>
+            {!isOverload ? (
+              <button onClick={handleLoadMoreButton} className={styles['load-more']}>
+                More products
+              </button>
+            ) : null}
+          </div>
         </div>
       </div>
     </section>

@@ -1,11 +1,11 @@
 // import styles from "@components/header/header.module.scss";
-export function ShoppingCart() {
-  // className={styles["logo"]}
+export function ShoppingCart({ className, text }: { className?: string; text: number }) {
   return (
     <svg
+      className={className || ''}
       xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
+      width="25"
+      height="50"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -16,6 +16,9 @@ export function ShoppingCart() {
       <circle cx="8" cy="21" r="1"></circle>
       <circle cx="19" cy="21" r="1"></circle>
       <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+      <text x="10" y="32">
+        {text || ''}
+      </text>
     </svg>
   );
 }

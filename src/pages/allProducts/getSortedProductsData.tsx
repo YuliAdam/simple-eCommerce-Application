@@ -10,6 +10,8 @@ export default async function getSortedProductsData({
   minPrice = 0,
   maxPrice,
   checkboxFilters,
+  productsLimit,
+  setIsOverload,
 }: {
   activeCategoryButton: string | null;
   sortPrice: string | null;
@@ -18,6 +20,8 @@ export default async function getSortedProductsData({
   minPrice?: number | null;
   maxPrice?: number | null;
   checkboxFilters?: { name: string; value: string[] }[];
+  productsLimit: number;
+  setIsOverload: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   try {
     const response = await getSortedProducts({
@@ -27,12 +31,19 @@ export default async function getSortedProductsData({
       minPrice: minPrice ?? 0,
       maxPrice: maxPrice ?? 30,
       checkboxFilters: checkboxFilters,
+      productsLimit,
     });
 
     if (response && response.statusCode === 200) {
       const productsData = response.body.results;
+      const totalProducts = response.body.total ?? 0;
+
+      if (productsLimit >= totalProducts) {
+        setIsOverload(true);
+      }
+
       setProducts(productsData);
-      console.log('SortedProducts: ', productsData);
+      console.log('SortedProducts: ', response, productsData);
     }
   } catch (err) {
     console.log(err);
