@@ -78,4 +78,8 @@ Run Vitest tests:
 
 ``npm run test`` - test with coverage
 
+# Deploy
+
+https://chaoscodeteamjsfe2024q4.netlify.app/
+
 ``npm run ui`` - start the tests with UI
